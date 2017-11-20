@@ -28,5 +28,4 @@ export class CheckComponent implements OnInit {
     this.doClick=true;
     console.log(this.checkOutTime);
   }
-  }
 }
