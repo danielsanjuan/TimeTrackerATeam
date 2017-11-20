@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-md-12 check">
+        <div *ngIf="doClick==false">
+            <button type="button" (click)="timeCheckIn()" [ngClass]="{'check-in': doClick==false}" class="btn btn-success btn-block btn-lg" disabled><b>CHECK IN</b></button>
+        </div>
+        <div *ngIf="doClick==true">
+            <button type="button" (click)="timeCheckIn()" class="btn btn-success btn-block btn-lg animated fadeIn" ><b>CHECK IN</b></button>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 check">
+      <div *ngIf="doClick==false">
+        <button type="button" (click)="timeCheckOut()" class="btn btn-danger btn-block btn-lg check-out animated fadeIn" ><b>CHECK OUT</b></button>    
+      </div>
+      <div *ngIf="doClick==true">
+        <button type="button" (click)="timeCheckOut()" class="btn btn-danger btn-block btn-lg check-out" disabled><b>CHECK OUT</b></button>     
+      </div>
+    </div>
+  </div>

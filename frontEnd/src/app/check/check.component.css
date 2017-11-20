@@ -1,0 +1,18 @@
+.check{
+    margin-top:2.5em;
+}
+
+.check-in{
+    opacity: 0.25; 
+    cursor: not-allowed;
+}
+
+.check-out:disabled{
+    opacity: 0.25; 
+    cursor: not-allowed;
+}
+
+.check-out:enabled{
+    opacity: 1; 
+    cursor: allowed;
+}

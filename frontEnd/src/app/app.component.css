@@ -1,0 +1,82 @@
+.main{
+    margin-top: 10%;
+}
+
+.navbar{
+    margin-bottom: 0px!important;
+    border-radius: 0px!important;
+}
+
+.navbar-brand {
+    padding: 5px 15px;
+}
+
+.logo{
+    max-width: 40px;
+}
+
+.glyphicon-bell{
+    color: #fb0;
+}
+
+.glyphicon-user{
+    color: #ffffff;
+}
+
+.glyphicon-option-vertical{
+    color: #fff;
+}
+
+.panel {
+    border: 0px solid transparent !important;
+}
+
+.panel-body {
+    padding: 0px !important;
+}
+
+.panel-heading{
+    background-color: #333!important;
+    color: #fff!important;
+    font-size: 1.5em;
+}
+
+.panel-welcome{
+    margin-left: 0.5em;
+}
+
+.panel-date{
+    float: right;
+    font-size: 0.8em;
+}
+
+.panel-left{
+    /*background-color: #808080;*/
+    background-color: #204d74;
+    height: 200px!important;
+
+}
+
+.panel-right{
+    background-color: #ffffff!important;
+    /*height: 200px!important;*/
+}
+
+.watch{
+    margin:1em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.report{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.incident{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
