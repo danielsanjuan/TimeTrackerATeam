@@ -5,9 +5,9 @@
     color: #888;
     line-height: 30px;
     text-align: center;
-    background-image: url(/assets/img/login.jpg) !important;
-    background-repeat: no-repeat;
-    background-size: 140% 140%;
+    background-color: lightgray;
+	background-repeat: no-repeat;
+	height: 100vh;
 
 }
 .text {
@@ -86,14 +86,12 @@ img { max-width: 100%; }
 /***** Top content *****/
 
 .inner-bg {
-    padding: 60px 0 170px 0;
+	padding: 2em 0 0 0;
+	
 }
 
 .top-content .text h1 { color: #164a77de; }
 
-.top-content {
-	margin: 0px 0 10px 0;
-}
 
 .top-content p { opacity: 0.8; }
 
@@ -151,10 +149,6 @@ img { max-width: 100%; }
 .form-bottom form .input-error {
 	border-color: #4aaf51;
 }
-
-/* .social-login {
-	margin-top: 15px;
-} */
 
 .social-login h3 {
 	color: #fff;
@@ -243,11 +237,7 @@ button.btn:active:focus, button.btn.active:focus { outline: 0; opacity: 0.6; bac
 
 @media (min-width: 768px) and (max-width: 991px) {}
 
-@media (max-width: 767px) {
-	
-	.inner-bg { padding: 60px 0 110px 0; }
-
-}
+@media (max-width: 767px) {}
 
 @media (max-width: 415px) {
 	
