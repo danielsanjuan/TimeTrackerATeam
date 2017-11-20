@@ -8,7 +8,7 @@ import os
 
 from datetime import datetime
 
-from messages.checkInMessages import CheckInMessage, CheckInResponseMessage
+from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
