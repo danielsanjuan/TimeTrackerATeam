@@ -80,3 +80,29 @@
     width: 85%!important;
 }
 
+@media (max-width: 768px){
+
+    .navbar-form {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-right: 0;
+        margin-left: 0;
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 568px){
+    
+        .navbar-form {
+            width: auto;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-right: 0;
+            margin-left: 0;
+            border: 0;
+            box-shadow: none;
+        }
+}
+

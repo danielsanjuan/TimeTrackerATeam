@@ -3,12 +3,12 @@
 }
 
 .check-in{
-    opacity: 0.25; 
+    opacity: 0.5; 
     cursor: not-allowed;
 }
 
 .check-out:disabled{
-    opacity: 0.25; 
+    opacity: 0.5; 
     cursor: not-allowed;
 }
 

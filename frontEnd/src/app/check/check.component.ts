@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { NgClass } from '@angular/common'; 
+import { CheckInService } from '../providers/check-in.service';
 
 @Component({
   selector: 'app-check',
@@ -12,15 +13,16 @@ export class CheckComponent implements OnInit {
   checkOutTime: string;
   doClick:boolean = true;
 
-  constructor() { }
+  constructor( private services:CheckInService) { }
 
   ngOnInit() {
   }
   
   timeCheckIn(){
-    this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
-    this.doClick=false;
-    console.log(this.checkInTime);
+    // this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
+     this.doClick=false;
+    // console.log(this.checkInTime);
+    this.services.postCheckIn();
   }
 
   timeCheckOut(){
