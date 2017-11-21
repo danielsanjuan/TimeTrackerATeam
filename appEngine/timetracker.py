@@ -44,8 +44,8 @@ class Workday(ndb.Model):
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
-    role = ndb.StringProperty(indexed=True)
-    workday = ndb.StructuredProperty(Workday)
+    # role = ndb.StringProperty(indexed=True)
+    # workday = ndb.StructuredProperty(Workday)
 
 # [START greeting]
 class Author(ndb.Model):
@@ -102,16 +102,18 @@ class MainPage(remote.Service):
         profile = Employee.query(Employee.email == current_user).get()
         if profile is None:
             profile = Employee()
-            profile.email = current_user
+            profile.email = "current_user@email.com"
+            profile.name = "Daniel"
             profile.put()
             print ("nuevo user")
             return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
         else:
             print ("entre por aqui")
             profile = Employee()
+            profile.name = "Juan"
             profile.email = "estoesunemail@email.com"
             profile.put()
-            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
+            return LoginMessageResponse(response_code=300, email="current_user", name="current_user")
 
     def post(self):
         # We set the same parent key on the 'Greeting' to ensure each
