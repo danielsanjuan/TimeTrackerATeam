@@ -11,7 +11,7 @@ handlers:
 - url: /bootstrap
   static_dir: bootstrap
 
-- url: /.*
+- url: /_ah/spi/.*
   script: timetracker.application
 # [END handlers]
 
