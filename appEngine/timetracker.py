@@ -9,6 +9,7 @@ import os
 from datetime import datetime
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage
+from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -36,6 +37,15 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     """
     return ndb.Key('Guestbook', guestbook_name)
 
+class Workday(ndb.Model):
+    checkin = ndb.DateTimeProperty(indexed=True)
+    checkout = ndb.DateTimeProperty(indexed=True)
+
+class Employee(ndb.Model):
+    name = ndb.StringProperty(indexed=True)
+    email = ndb.StringProperty(indexed=True)
+    role = ndb.StringProperty(indexed=True)
+    workday = ndb.Workday(indexed=True)
 
 # [START greeting]
 class Author(ndb.Model):
@@ -85,6 +95,23 @@ class MainPage(remote.Service):
         else:
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte")
 
+
+    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
+    def login(self, request):
+        current_user = endpoints.get_current_user().email()
+        profile = Employee.query(Employee.email == current_user).get()
+        if profile is None:
+            profile = Employee()
+            profile.email = current_user
+            profile.put()
+            print ("nuevo user")
+            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
+        else:
+            print ("entre por aqui")
+            profile = Employee()
+            profile.email = "estoesunemail@email.com"
+            profile.put()
+            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
 
     def post(self):
         # We set the same parent key on the 'Greeting' to ensure each
