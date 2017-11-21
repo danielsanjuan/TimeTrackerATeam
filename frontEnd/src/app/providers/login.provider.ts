@@ -30,7 +30,7 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, "https://timetrackerateam.appspot.com/_ah/api")
+      gapi.client.load('timetracker', "v1",this.callback, "http://localhost:8080/_ah/api")
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
 

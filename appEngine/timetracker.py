@@ -47,20 +47,6 @@ class Employee(ndb.Model):
     role = ndb.StringProperty(indexed=True)
     workday = ndb.StructuredProperty(Workday, repeated=True)
 
-# [START greeting]
-class Author(ndb.Model):
-    """Sub model for representing an author."""
-    identity = ndb.StringProperty(indexed=False)
-    email = ndb.StringProperty(indexed=False)
-
-
-class Greeting(ndb.Model):
-    """A main model for representing an individual Guestbook entry."""
-    author = ndb.StructuredProperty(Author)
-    content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
-# [END greeting]
-
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -73,6 +59,11 @@ class MainPage(remote.Service):
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
         date = datetime.now()
+        # query = Employee.query()
+        # query = query.filter(Employee.email == request.email).get()
+        # workday = Workday (checkin=date)
+        # query.workday.append(workday)
+        # query.put()
         if date.hour >= 7 and date.hour < 9:
             return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto")
         elif date.hour == 9 and date.minute == 00:
@@ -109,27 +100,6 @@ class MainPage(remote.Service):
             return LoginMessageResponse(response_code=200, email=profile.email, name=profile.name)
         else:
             return LoginMessageResponse(response_code=300, email=current_user.email(), name=current_user.nickname())
-
-    def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each
-        # Greeting is in the same entity group. Queries across the
-        # single entity group will be consistent. However, the write
-        # rate to a single entity group should be limited to
-        # ~1/second.
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greeting = Greeting(parent=guestbook_key(guestbook_name))
-
-        if users.get_current_user():
-            greeting.author = Author(
-                    identity=users.get_current_user().user_id(),
-                    email=users.get_current_user().email())
-
-        greeting.content = self.request.get('content')
-        greeting.put()
-
-        query_params = {'guestbook_name': guestbook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
 # [END guestbook]
 
 application = endpoints.api_server([MainPage], restricted=False)
