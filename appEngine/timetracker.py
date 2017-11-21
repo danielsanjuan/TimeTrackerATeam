@@ -8,7 +8,7 @@ import os
 
 from datetime import datetime
 
-from messages.checkInMessages import CheckInMessage, CheckInResponseMessage
+from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -68,10 +68,22 @@ class MainPage(remote.Service):
         elif date.hour == 9 and date.minute == 00:
             return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto")
         elif date.hour < 7 or date.hour > 19:
-            return CheckInResponseMessage(response_code = 405, response_status = "Fuera de hora")
+            return CheckInResponseMessage(response_code = 405, response_status = "Check in fuera de hora")
         else:
             return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto. Se ha generado un reporte")
 
+    @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
+    path = 'check_out', http_method = 'POST', name = 'check_out')
+    def check_out(self, request):
+        date = datetime.now()
+        if date.hour >= 14 and date.hour < 19:
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto")
+        elif date.hour == 19 and date.minute == 00:
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto")
+        elif date.hour < 7 or date.hour > 19:
+            return CheckOutResponseMessage(response_code = 405, response_status = "Check out fuera de hora")
+        else:
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto. Se ha generado un reporte")
 
 
     def post(self):
