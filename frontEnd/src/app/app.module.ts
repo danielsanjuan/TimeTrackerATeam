@@ -1,20 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { LoginComponent } from './login/login.component';
 import { CheckInService } from './providers/check-in.service';
-
+import { LoginProvider } from './providers/login.provider';
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BsDropdownModule } from 'ng2-bs-dropdown';
 import { CheckComponent } from './check/check.component';
-import { HttpClientModule } from '@angular/common/http';
-
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    CheckComponent
+    CheckComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    CheckInService
+    CheckInService,
+    LoginProvider
   ],
   bootstrap: [AppComponent]
 })

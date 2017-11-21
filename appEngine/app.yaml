@@ -23,4 +23,6 @@ libraries:
   version: latest
 - name: jinja2
   version: latest
+- name: endpoints
+  version: "1.0"
 # [END libraries]
