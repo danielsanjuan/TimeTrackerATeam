@@ -45,7 +45,7 @@ class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
     role = ndb.StringProperty(indexed=True)
-    workday = ndb.Workday(indexed=True)
+    workday = ndb.StructuredProperty(Workday)
 
 # [START greeting]
 class Author(ndb.Model):
