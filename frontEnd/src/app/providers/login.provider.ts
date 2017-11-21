@@ -20,7 +20,7 @@ export class LoginProvider {
     public googleInit() {
       gapi.load('client:auth2', () => {
         this.auth2 = gapi.auth2.init({
-          client_id: '31568523369-1b8gfocahpm809gu11saffdr3falla29.apps.googleusercontent.com',
+          client_id: '1001374037432-ahu9hf73400ijjj3orjt7gi212n9m9vc.apps.googleusercontent.com',
           cookiepolicy: 'single_host_origin',
           scope: 'profile email'
         });
@@ -35,7 +35,7 @@ export class LoginProvider {
     public attachSignin(element) {
   
   
-      gapi.client.load('timeTracker', "v1",this.callback, "https://localhost:8080/_ah/api")
+      gapi.client.load('timeTracker', "v1",this.callback, "http://localhost:8080/_ah/api")
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
   
@@ -46,7 +46,7 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
-  
+  	  this.doSomething();
   
         }, (error) => {
           alert(JSON.stringify(error, undefined, 2));

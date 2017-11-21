@@ -17,6 +17,7 @@
 # [START imports]
 import os
 import urllib
+import json
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -24,6 +25,11 @@ from google.appengine.ext import ndb
 import jinja2
 import webapp2
 
+from protorpc import message_types
+from protorpc import remote
+
+from login.timetrackerlogin import LoginMessage, LoginMessageResponse
+import endpoints
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
@@ -60,67 +66,42 @@ class Greeting(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
 # [END greeting]
 
+class Perfil(ndb.Model):
+    email = ndb.StringProperty(indexed=True)
+
+@endpoints.api(name='timeTracker', version='v1',
+            allowed_client_ids=["1001374037432-ahu9hf73400ijjj3orjt7gi212n9m9vc.apps.googleusercontent.com"],
+	        scopes=[endpoints.EMAIL_SCOPE])
+
+
 
 # [START main_page]
-class MainPage(webapp2.RequestHandler):
+class MainPage(remote.Service):
 
-    def get(self):
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greetings_query = Greeting.query(
-            ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-        greetings = greetings_query.fetch(10)
-
-        user = users.get_current_user()
-        if user:
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-        else:
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
-
-        template_values = {
-            'user': user,
-            'greetings': greetings,
-            'guestbook_name': urllib.quote_plus(guestbook_name),
-            'url': url,
-            'url_linktext': url_linktext,
-        }
-
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(template_values))
 # [END main_page]
 
-
+    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST',
+    name='login')
+    def login(self, request):
+        current_user = endpoints.get_current_user().email()
+        profile = Perfil.query(Perfil.email == current_user).get()
+        if profile is None: 
+            profile = Perfil()
+            profile.email = current_user
+            profile.put()
+            print ("nuevo user")
+            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
+        else:
+            print ("entre por aqui")
+            profile = Perfil()
+            profile.email = "estoesunemail@email.com"
+            profile.put()
+            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
 # [START guestbook]
-class Guestbook(webapp2.RequestHandler):
 
-    def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each
-        # Greeting is in the same entity group. Queries across the
-        # single entity group will be consistent. However, the write
-        # rate to a single entity group should be limited to
-        # ~1/second.
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greeting = Greeting(parent=guestbook_key(guestbook_name))
 
-        if users.get_current_user():
-            greeting.author = Author(
-                    identity=users.get_current_user().user_id(),
-                    email=users.get_current_user().email())
-
-        greeting.content = self.request.get('content')
-        greeting.put()
-
-        query_params = {'guestbook_name': guestbook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
-# [END guestbook]
 
 
 # [START app]
-app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/sign', Guestbook),
-], debug=True)
+application = endpoints.api_server([MainPage], restricted=False)
 # [END app]
