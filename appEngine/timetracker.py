@@ -38,6 +38,15 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
 
 
 # [START greeting]
+class Workday(ndb.Model):
+    checkin = ndb.DateTimeProperty(indexed=True)
+    checkout = ndb.DateTimeProperty(indexed=True)
+    
+class Employee(ndb.Model):
+    name = ndb.StringProperty(indexed=True)
+    email = ndb.StringProperty(indexed=True)
+    workday = ndb.Workday(indexed=True)
+    
 class Author(ndb.Model):
     """Sub model for representing an author."""
     identity = ndb.StringProperty(indexed=False)
