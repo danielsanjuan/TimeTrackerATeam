@@ -44,8 +44,8 @@ class Workday(ndb.Model):
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
-    # role = ndb.StringProperty(indexed=True)
-    # workday = ndb.StructuredProperty(Workday)
+    role = ndb.StringProperty(indexed=True)
+    workday = ndb.StructuredProperty(Workday, repeated=True)
 
 # [START greeting]
 class Author(ndb.Model):
@@ -64,8 +64,8 @@ class Greeting(ndb.Model):
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
-        allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID],
-        scopes=[])
+        allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
+        scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
 
@@ -98,22 +98,17 @@ class MainPage(remote.Service):
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
-        current_user = endpoints.get_current_user().email()
-        profile = Employee.query(Employee.email == current_user).get()
+        current_user = endpoints.get_current_user()
+        profile = Employee.query(Employee.email == current_user.email()).get()
+
         if profile is None:
             profile = Employee()
-            profile.email = "current_user@email.com"
-            profile.name = "Daniel"
+            profile.name = current_user.nickname()
+            profile.email = current_user.email()
             profile.put()
-            print ("nuevo user")
-            return LoginMessageResponse(response_code=200, email=current_user, name=current_user)
+            return LoginMessageResponse(response_code=200, email=profile.email, name=profile.name)
         else:
-            print ("entre por aqui")
-            profile = Employee()
-            profile.name = "Juan"
-            profile.email = "estoesunemail@email.com"
-            profile.put()
-            return LoginMessageResponse(response_code=300, email="current_user", name="current_user")
+            return LoginMessageResponse(response_code=300, email=current_user.email(), name=current_user.nickname())
 
     def post(self):
         # We set the same parent key on the 'Greeting' to ensure each

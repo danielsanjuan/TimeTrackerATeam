@@ -10,12 +10,9 @@ export class LoginProvider {
     public auth2: any;
     public api: any =null;
 
-
-
     constructor(private http: HttpClient) {
 
     }
-
 
     public googleInit() {
       gapi.load('client:auth2', () => {
@@ -33,8 +30,6 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-
-
       gapi.client.load('timetracker', "v1",this.callback, "https://timetrackerateam.appspot.com/_ah/api")
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
@@ -47,11 +42,9 @@ export class LoginProvider {
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
   	  this.doSomething();
-
         }, (error) => {
           alert(JSON.stringify(error, undefined, 2));
         });
-
     }
 
 
