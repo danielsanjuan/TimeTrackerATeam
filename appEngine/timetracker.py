@@ -6,7 +6,7 @@ import json
 import endpoints
 import os
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
@@ -31,7 +31,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
 def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
-    """Constructs a Datastore key for a Guestbook entity.
+    """Constsructs a Datastore key for a Guestbook entity.
 
     We use guestbook_name as the key.
     """
@@ -40,6 +40,7 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
 class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
+
 
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
@@ -54,53 +55,79 @@ employee = Employee()
         scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
+    def set_checkin(self, date):
+        query = Employee.query()
+        query = query.filter(Employee.email == employee.email).get()
+        workday = Workday(checkin=date)
+        query.workday.append(workday)
+        query.put()
+
+    def set_checkout(self, date):
+        query = Employee.query()
+        query = query.filter(Employee.email == employee.email).get()
+        # date2 = date + timedelta(hours=8)
+        workday = Workday(checkout=date)
+        query.workday.append(workday)
+        query.put()
+
+    def filter_checkin(self, date):
+        query = Employee.query()
+        query = query.filter(Employee.email == employee.email).get()
+        for a in query.workday:
+            if datetime(a.checkin.year,a.checkin.month,a.checkin.day) == datetime(date.year,date.month,date.day):
+                return True
+        return False
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
         date = datetime.now()
-        # query = Employee.query()
-        # query = query.filter(Employee.email == request.email).get()
-        # workday = Workday (checkin=date)
-        # query.workday.append(workday)
-        # query.put()
-        if date.hour >= 7 and date.hour < 9:
-            return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto")
-        elif date.hour == 9 and date.minute == 00:
-            return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto")
-        elif date.hour < 7 or date.hour > 19:
-            return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora")
+        if self.filter_checkin(date):
+            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%H:%M:%S"))
         else:
-            return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte")
+            if date.hour >= 7 and date.hour < 9:
+                self.set_checkin(date)
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%H:%M:%S"))
+            elif date.hour == 9 and date.minute == 00:
+                self.set_checkin(date)
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%H:%M:%S"))
+            elif date.hour < 7 or date.hour > 19:
+                return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%H:%M:%S"))
+            else:
+                self.set_checkin(date)
+                return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
     path = 'check_out', http_method = 'POST', name = 'check_out')
     def check_out(self, request):
         date = datetime.now()
-        print employee.email()
         if date.hour >= 14 and date.hour < 19:
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto")
+            self.set_checkout(date)
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%H:%M:%S"))
         elif date.hour == 19 and date.minute == 00:
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto")
+            self.set_checkout(date)
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%H:%M:%S"))
         elif date.hour < 7 or date.hour > 19:
-            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora")
+            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%H:%M:%S"))
         else:
-            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte")
+            self.set_checkout(date)
+            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%H:%M:%S"))
 
 
-    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
+    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login', response_date = date.strftime("%H:%M:%S"))
     def login(self, request):
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
-        employee = current_user
+        employee.name = request.name
+        employee.email = current_user.email()
         if profile is None:
             profile = Employee()
-            profile.name = current_user.nickname()
+            profile.name = request.name
             profile.email = current_user.email()
             profile.put()
             return LoginMessageResponse(response_code=200, email=profile.email, name=profile.name)
         else:
-            return LoginMessageResponse(response_code=300, email=current_user.email(), name=current_user.nickname())
+            return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
 # [END guestbook]
 
 application = endpoints.api_server([MainPage], restricted=False)

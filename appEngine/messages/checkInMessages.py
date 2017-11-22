@@ -6,6 +6,7 @@ class CheckInMessage(messages.Message):
 class CheckInResponseMessage(messages.Message):
     response_code = messages.IntegerField(1)
     response_status = messages.StringField(2)
+    response_date = messages.StringField(3)
 
 class CheckOutMessage(messages.Message):
     pass
@@ -13,3 +14,4 @@ class CheckOutMessage(messages.Message):
 class CheckOutResponseMessage(messages.Message):
     response_code = messages.IntegerField(1)
     response_status = messages.StringField(2)
+    response_date = messages.StringField(3)
