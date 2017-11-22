@@ -47,7 +47,7 @@ class Employee(ndb.Model):
     role = ndb.StringProperty(indexed=True)
     workday = ndb.StructuredProperty(Workday, repeated=True)
 
-
+employee = Employee()
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
@@ -77,6 +77,7 @@ class MainPage(remote.Service):
     path = 'check_out', http_method = 'POST', name = 'check_out')
     def check_out(self, request):
         date = datetime.now()
+        print employee.email()
         if date.hour >= 14 and date.hour < 19:
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto")
         elif date.hour == 19 and date.minute == 00:
@@ -91,7 +92,7 @@ class MainPage(remote.Service):
     def login(self, request):
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
-
+        employee = current_user
         if profile is None:
             profile = Employee()
             profile.name = current_user.nickname()
