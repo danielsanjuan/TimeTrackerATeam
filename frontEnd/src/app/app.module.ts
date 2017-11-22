@@ -1,26 +1,46 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LoginComponent } from './login/login.component';
-import { CheckInService } from './providers/check-in.service';
-import { LoginProvider } from './providers/login.provider';
+import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { AppComponent } from './app.component';
 import { BsDropdownModule } from 'ng2-bs-dropdown';
-import { CheckComponent } from './check/check.component';
 
+/*Provider*/
+import { LoginProvider } from './providers/login.provider';
+import { CheckInService } from './providers/check-in.service';
+
+/*Componentes*/
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+import { CheckComponent } from './check/check.component';
+import { HomeComponent } from './home/home.component';
+import { ReportComponent } from './report/report.component';
+
+
+const appRoutes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'report', component: ReportComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     CheckComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     BsDropdownModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    ),
   ],
   providers: [
     CheckInService,

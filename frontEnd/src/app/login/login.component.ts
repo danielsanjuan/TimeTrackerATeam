@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginProvider } from '../providers/login.provider';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,13 +9,19 @@ import { LoginProvider } from '../providers/login.provider';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private loginServer: LoginProvider) { }
+  constructor(private loginServer: LoginProvider,
+              private router:Router) { }
 
   ngOnInit() {
   }
 
-  gapi(){
-    this.loginServer.doSomething();
+  goToHome(){
+    if(this.loginServer.doSomething()){
+      this.router.navigate( ['/home'] )
+      console.log("true");
+    }else{
+      console.log("false");
+    }
   }
 
   ngAfterViewInit(){

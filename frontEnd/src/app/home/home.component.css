@@ -1,0 +1,93 @@
+.main{
+    margin-top: 10%;
+}
+
+.glyphicon-option-vertical{
+    color: #fff;
+}
+
+.panel {
+    border: 0px solid transparent !important;
+}
+
+.panel-body {
+    padding: 0px !important;
+    background-color: lightgray;
+    z-index: -2;
+}
+
+.panel-heading{
+    background-color: #333!important;
+    color: #fff!important;
+    font-size: 1.5em;
+    border-bottom: 0px!important;
+    z-index: 0;
+}
+
+.panel-welcome{
+    margin-left: 0.5em;
+}
+
+.panel-date{
+    float: right;
+    font-size: 0.8em;
+}
+
+.panel-left{
+    /*background-color: #808080;*/
+    background-color: #204d74;
+    height: 200px!important;
+    z-index: -1;
+
+}
+
+.watch{
+    margin:1em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.report{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.incident{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.dropdown-menu{
+    margin-top: 8px;
+    margin-left: -16px;
+    border-radius: 0px!important;
+}
+
+@media (max-width: 768px){
+
+    .navbar-form {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-right: 0;
+        margin-left: 0;
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 568px){
+    
+        .navbar-form {
+            width: auto;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-right: 0;
+            margin-left: 0;
+            border: 0;
+            box-shadow: none;
+        }
+}
+

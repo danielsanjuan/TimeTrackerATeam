@@ -9,6 +9,7 @@ declare const gapi: any;
 export class LoginProvider {
     public auth2: any;
     public api: any =null;
+    currentUser:boolean = false;
     
   
   
@@ -59,7 +60,9 @@ export class LoginProvider {
     doSomething() {
       gapi.client.timeTracker.login({email:"TODO", password: "password"}).execute((response: any) => {
           if (response.error) {
-            console.log(response.error)
+            console.log(response.error);
+            return this.currentUser = true;
+            
           }
           else {
             console.log(JSON.stringify(response.result));

@@ -1,0 +1,42 @@
+.container{
+    margin: 20px 0 5px 0;
+}
+.min_hours{
+    background-color: #ff3535e0;
+}
+
+.max_hours{
+    background-color: rgb(247, 181, 67);
+}
+
+table{
+    text-align: center; 
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+thead tr th {
+    background-color: lightgray;
+    text-align: center;
+}
+
+
+/***** Media queries *****/
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (max-width: 767px) {}
+
+@media (max-width: 415px) {
+	
+	thead tr th {
+        padding-right: 40px !important;
+    }
+
+}
+
+

@@ -1,7 +1,3 @@
-.main{
-    margin-top: 10%;
-}
-
 .navbar{
     margin-bottom: 0px!important;
     border-radius: 0px!important;
@@ -9,6 +5,10 @@
 
 .navbar-brand {
     padding: 5px 15px;
+}
+.nav>li:hover {
+    background-color: #337ab7;
+    font-size:1.2em;
 }
 
 .logo{
@@ -21,88 +21,5 @@
 
 .glyphicon-user{
     color: #ffffff;
-}
-
-.glyphicon-option-vertical{
-    color: #fff;
-}
-
-.panel {
-    border: 0px solid transparent !important;
-}
-
-.panel-body {
-    padding: 0px !important;
-}
-
-.panel-heading{
-    background-color: #333!important;
-    color: #fff!important;
-    font-size: 1.5em;
-}
-
-.panel-welcome{
-    margin-left: 0.5em;
-}
-
-.panel-date{
-    float: right;
-    font-size: 0.8em;
-}
-
-.panel-left{
-    /*background-color: #808080;*/
-    background-color: #204d74;
-    height: 200px!important;
-
-}
-
-.panel-right{
-    background-color: #ffffff!important;
-    /*height: 200px!important;*/
-}
-
-.watch{
-    margin:1em 1em 1em 1em;
-    text-align: center;
-    width: 85%!important;
-}
-
-.report{
-    margin:2em 1em 1em 1em;
-    text-align: center;
-    width: 85%!important;
-}
-
-.incident{
-    margin:2em 1em 1em 1em;
-    text-align: center;
-    width: 85%!important;
-}
-
-@media (max-width: 768px){
-
-    .navbar-form {
-        width: auto;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-right: 0;
-        margin-left: 0;
-        border: 0;
-        box-shadow: none;
-    }
-}
-
-@media (max-width: 568px){
-    
-        .navbar-form {
-            width: auto;
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-right: 0;
-            margin-left: 0;
-            border: 0;
-            box-shadow: none;
-        }
 }
 

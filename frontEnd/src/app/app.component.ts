@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { LoginProvider } from './providers/login.provider';
+
 
 @Component({
   selector: 'app-root',
@@ -8,7 +8,8 @@ import * as moment from 'moment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
-  today:string = moment().format('MMM Do YYYY, h:mm a');
-  hours:string = moment().format('LT');
+  navbar:boolean = true;
+  
+  constructor(private services:LoginProvider){}
+
 }

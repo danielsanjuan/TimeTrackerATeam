@@ -1,0 +1,41 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col-xs-5 col-sm-2 col-sm-offset-1 btn btn-default">
+      Informe Semanal
+    </div>
+    <div class="col-xs-5 col-xs-offset-2 col-sm-2 col-sm-offset-0 btn btn-default">
+      Informe Mensual
+    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Total</th>
+        <th>Lunes</th>
+        <th>Martes</th>
+        <th>Miercoles</th>
+        <th>Jueves</th>
+        <th>Viernes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of employees; let i = index">
+        <th scope="row">{{i}}</th>
+        <td>{{employee.first_name}}</td>
+        <td>{{employee.last_name}}</td>
+        <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40}">{{employee.total}}</td>
+        <td>{{employee.monday}}</td>
+        <td>{{employee.tuesday}}</td>
+        <td>{{employee.wednesday}}</td>
+        <td>{{employee.thursday}}</td>
+        <td>{{employee.friday}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,26 @@
+
+    <div class="row main">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default animated fadeIn fast">
+          <div class="panel-heading">
+            <div class="dropdown">
+                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                  <span class="glyphicon glyphicon-option-vertical"></span>
+                </button>
+                <div class="dropdown-menu panel-left animated fadeInDown">
+                    <p class="dropdown-item"><input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00"></p>
+                    <p class="dropdown-item"><button type="button" class="btn btn-default btn-block report">Reports</button></p>
+                    <p class="dropdown-item"><button type="button" class="btn btn-default btn-block incident">Incidences</button></p>
+                </div>
+                <span class="panel-welcome">Welcome <b>Manolo garcia</b></span>
+                <span class="panel-date">{{today}}</span>
+            </div>
+          </div>
+          <div class="panel-body col-md-12">
+            <app-check></app-check>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
