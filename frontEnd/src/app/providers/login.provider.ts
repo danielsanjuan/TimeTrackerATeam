@@ -47,7 +47,7 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
-  	  this.doSomething();
+  	  this.doSomething(profile.getName());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
         });
@@ -55,19 +55,19 @@ export class LoginProvider {
 
 
 
-    doSomething() { 
-      gapi.client.timetracker.login({email:"TODO", password: "password"}).execute((response: any) => {
+    doSomething(Name) {
+      gapi.client.timetracker.login({email:"TODO", password: "password", name: Name}).execute((response: any) => {
           if (response.error) {
             console.log(response.error);
-            
+
           }
           else {
             console.log(JSON.stringify(response.result));
             this.currentUser = true;
             console.log(this.currentUser);
             this.router.navigate(['/home']);
-            //window.location.reload();            
-            
+            //window.location.reload();
+
           }
         }
       );

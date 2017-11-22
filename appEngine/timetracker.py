@@ -83,19 +83,19 @@ class MainPage(remote.Service):
     def check_in(self, request):
         date = datetime.now()
         if self.filter_checkin(date):
-            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%H:%M:%S"))
+            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             if date.hour >= 7 and date.hour < 9:
                 self.set_checkin(date)
-                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%H:%M:%S"))
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif date.hour == 9 and date.minute == 00:
                 self.set_checkin(date)
-                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%H:%M:%S"))
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif date.hour < 7 or date.hour > 19:
-                return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%H:%M:%S"))
+                return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date)
-                return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%H:%M:%S"))
+                return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
     path = 'check_out', http_method = 'POST', name = 'check_out')
@@ -103,15 +103,15 @@ class MainPage(remote.Service):
         date = datetime.now()
         if date.hour >= 14 and date.hour < 19:
             self.set_checkout(date)
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%H:%M:%S"))
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif date.hour == 19 and date.minute == 00:
             self.set_checkout(date)
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%H:%M:%S"))
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif date.hour < 7 or date.hour > 19:
-            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%H:%M:%S"))
+            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date)
-            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%H:%M:%S"))
+            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
