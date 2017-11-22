@@ -15,4 +15,8 @@ export class CheckInService {
         console.log(data);
       });
   }
+
+  getCheckIn(){
+    
+  }
 }

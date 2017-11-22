@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Rx";
 import { HttpClient } from "@angular/common/http";
+import { Router } from '@angular/router';
 
 declare const gapi: any;
 
@@ -14,7 +15,8 @@ export class LoginProvider {
     public currentUser:boolean = false;
 
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private router:Router) {
 
     }
 
@@ -47,24 +49,32 @@ export class LoginProvider {
           //YOUR CODE HERE
   	  this.doSomething();
         }, (error) => {
-          alert(JSON.stringify(error, undefined, 2));
+          // alert(JSON.stringify(error, undefined, 2));
         });
     }
 
 
 
-    doSomething() {
+    doSomething() { 
       gapi.client.timetracker.login({email:"TODO", password: "password"}).execute((response: any) => {
           if (response.error) {
             console.log(response.error);
-            return this.currentUser = true;
             
           }
           else {
             console.log(JSON.stringify(response.result));
+            this.currentUser = true;
+            console.log(this.currentUser);
+            this.router.navigate(['/home']);
+            //window.location.reload();            
+            
           }
         }
       );
+    }
+
+    getCurrentUser(){
+      return this.currentUser;
     }
 
 }

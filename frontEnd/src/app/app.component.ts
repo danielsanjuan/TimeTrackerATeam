@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginProvider } from './providers/login.provider';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -8,8 +9,12 @@ import { LoginProvider } from './providers/login.provider';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  navbar:boolean = true;
+  navbar:boolean = false;
   
-  constructor(private services:LoginProvider){}
+  constructor(private services:LoginProvider,
+              private router: Router){
+
+  }
+
 
 }

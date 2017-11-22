@@ -1,5 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<nav *ngIf="navbar" class="navbar navbar-inverse navbar-top animated fadeIn">
+<nav *ngIf="router.url !== '/login'" class="navbar navbar-inverse navbar-top animated fadeIn">
     <div class="container-fluid">
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -13,7 +13,7 @@
           <li><a href="#">Incidences</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-form navbar-right">
-          <span class="glyphicon glyphicon-user"></span>
+          <span [routerLink]="['login']" class="glyphicon glyphicon-user"></span>
         </ul>
         <ul class="nav navbar-nav navbar-form navbar-right">
           <span class="glyphicon glyphicon-bell"></span>

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginProvider } from '../providers/login.provider';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,20 +7,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
+  manolo:any;
 
-  constructor(private loginServer: LoginProvider,
-              private router:Router) { }
+  constructor(private loginServer: LoginProvider) { }
 
   ngOnInit() {
-  }
 
-  goToHome(){
-    if(this.loginServer.doSomething()){
-      this.router.navigate( ['/home'] )
-      console.log("true");
-    }else{
-      console.log("false");
-    }
   }
 
   ngAfterViewInit(){
