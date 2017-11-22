@@ -11,6 +11,10 @@
     font-size:1.2em;
 }
 
+.navbar-nav>.active>a{
+    background-color: #204d74;
+}
+
 .logo{
     max-width: 40px;
 }

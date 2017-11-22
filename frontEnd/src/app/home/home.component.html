@@ -5,12 +5,27 @@
           <div class="panel-heading">
             <div class="dropdown">
                 <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
-                  <span class="glyphicon glyphicon-option-vertical"></span>
+                  <span class="glyphicon glyphicon-time"></span>
                 </button>
                 <div class="dropdown-menu panel-left animated fadeInDown">
-                    <p class="dropdown-item"><input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00"></p>
-                    <p class="dropdown-item"><button type="button" class="btn btn-default btn-block report">Reports</button></p>
-                    <p class="dropdown-item"><button type="button" class="btn btn-default btn-block incident">Incidences</button></p>
+                    <div class="dropdown-item">
+                      <div class="item-title">
+                          <span>Today Time</span>
+                      </div>
+                      <div class="item-time">
+                          <span>{{hours}}</span>
+                          <!-- <input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00">                           -->
+                      </div>
+                    </div> 
+                    <div class="dropdown-item">
+                        <div class="item-title">
+                            <span>Week Time</span>
+                        </div>
+                        <div class="item-time">
+                            <span>{{hours}}</span>
+                            <!-- <input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00">                           -->
+                        </div>
+                    </div>  
                 </div>
                 <span class="panel-welcome">Welcome <b>Manolo garcia</b></span>
                 <span class="panel-date">{{today}}</span>
