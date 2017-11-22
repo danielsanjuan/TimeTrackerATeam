@@ -9,6 +9,8 @@ declare const gapi: any;
 export class LoginProvider {
     public auth2: any;
     public api: any =null;
+    public localRoute = "http://localhost:8080/_ah/api";
+    public serverRoute = "https://timetrackerateam.appspot.com/_ah/api"
 
     constructor(private http: HttpClient) {
 
@@ -30,7 +32,7 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, "http://localhost:8080/_ah/api")
+      gapi.client.load('timetracker', "v1",this.callback, this.serverRoute)
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
 
