@@ -114,7 +114,7 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%H:%M:%S"))
 
 
-    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login', response_date = date.strftime("%H:%M:%S"))
+    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
