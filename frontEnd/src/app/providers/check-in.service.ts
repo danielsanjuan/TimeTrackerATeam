@@ -9,10 +9,16 @@ export class CheckInService {
   constructor( private http: HttpClient) { }
 
   postCheckIn(){
-    let body = {}
+    let body = {};
     this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body).subscribe(
       (data)=>{
         console.log(data);
       });
   }
+
+  getWeekReport(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/report");
+  }
+
+
 }

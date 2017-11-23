@@ -9,7 +9,9 @@ import { LoginProvider } from './providers/login.provider';
 })
 export class AppComponent {
   navbar:boolean = true;
+  numberIncidences: number = 0;
   
   constructor(private services:LoginProvider){}
+  
 
 }
