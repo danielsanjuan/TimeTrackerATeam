@@ -5,11 +5,13 @@ import urllib
 import json
 import endpoints
 import os
+import json
 
 from datetime import datetime, timedelta
 
-from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage
+from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.reportMessages import ReportMessage, ReportResponseMessage, jsonMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -58,8 +60,10 @@ class MainPage(remote.Service):
     def set_checkin(self, date):
         query = Employee.query()
         query = query.filter(Employee.email == employee.email).get()
-        workday = Workday(checkin=date)
+        workday = Workday(checkin=date, checkout=date+timedelta(hours=8))
         query.workday.append(workday)
+        checkin = "me modifique"
+        print checkin
         query.put()
 
     def set_checkout(self, date):
@@ -95,6 +99,7 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date)
+                print checkin
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
@@ -128,6 +133,51 @@ class MainPage(remote.Service):
             return LoginMessageResponse(response_code=200, email=profile.email, name=profile.name)
         else:
             return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
-# [END guestbook]
+
+    @endpoints.method(CheckInMessage, CheckInGetMessage, path='getCheckin', http_method='GET', name='getCheckin')
+    def getCheckin(self, request):
+        query = Employee.query()
+        query = query.filter(Employee.email == employee.email).get()
+        for day in query.workday:
+            if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                return CheckInGetMessage(response_date=str(day.checkin))
+        return CheckInGetMessage(response_date="No hay fecha de checkin")
+
+
+
+
+    # @endpoints.method(ReportMessage, ReportResponseMessage, path='report', http_method='GET', name='report')
+    # def report(self, request):
+    #     day = datetime.today()
+    #     if datetime.today().isocalendar()[2] != 1:
+    #         query = Employee.query().fetch()
+    #         for currentEmployee in query:
+    #             report = 
+    #             report =  report + "name:" + currentEmployee.name
+    #             report1 = report + self.singleReport(currentEmployee, day)
+    #         return ReportResponseMessage(response_code=200, response_report=report)
+    #     return ReportResponseMessage(response_code=502, response_report="no existe reporte")
+
+    # def singleReport(self, employee, date):
+    #     report = {}
+    #     weekdays = ['twilday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    #     currentDay = date.today()
+    #     currentWeek = currentDay.isocalendar()[1]
+    #     for day in employee.workday:
+    #         if day.checkin.isocalendar()[1] == currentWeek:
+    #             dayWorkTime = day.checkout.hour - day.checkin.hour
+    #             print weekdays[day.checkin.isocalendar()[2]]
+    #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
+    #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
+    #     return json.dumps(report, dayWorkTime)
+                
+                
+                
+                
+
+
+           
+
+# [END guestbook] dayWorkTime = day.check_out - day.check_in
 
 application = endpoints.api_server([MainPage], restricted=False)
