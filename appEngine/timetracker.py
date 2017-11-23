@@ -60,14 +60,13 @@ class MainPage(remote.Service):
     def set_checkin(self, date):
         query = Employee.query()
         query = query.filter(Employee.email == employee.email).get()
-        workday = Workday(checkin=date, checkout=date+timedelta(hours=8))
+        workday = Workday(checkin=date)
         query.workday.append(workday)
         query.put()
 
     def set_checkout(self, date):
         query = Employee.query()
         query = query.filter(Employee.email == employee.email).get()
-        # date2 = date + timedelta(hours=8)
         workday = Workday(checkout=date)
         query.workday.append(workday)
         query.put()
@@ -97,7 +96,6 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date)
-                print checkin
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
