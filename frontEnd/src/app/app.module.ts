@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ng2-bs-dropdown';
+import { ToastModule} from 'ng2-toastr/ng2-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -41,6 +43,9 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
+    ToastModule.forRoot(),
+    BrowserAnimationsModule
+
   ],
   providers: [
     CheckInService,

@@ -5,18 +5,14 @@ import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class CheckInService {
+  timeIn:string;
+  subject: Subject<any> = new Subject<any>();
 
   constructor( private http: HttpClient) { }
 
-  postCheckIn(){
+  postCheckIn():Observable<any>{
     let body = {}
-    this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body).subscribe(
-      (data)=>{
-        console.log(data);
-      });
+    return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);
   }
 
-  getCheckIn(){
-    
-  }
 }
