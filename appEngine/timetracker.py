@@ -62,8 +62,6 @@ class MainPage(remote.Service):
         query = query.filter(Employee.email == employee.email).get()
         workday = Workday(checkin=date, checkout=date+timedelta(hours=8))
         query.workday.append(workday)
-        checkin = "me modifique"
-        print checkin
         query.put()
 
     def set_checkout(self, date):
@@ -152,7 +150,7 @@ class MainPage(remote.Service):
     #     if datetime.today().isocalendar()[2] != 1:
     #         query = Employee.query().fetch()
     #         for currentEmployee in query:
-    #             report = 
+    #             report =
     #             report =  report + "name:" + currentEmployee.name
     #             report1 = report + self.singleReport(currentEmployee, day)
     #         return ReportResponseMessage(response_code=200, response_report=report)
@@ -170,13 +168,13 @@ class MainPage(remote.Service):
     #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
     #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
     #     return json.dumps(report, dayWorkTime)
-                
-                
-                
-                
 
 
-           
+
+
+
+
+
 
 # [END guestbook] dayWorkTime = day.check_out - day.check_in
 
