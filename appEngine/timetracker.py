@@ -39,28 +39,35 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     """
     return ndb.Key('Guestbook', guestbook_name)
 
-class Workday(ndb.Model):
-    checkin = ndb.DateTimeProperty(indexed=True)
-    checkout = ndb.DateTimeProperty(indexed=True)
+
 
 
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
     role = ndb.StringProperty(indexed=True)
-    workday = ndb.StructuredProperty(Workday, repeated=True)
+
+class Workday(ndb.Model):
+    checkin = ndb.DateTimeProperty(indexed=True)
+    checkout = ndb.DateTimeProperty(indexed=True)
+    employee = ndb.StructuredProperty(Employee, indexed=True)
 
 employee = Employee()
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
-        scopes=[endpoints.EMAIL_SCOPE])
+        scopes=[endpoints])
 
 class MainPage(remote.Service):
     def set_checkin(self, date):
-        query = Employee.query()
-        query = query.filter(Employee.email == employee.email).get()
-        workday = Workday(checkin=date)
+        workday = Workday (
+            checkin=date,
+            employee=endpoints.get_current_user()
+        )
+
+        # for workday in query:
+        #     if workday.checkin ==
+        # query.checkin =
         query.workday.append(workday)
         query.put()
 
@@ -117,8 +124,14 @@ class MainPage(remote.Service):
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
+        print endpoints.get_current_user()
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
+        employee = Employee(
+            name=request.name,
+
+        )
+        memcache.add(profile, )
         employee.name = request.name
         employee.email = current_user.email()
         if profile is None:
