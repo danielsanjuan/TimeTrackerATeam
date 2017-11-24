@@ -10,7 +10,7 @@ export class CheckInService {
 
   postCheckIn(){
     let body = {}
-    this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body).subscribe(
+    this.http.post("http://localhost:8080/_ah/api/timetracker/v1/check_in", body).subscribe(
       (data)=>{
         console.log(data);
       });

@@ -39,37 +39,31 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     """
     return ndb.Key('Guestbook', guestbook_name)
 
-
-
-
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
-    role = ndb.StringProperty(indexed=True)
+    role = ndb.IntegerProperty(indexed=True)
 
 class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
     employee = ndb.StructuredProperty(Employee, indexed=True)
 
-employee = Employee()
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
-        scopes=[endpoints])
+        scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
     def set_checkin(self, date):
-        workday = Workday (
-            checkin=date,
-            employee=endpoints.get_current_user()
-        )
-
-        # for workday in query:
-        #     if workday.checkin ==
-        # query.checkin =
-        query.workday.append(workday)
-        query.put()
+        query = Employee.query()
+        print endpoints.get_current_user().email()
+        # query = query.filter(Employee.email == endpoints.get_current_user().email()).get()
+        # workday = Workday (
+        #     checkin=date,
+        #     employee=Employee (name=query.name,email=query.email,role=query.role)
+        # )
+        # workday.put()
 
     def set_checkout(self, date):
         query = Employee.query()
@@ -79,12 +73,15 @@ class MainPage(remote.Service):
         query.put()
 
     def filter_checkin(self, date):
-        query = Employee.query()
-        query = query.filter(Employee.email == employee.email).get()
-        for a in query.workday:
-            if datetime(a.checkin.year,a.checkin.month,a.checkin.day) == datetime(date.year,date.month,date.day):
-                return True
-        return False
+        query = Workday.query().get()
+        if query is None:
+            return False
+        else:
+            query = query.filter(Workday.employee.email == endpoints.get_current_user().email()).fetch()
+            for workday in query:
+                if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
+                    return True
+            return False
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -124,22 +121,17 @@ class MainPage(remote.Service):
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
-        print endpoints.get_current_user()
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
-        employee = Employee(
-            name=request.name,
-
-        )
-        memcache.add(profile, )
-        employee.name = request.name
-        employee.email = current_user.email()
+        print endpoints.get_current_user().email()
         if profile is None:
-            profile = Employee()
-            profile.name = request.name
-            profile.email = current_user.email()
-            profile.put()
-            return LoginMessageResponse(response_code=200, email=profile.email, name=profile.name)
+            employee = Employee(
+                name=request.name,
+                email=current_user.email(),
+                role=0
+            )
+            employee.put()
+            return LoginMessageResponse(response_code=200, email=employee.email, name=employee.name)
         else:
             return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
 
