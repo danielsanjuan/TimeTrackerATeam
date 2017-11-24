@@ -10,7 +10,7 @@
         </div>
         <ul class="nav navbar-nav">
           <li routerLinkActive="active"><a href="#" [routerLink]="['report']">Reports</a></li>
-          <li><a href="#">Incidences</a></li>
+          <li><a href="#">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-form navbar-right">
           <span [routerLink]="['login']" class="glyphicon glyphicon-user"></span>

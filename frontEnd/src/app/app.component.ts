@@ -9,12 +9,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  navbar:boolean = false;
+
+  navbar:boolean = true;
+  numberIncidences: number = 0;
   
-  constructor(private services:LoginProvider,
-              private router: Router){
-
-  }
-
+  constructor(private services:LoginProvider){}
+  
 
 }

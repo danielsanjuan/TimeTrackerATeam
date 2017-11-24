@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./report.component.css']
 })
 export class ReportComponent implements OnInit {
+  weekReport: boolean = true;
+  monthReport: boolean = false;
+
   employees = [{
       "first_name": "Roderigo",
       "last_name": "Donovin",
@@ -141,5 +144,14 @@ export class ReportComponent implements OnInit {
 
   ngOnInit() {
   }
+  
+  weekReportButton(){
+    this.monthReport = false;
+    this.weekReport = true;  
+  }
 
+  monthReportButton(){
+    this.weekReport = false;
+    this.monthReport = true;
+  }
 }
