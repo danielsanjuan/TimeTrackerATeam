@@ -55,29 +55,28 @@ class Workday(ndb.Model):
         scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
-    def set_checkin(self, date):
+    def set_checkin(self, date, email):
         query = Employee.query()
-        print endpoints.get_current_user().email()
-        # query = query.filter(Employee.email == endpoints.get_current_user().email()).get()
-        # workday = Workday (
-        #     checkin=date,
-        #     employee=Employee (name=query.name,email=query.email,role=query.role)
-        # )
-        # workday.put()
+        query = query.filter(Employee.email == email).get()
+        workday = Workday (
+            checkin=date,
+            employee=Employee (name=query.name,email=query.email,role=query.role)
+        )
+        workday.put()
 
-    def set_checkout(self, date):
-        query = Employee.query()
-        query = query.filter(Employee.email == employee.email).get()
-        workday = Workday(checkout=date)
-        query.workday.append(workday)
+    def set_checkout(self, date, email):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == email)
+        query = query.filter(Workday.checkout == None).get()
+        query.checkout = date
         query.put()
 
-    def filter_checkin(self, date):
-        query = Workday.query().get()
+    def filter_checkin(self, date, email):
+        query = Workday.query()
         if query is None:
             return False
         else:
-            query = query.filter(Workday.employee.email == endpoints.get_current_user().email()).fetch()
+            query = query.filter(Workday.employee.email == email).fetch()
             for workday in query:
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
@@ -87,19 +86,20 @@ class MainPage(remote.Service):
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
         date = datetime.now()
-        if self.filter_checkin(date):
+        print request
+        if self.filter_checkin(date, request.email):
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             if date.hour >= 7 and date.hour < 9:
-                self.set_checkin(date)
+                self.set_checkin(date, request.email)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif date.hour == 9 and date.minute == 00:
-                self.set_checkin(date)
+                self.set_checkin(date, request.email)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif date.hour < 7 or date.hour > 19:
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
-                self.set_checkin(date)
+                self.set_checkin(date, request.email)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
@@ -107,15 +107,15 @@ class MainPage(remote.Service):
     def check_out(self, request):
         date = datetime.now()
         if date.hour >= 14 and date.hour < 19:
-            self.set_checkout(date)
+            self.set_checkout(date, request.email)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif date.hour == 19 and date.minute == 00:
-            self.set_checkout(date)
+            self.set_checkout(date, request.email)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif date.hour < 7 or date.hour > 19:
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
-            self.set_checkout(date)
+            self.set_checkout(date, request.email)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
 
@@ -137,9 +137,9 @@ class MainPage(remote.Service):
 
     @endpoints.method(CheckInMessage, CheckInGetMessage, path='getCheckin', http_method='GET', name='getCheckin')
     def getCheckin(self, request):
-        query = Employee.query()
-        query = query.filter(Employee.email == employee.email).get()
-        for day in query.workday:
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).fetch()
+        for day in query:
             if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
