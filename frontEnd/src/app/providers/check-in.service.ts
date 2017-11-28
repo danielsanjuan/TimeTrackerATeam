@@ -12,7 +12,7 @@ export class CheckInService {
   postCheckIn(){
     console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
-    this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_out", body).subscribe(
+    this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body).subscribe(
       (data)=>{
         console.log(data);
       });
