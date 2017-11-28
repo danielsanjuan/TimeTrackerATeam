@@ -32,11 +32,24 @@ tbody tr th{
     text-align: center;
 }
 
+
+
 thead tr th {
-    background-color: lightgray;
+    /* background-color: lightgray; */
     text-align: center;
 }
 
+.no-data{
+    margin-top: 5em;
+}
+
+img{
+    max-width: 50%;
+}
+
+h2{
+    text-align: center;
+}
 
 /***** Media queries *****/
 
@@ -49,8 +62,19 @@ thead tr th {
 @media (max-width: 415px) {
 	
 	thead tr th {
-        padding-right: 40px !important;
+        font-size: 16px;
     }
+    tbody tr td{
+        text-align: center;
+        font-size: 16px;
+        
+    }
+
+    img{
+        max-width: 80%;
+    }
+
+    
 
 }
 
