@@ -2,13 +2,20 @@
     margin-top:2.5em;
 }
 
-.check-in{
-    opacity: 0.5; 
+.check-in:enabled{
+    opacity: 1; 
+    cursor: allowed;
+}
+
+.check-in:disabled{
+    background-color: rgba(185, 185, 185, 0.5);
+    border-color: rgb(170, 170, 170);
     cursor: not-allowed;
 }
 
 .check-out:disabled{
-    opacity: 0.5; 
+    background-color: rgba(185, 185, 185, 0.5);
+    border-color: rgb(170, 170, 170);
     cursor: not-allowed;
 }
 

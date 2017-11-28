@@ -35,13 +35,16 @@
 }
 
 .panel-left{
-    /*background-color: #808080;*/
-    background-color: rgba(32,77,116, 0.8);
-    /*background-color: #204d74;*/
+    background-color: rgba(85,85,85, 0.8);
     width: 30%;
     z-index: -1;
     opacity: 0.8!important;
 
+}
+
+.btn-default {
+    background-color: #777;
+    border-color: #666;
 }
 
 .item-title{

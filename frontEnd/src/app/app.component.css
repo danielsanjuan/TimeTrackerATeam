@@ -15,21 +15,19 @@
     background-color: #204d74;
 }
 
+.navbar-right{
+    color: lightgray;
+    text-align: center;
+}
+
 .logo{
     max-width: 40px;
 }
 
-.glyphicon-bell{
-    color: #fb0;
-}
-
-.glyphicon-user{
-    color: #ffffff;
-}
-
 .img_user{
     border-radius: 50%;
-    width: 2em;
+    width: 2.5em;
+    margin-right: 0.5em;
 }
 
 
