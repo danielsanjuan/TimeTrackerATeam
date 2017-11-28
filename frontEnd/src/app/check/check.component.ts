@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import * as moment from 'moment';
-import { NgClass } from '@angular/common'; 
+import { NgClass } from '@angular/common';
 import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
@@ -25,9 +25,9 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
-  
+
   timeCheckIn(){
     // this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
      this.doClick=false;
@@ -41,20 +41,22 @@ export class CheckComponent implements OnInit {
         case "200":
             this.checkInTime = data.response_date;
             this.toastr.success('You are awesome!', 'Success!');
-            break;  
+            break;
         case "202":
             this.checkInTime = data.response_date;
             this.toastr.warning('Llegas tarde', 'Alert!');
             this.E202=true;
-            break; 
+            break;
         case "406":
             this.E406=true;
             this.toastr.error('No puedes trabajar ha esta hora', 'Oops!');
-            break; 
+            this.doClick=true;
+            break;
         case "500":
             this.E500=true;
             this.toastr.error('No puedes 2 check-in el mismo dia', 'Oops!');
-            break; 
+            this.doClick=true;
+            break;
       }
     });
 
@@ -62,8 +64,35 @@ export class CheckComponent implements OnInit {
 
 
   timeCheckOut(){
-    this.checkOutTime = moment().format('YYYY/MM/DD, hh:mm:ss');
-    this.doClick=true;
-    console.log(this.checkOutTime);
-  }
+    // this.checkOutTime = moment().format('YYYY/MM/DD, hh:mm:ss');
+    // this.doClick=true;
+    // console.log(this.checkOutTime);
+      // this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
+      this.doClick=false;
+      // console.log(this.checkInTime);
+      this.services.postCheckOut().subscribe( (data)=>{
+        //console.log(data);
+        console.log(data.response_code);
+        console.log(data.response_date);
+        console.log(data.response_status);
+        switch(data.response_code){
+          case "200":
+              this.checkOutTime = data.response_date;
+              this.toastr.success('Buen Trabajo!', 'Success!');
+              this.doClick=true;
+              break;
+          case "202":
+              this.checkOutTime = data.response_date;
+              this.toastr.warning('Te vas muy pronto, NO?', 'Alert!');
+              this.doClick=true;
+              this.E202=true;
+              break;
+          case "406":
+              this.E406=true;
+              this.doClick=true;
+              this.toastr.error('Deberias estar con tu familia', 'Oops!');
+              break;
+        }
+      });
+    }
 }
