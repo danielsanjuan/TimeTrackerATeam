@@ -3,20 +3,21 @@ import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Rx";
 import { HttpClient } from "@angular/common/http";
 import { Router } from '@angular/router';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 declare const gapi: any;
 
 @Injectable()
 export class LoginProvider {
+
     public auth2: any;
     public api: any =null;
     public localRoute = "http://localhost:8080/_ah/api";
     public serverRoute = "https://timetrackerateam.appspot.com/_ah/api"
     public currentUser:boolean = false;
 
-
     constructor(private http: HttpClient,
-                private router:Router) {
+                private router:Router, private sessionSt:SessionStorageService) {
 
     }
 
@@ -36,7 +37,7 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
+      gapi.client.load('timetracker', "v1",this.callback, this.serverRoute)
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
 
@@ -47,6 +48,7 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
+      this.sessionSt.store('email', profile.getEmail())
   	  this.doSomething(profile.getName());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));

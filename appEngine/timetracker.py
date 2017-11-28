@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import os
 import urllib
-import json
 import endpoints
 import os
 import json
@@ -11,13 +9,11 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
-from messages.reportMessages import ReportMessage, ReportResponseMessage, jsonMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
 from google.appengine.api.taskqueue import taskqueue
-from google.appengine.ext import ndb
 from protorpc import message_types
 from protorpc import remote
 
@@ -30,19 +26,11 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 # [END imports]
 
-DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
-
-def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
-    """Constsructs a Datastore key for a Guestbook entity.
-
-    We use guestbook_name as the key.
-    """
-    return ndb.Key('Guestbook', guestbook_name)
-
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
     role = ndb.IntegerProperty(indexed=True)
+    status = ndb.BooleanProperty(indexed=True)
 
 class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
@@ -86,7 +74,6 @@ class MainPage(remote.Service):
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
         date = datetime.now()
-        print request
         if self.filter_checkin(date, request.email):
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
@@ -123,7 +110,6 @@ class MainPage(remote.Service):
     def login(self, request):
         current_user = endpoints.get_current_user()
         profile = Employee.query(Employee.email == current_user.email()).get()
-        print endpoints.get_current_user().email()
         if profile is None:
             employee = Employee(
                 name=request.name,
