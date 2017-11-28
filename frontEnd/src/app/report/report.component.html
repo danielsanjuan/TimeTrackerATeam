@@ -1,41 +1,92 @@
 <div class="container">
-
   <div class="row">
-    <div class="col-xs-5 col-sm-2 col-sm-offset-1 btn btn-default">
+    <div (click)="weekReportButton()" [ngClass]="{'choose': weekReport}" type="button" class="col-xs-5 col-sm-2 btn btn-default">
       Informe Semanal
     </div>
-    <div class="col-xs-5 col-xs-offset-2 col-sm-2 col-sm-offset-0 btn btn-default">
+    <div (click)="monthReportButton()" [ngClass]="{'choose': monthReport}" class="col-xs-5 col-xs-offset-2 col-sm-2 col-sm-offset-0 btn btn-default">
       Informe Mensual
     </div>
   </div>
 </div>
-<div class="table-responsive">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nombre</th>
-        <th>Apellidos</th>
-        <th>Total</th>
-        <th>Lunes</th>
-        <th>Martes</th>
-        <th>Miercoles</th>
-        <th>Jueves</th>
-        <th>Viernes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let employee of employees; let i = index">
-        <th scope="row">{{i}}</th>
-        <td>{{employee.first_name}}</td>
-        <td>{{employee.last_name}}</td>
-        <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40}">{{employee.total}}</td>
-        <td>{{employee.monday}}</td>
-        <td>{{employee.tuesday}}</td>
-        <td>{{employee.wednesday}}</td>
-        <td>{{employee.thursday}}</td>
-        <td>{{employee.friday}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<ng-container *ngIf="weekReport; else elseTemplate">
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre y Apellidos</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miercoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let employee of employees; let i = index">
+          <th scope="row">{{i}}</th>
+          <td>{{employee.first_name}} {{employee.last_name}}</td>
+          <td>{{employee.monday}}</td>
+          <td>{{employee.tuesday}}</td>
+          <td>{{employee.wednesday}}</td>
+          <td>{{employee.thursday}}</td>
+          <td>{{employee.friday}}</td>
+          <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40, 'good_hours': employee.total==40}">{{employee.total}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+<ng-template #elseTemplate>
+  <div *ngFor="let employee of employees;let i = index" class="table-responsive">
+    <table *ngIf="i<=4" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nombre y Apellidos</th>
+          <th>Semana</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miercoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{employee.first_name}} {{employee.last_name}}</td>
+          <td scope="row"><strong>1</strong></td>
+          <td>{{employee.monday}}</td>
+          <td>{{employee.tuesday}}</td>
+          <td>{{employee.wednesday}}</td>
+          <td>{{employee.thursday}}</td>
+          <td>{{employee.friday}}</td>
+          <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40, 'good_hours': employee.total==40}">{{employee.total}}</td>
+        </tr>
+        <tr *ngFor="let user of employees; let i = index">
+          <ng-container *ngIf="i<=3">
+            <td></td>
+            <td scope="row"><strong>{{i+2}}</strong></td>
+            <td>{{user.monday}}</td>
+            <td>{{user.tuesday}}</td>
+            <td>{{user.wednesday}}</td>
+            <td>{{user.thursday}}</td>
+            <td>{{user.friday}}</td>
+            <td [ngClass]="{'min_hours': user.total<40, 'max_hours': user.total>40, 'good_hours': user.total==40}">{{employee.total}}</td>
+          </ng-container>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><strong>Total Mes</strong></td>
+          <td><strong>160</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

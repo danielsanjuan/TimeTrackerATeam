@@ -1,22 +1,20 @@
-<!--The content below is only a placeholder and can be replaced.-->
 <nav *ngIf="router.url !== '/login'" class="navbar navbar-inverse navbar-top animated fadeIn">
     <div class="container-fluid">
       <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <a class="navbar-brand" href="#" [routerLink]="['home']">
             <img alt="Brand" class="logo" src="../assets/logo.png">
           </a>
         </div>
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav menu">
           <li routerLinkActive="active"><a href="#" [routerLink]="['report']">Reports</a></li>
-          <li><a href="#">Incidences</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-form navbar-right">
-          <span [routerLink]="['login']" class="glyphicon glyphicon-user"></span>
-        </ul>
-        <ul class="nav navbar-nav navbar-form navbar-right">
-          <span class="glyphicon glyphicon-bell"></span>
+          <li><a href="#">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
+          <div class="nav navbar-nav navbar-form navbar-right">
+            <img class="img_user" [routerLink]="['login']" src="../assets/img/user.png" alt="User">
+          </div>
+          <div class="nav navbar-nav navbar-form navbar-right">
+            <span class="glyphicon glyphicon-bell"></span>
+          </div>
         </ul>
       </div>
     </div>

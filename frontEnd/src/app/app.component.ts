@@ -1,3 +1,4 @@
+import { Route } from '@angular/compiler/src/core';
 import { Component } from '@angular/core';
 import { LoginProvider } from './providers/login.provider';
 import { Router } from '@angular/router';
@@ -9,12 +10,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  navbar:boolean = false;
+
+  navbar:boolean = true;
+  numberIncidences: number = 0;
   
-  constructor(private services:LoginProvider,
-              private router: Router){
-
-  }
-
+  constructor(private services:LoginProvider, private router: Router){}
+  
 
 }

@@ -6,9 +6,12 @@ import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 @Injectable()
 export class CheckInService {
+  timeIn:string;
+  subject: Subject<any> = new Subject<any>();
 
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
+<<<<<<< HEAD
   postCheckIn(){
     console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
@@ -16,9 +19,20 @@ export class CheckInService {
       (data)=>{
         console.log(data);
       });
+=======
+  postCheckIn():Observable<any>{
+    let body = {}
+    return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);
+>>>>>>> develop
   }
 
-  getCheckIn(){
 
+  getCheckIn():Observable<any>{
+    return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin");
   }
+
+  getWeekReport(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/report");
+  }
+
 }

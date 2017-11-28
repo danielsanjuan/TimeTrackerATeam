@@ -4,7 +4,7 @@
         <div class="panel panel-default animated fadeIn fast">
           <div class="panel-heading">
             <div class="dropdown">
-                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                <button (click)="time()" type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
                   <span class="glyphicon glyphicon-time"></span>
                 </button>
                 <div class="dropdown-menu panel-left animated fadeInDown">
@@ -13,8 +13,7 @@
                           <span>Today Time</span>
                       </div>
                       <div class="item-time">
-                          <span>{{hours}}</span>
-                          <!-- <input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00">                           -->
+                          <span>{{hours_today}}</span>
                       </div>
                     </div> 
                     <div class="dropdown-item">
@@ -22,8 +21,7 @@
                             <span>Week Time</span>
                         </div>
                         <div class="item-time">
-                            <span>{{hours}}</span>
-                            <!-- <input type="text" name="watch" [(ngModel)]="hours" class="form-control watch" readonly placeholder="00:00">                           -->
+                            <span>{{hours_week}}</span>
                         </div>
                     </div>  
                 </div>

@@ -21,7 +21,8 @@
       "styles": [
         "styles.css",
         "animated.css",
-        "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/ng2-toastr/ng2-toastr.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone} from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Rx";
 import { HttpClient } from "@angular/common/http";
@@ -13,11 +13,14 @@ export class LoginProvider {
     public auth2: any;
     public api: any =null;
     public localRoute = "http://localhost:8080/_ah/api";
-    public serverRoute = "https://timetrackerateam.appspot.com/_ah/api"
-    public currentUser:boolean = false;
+    public serverRoute = "https://timetrackerateam.appspot.com/_ah/api";
+    subject: Subject<any> = new Subject<any>();
+    public nameUser:string;
 
     constructor(private http: HttpClient,
-                private router:Router, private sessionSt:SessionStorageService) {
+                private router:Router,
+                private zone:NgZone,
+                private sessionSt:SessionStorageService) {
 
     }
 
@@ -65,9 +68,9 @@ export class LoginProvider {
           }
           else {
             console.log(JSON.stringify(response.result));
-            this.currentUser = true;
-            console.log(this.currentUser);
-            this.router.navigate(['/home']);
+            this.zone.run(()=>{
+              this.router.navigate(['/home']);
+            });
             //window.location.reload();
 
           }
@@ -75,8 +78,8 @@ export class LoginProvider {
       );
     }
 
-    getCurrentUser(){
-      return this.currentUser;
+    getNameUser():Observable<any>{
+      return this.subject.asObservable();
     }
 
 }

@@ -26,6 +26,7 @@
 
 .panel-welcome{
     margin-left: 0.5em;
+    margin-right: 1em;
 }
 
 .panel-date{
@@ -84,29 +85,22 @@
     border-bottom-right-radius: 3%!important;
 }
 
-@media (max-width: 768px){
-
-    .navbar-form {
-        width: auto;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-right: 0;
-        margin-left: 0;
-        border: 0;
-        box-shadow: none;
+@media screen and (min-device-width: 350px) and (max-device-width: 600px) { 
+    .panel-heading[_ngcontent-c1] {
+        font-size: 1em
     }
 }
 
-@media (max-width: 568px){
+@media (max-width: 375px){
     
-        .navbar-form {
-            width: auto;
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-right: 0;
-            margin-left: 0;
-            border: 0;
-            box-shadow: none;
-        }
+    .panel-heading {
+        font-size: 1em;
+        height: 4.5em;
+    }
+
+    .panel-welcome {
+        margin-right: 0em;
+    }
+
 }
 

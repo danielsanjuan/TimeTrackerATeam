@@ -2,11 +2,26 @@
     margin: 20px 0 5px 0;
 }
 .min_hours{
-    background-color: #ff3535e0;
+    /* background-color: #ff3535e0; */
+    color: #ff3535e0;
+    font-weight: bold;
 }
 
 .max_hours{
-    background-color: rgb(247, 181, 67);
+    /* background-color: rgb(247, 181, 67); */
+    color: blue;
+    font-weight: bold;
+}
+
+.good_hours{
+    color: green;
+    font-weight: bold;
+    
+}
+.choose{
+    color: #fff;
+    background-color: #204d74;
+    border-color: #8c8c8c;
 }
 
 table{
