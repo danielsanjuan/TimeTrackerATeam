@@ -11,21 +11,11 @@ export class CheckInService {
 
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
-<<<<<<< HEAD
-  postCheckIn(){
+  postCheckIn():Observable<any>{
     console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
-    this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body).subscribe(
-      (data)=>{
-        console.log(data);
-      });
-=======
-  postCheckIn():Observable<any>{
-    let body = {}
     return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);
->>>>>>> develop
   }
-
 
   getCheckIn():Observable<any>{
     return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin");
