@@ -3,11 +3,13 @@ import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Rx";
 import { HttpClient } from "@angular/common/http";
 import { Router } from '@angular/router';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 declare const gapi: any;
 
 @Injectable()
 export class LoginProvider {
+
     public auth2: any;
     public api: any =null;
     public localRoute = "http://localhost:8080/_ah/api";
@@ -15,10 +17,10 @@ export class LoginProvider {
     subject: Subject<any> = new Subject<any>();
     public nameUser:string;
 
-
     constructor(private http: HttpClient,
                 private router:Router,
-                private zone:NgZone) {
+                private zone:NgZone,
+                private sessionSt:SessionStorageService) {
 
     }
 
@@ -49,6 +51,7 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
+      this.sessionSt.store('email', profile.getEmail())
   	  this.doSomething(profile.getName());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
@@ -74,7 +77,7 @@ export class LoginProvider {
         }
       );
     }
-  
+
     getNameUser():Observable<any>{
       return this.subject.asObservable();
     }
