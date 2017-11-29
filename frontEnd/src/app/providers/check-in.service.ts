@@ -17,6 +17,11 @@ export class CheckInService {
     return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);    
   }
 
+  postCheckOut():Observable<any>{
+    let body = {"email": this.sessionSt.retrieve('email')}
+    return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_out", body);
+  }
+
   getCheckIn():Observable<any>{
     let body = this.sessionSt.retrieve('email');
     return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin?email="+body);    
