@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -129,7 +130,11 @@ class MainPage(remote.Service):
             if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
-
+    
+    @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
+    def getDateNow(self, request):
+        date = datetime.now()
+        return DateNowGetMessage(response_date=str(date))
 
 
 

@@ -12,17 +12,22 @@ export class CheckInService {
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
   postCheckIn():Observable<any>{
-    console.log(this.sessionSt.retrieve('email'))
-    let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);
+    console.log(this.sessionSt.retrieve('email'));
+    let body = {"email": this.sessionSt.retrieve('email')};
+    return this.http.post("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/check_in", body);    
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin");
+    let body = this.sessionSt.retrieve('email');
+    return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin?email="+body);    
   }
 
   getWeekReport(): Observable<any>{
     return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/report");
+  }
+
+  getDateNow(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getDateNow");
   }
 
 }

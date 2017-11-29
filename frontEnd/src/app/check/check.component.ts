@@ -40,20 +40,24 @@ export class CheckComponent implements OnInit {
       switch(data.response_code){
         case "200":
             this.checkInTime = data.response_date;
-            this.toastr.success('You are awesome!', 'Success!');
+            let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.success('Has hecho check-in a las '+timeOk, 'Success!');
             break;  
         case "202":
             this.checkInTime = data.response_date;
-            this.toastr.warning('Llegas tarde', 'Alert!');
+            let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.warning('Que son estas horas de llegar '+ timeLate, 'Alert!');
             this.E202=true;
             break; 
         case "406":
             this.E406=true;
             this.toastr.error('No puedes trabajar ha esta hora', 'Oops!');
+            this.doClick=true;
             break; 
         case "500":
             this.E500=true;
             this.toastr.error('No puedes 2 check-in el mismo dia', 'Oops!');
+            this.doClick=true;
             break; 
       }
     });

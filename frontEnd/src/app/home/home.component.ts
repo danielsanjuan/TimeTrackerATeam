@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { CheckInService } from '../providers/check-in.service';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 @Component({
   selector: 'app-home',
@@ -14,39 +15,43 @@ export class HomeComponent implements OnInit {
   fechaway:any = moment().format('YYYY-MM-DD HH:mm:ss.x');
   hours_today:string;
   hours_week:string;
+  nombre:string;
+  fechaNow:Date;
+  fechaCheckIn:Date;
 
-  constructor(private services:CheckInService) { }
+  constructor(private services:CheckInService,
+              private sesionService: SessionStorageService) { }
 
   ngOnInit() {
+    this.nombre = this.sesionService.retrieve('name');
   }
+
 
   time(){
     this.services.getCheckIn().subscribe((data)=>{
-      let fechaCheckIn = new Date(data.response_date);
-      let fechaNow = new Date(this.fechaway);
-      this.workDayTime(fechaCheckIn, fechaNow);
+      this.fechaCheckIn = new Date(data.response_date);
+      console.log("in "+this.fechaCheckIn);
     });
+    this.services.getDateNow().subscribe((data)=>{
+      this.fechaNow = new Date(data.response_date);
+      console.log("now "+this.fechaNow);
+    });
+    console.log("inOut "+this.fechaCheckIn);
+    console.log("nowout "+this.fechaNow);
+    this.workDayTime(this.fechaCheckIn, this.fechaNow);
+
   }
 
   workDayTime(dateCheck, dateNow){
-      let hours = ((dateNow - dateCheck)/3600000);
-      let minutes = ((hours*60)%60);
-      if(hours<10 && minutes<10){
-        this.hours_today = "0"+hours.toFixed(0)+":0"+minutes.toFixed(0);
-        this.hours_week =  (hours+12).toFixed(0)+":0"+minutes.toFixed(0);        
-      }
-      if(hours<10 && minutes>10){
-        this.hours_today = "0"+hours.toFixed(0)+":"+minutes.toFixed(0);
-        this.hours_week =  (hours+12).toFixed(0)+":"+minutes.toFixed(0);        
-      }
-      if(hours>10 && minutes<10){
-        this.hours_today = hours.toFixed(0)+":0"+minutes.toFixed(0);
-        this.hours_week = (hours+12).toFixed(0)+":0"+minutes.toFixed(0);
-      }
-      if(hours>10 && minutes>10){
-        this.hours_today = hours.toFixed(0)+":"+minutes.toFixed(0);
-        this.hours_week = (hours+12).toFixed(0)+":"+minutes.toFixed(0);
-      }
+    let timetoday = (dateNow - dateCheck);
+    let time = new Date(timetoday);
+    this.hours_today = time.toTimeString().split(' ')[0];
+    this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
+    let timeOfWeek = ((dateNow - dateCheck)+54000000);
+    let timeWeek = new Date(timeOfWeek);
+    this.hours_week = time.toTimeString().split(' ')[0];
+    this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+    
   }
 
 }

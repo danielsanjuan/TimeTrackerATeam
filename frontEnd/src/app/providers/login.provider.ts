@@ -51,7 +51,9 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
-      this.sessionSt.store('email', profile.getEmail())
+      this.sessionSt.store('email', profile.getEmail());
+      this.sessionSt.store('name', profile.getName());
+      this.sessionSt.store('image', profile.getImageUrl());
   	  this.doSomething(profile.getName());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
