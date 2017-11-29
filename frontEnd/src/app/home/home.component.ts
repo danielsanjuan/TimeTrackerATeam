@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
 
   time(){
     this.services.getCheckIn().subscribe((data)=>{
+      console.log(data);
       let fechaCheckIn = new Date(data.response_date);
       let fechaNow = new Date(this.fechaway);
       this.workDayTime(fechaCheckIn, fechaNow);
@@ -33,11 +34,11 @@ export class HomeComponent implements OnInit {
       let minutes = ((hours*60)%60);
       if(hours<10 && minutes<10){
         this.hours_today = "0"+hours.toFixed(0)+":0"+minutes.toFixed(0);
-        this.hours_week =  (hours+12).toFixed(0)+":0"+minutes.toFixed(0);        
+        this.hours_week =  (hours+12).toFixed(0)+":0"+minutes.toFixed(0);
       }
       if(hours<10 && minutes>10){
         this.hours_today = "0"+hours.toFixed(0)+":"+minutes.toFixed(0);
-        this.hours_week =  (hours+12).toFixed(0)+":"+minutes.toFixed(0);        
+        this.hours_week =  (hours+12).toFixed(0)+":"+minutes.toFixed(0);
       }
       if(hours>10 && minutes<10){
         this.hours_today = hours.toFixed(0)+":0"+minutes.toFixed(0);

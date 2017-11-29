@@ -23,7 +23,8 @@ export class CheckInService {
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin");
+    let email = this.sessionSt.retrieve('email');
+    return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin?email=" + email);
   }
 
   getWeekReport(): Observable<any>{
