@@ -132,7 +132,7 @@ class MainPage(remote.Service):
         return CheckInGetMessage(response_date="No hay fecha de checkin")
 
 
-@endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
+    @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
     def report(self, request):
         workedDays = []
         day = datetime.today()
@@ -148,7 +148,7 @@ class MainPage(remote.Service):
         currentDay = date.today()
         currentWeek = currentDay.isocalendar()[1]
         query = Workday.query().fetch()
-        query = Workday.filter(Workday.employee.email == employee.email)
+        query = query.filter(Workday.employee.email == employee.email)
         for workedDay in query
             if workedDay.check_in.isocalendar()[0] == date.year and workedDay.check_in.isocalendar()[1] == currentWeek :
                 if workedDay.check_in.isocalendar()[2] == 1:
