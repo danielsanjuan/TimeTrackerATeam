@@ -148,7 +148,7 @@ class MainPage(remote.Service):
         currentWeek = currentDay.isocalendar()[1]
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
-        report.name = currentEmployee.namef
+        report.name = currentEmployee.name
         report.monday = 0
         report.tuesday = 0
         report.wednesday = 0

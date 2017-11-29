@@ -29,7 +29,7 @@ export class CheckInService {
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport", body);
+    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport");
   }
 
 }
