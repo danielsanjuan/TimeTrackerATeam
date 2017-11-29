@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { CheckInService } from '../providers/check-in.service';
+import { Router } from '@angular/router';
+import { SessionStorageService } from 'ngx-webstorage';
+
 
 @Component({
   selector: 'app-home',
@@ -15,7 +18,11 @@ export class HomeComponent implements OnInit {
   hours_today:string;
   hours_week:string;
 
-  constructor(private services:CheckInService) { }
+  constructor(private services:CheckInService, private sessionSt: SessionStorageService, private router: Router) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
   }
