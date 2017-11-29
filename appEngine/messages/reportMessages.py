@@ -1,14 +1,15 @@
 from protorpc import messages
-
+class ReportMessage(messages.Message):
+    pass
+    
 class JsonMessage(messages.Message):
     name = messages.StringField(1)
-    email = messages.StringField(2)
-    monday = messages.IntegerField(3)
-    tuesday = messages.IntegerField(4)
-    wednesday = messages.IntegerField(5)
-    thursday = messages.IntegerField(6)
-    friday = messages.IntegerField(7)
-    total = messages.StringField(8)
+    monday = messages.IntegerField(2)
+    tuesday = messages.IntegerField(3)
+    wednesday = messages.IntegerField(4)
+    thursday = messages.IntegerField(5)
+    friday = messages.IntegerField(6)
+    total = messages.IntegerField(7)
 
 class ReportResponseMessage(messages.Message):
-    response_report =messages.MessageField(JsonMessage, repeated=True, 1)
+    response_report = messages.MessageField(JsonMessage, 1, repeated=True)

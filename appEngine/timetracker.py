@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
-from messages.reportMessages import JsonMessage
+from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -131,43 +131,42 @@ class MainPage(remote.Service):
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
 
-
     @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
     def report(self, request):
         workedDays = []
         day = datetime.today()
         if datetime.today().isocalendar()[2] != 1:
-            query = Employee.query().fetch()
+            query = Employee.query()    
             for currentEmployee in query:
-                self.workedDays.append(singleReport(self, currentEmployee, day))
+                workedDays.append(self.singleReport(currentEmployee, day))
         return ReportResponseMessage(response_report=workedDays)
 
 
-    def singleReport(self, employee, date):
-        report = JsonMessage
-        currentDay = date.today()
+    def singleReport(self, currentEmployee, date):
+        report = JsonMessage()
+        currentDay = date
         currentWeek = currentDay.isocalendar()[1]
-        query = Workday.query().fetch()
-        query = query.filter(Workday.employee.email == employee.email)
-        for workedDay in query
-            if workedDay.check_in.isocalendar()[0] == date.year and workedDay.check_in.isocalendar()[1] == currentWeek :
-                if workedDay.check_in.isocalendar()[2] == 1:
-                    report.monday = 0
-                    report.monday = workedDay.check_out - workedDay.check_in
-                elif workedDay.check_in.isocalendar()[2] == 2:
-                    report.tuesday = 0
-                    report.tuesday = workedDay.check_out - workedDay.check_in
-                elif workedDay.check_in.isocalendar()[2] == 3:
-                    report.tuesday = 0
-                    report.wednesday = workedDay.check_out - workedDay.check_in
-                elif workedDay.check_in.isocalendar()[2] == 4:
-                    report.thursday = 0
-                    report.thursday = workedDay.check_out - workedDay.check_in
-                elif workedDay.check_in.isocalendar()[2] == 5:
-                    report.friday = 0
-                    report.friday = workedDay.check_out - workedDay.check_in
-        report.name = employee.name
-        report.email = employee.email
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        report.name = currentEmployee.namef
+        report.monday = 0
+        report.tuesday = 0
+        report.wednesday = 0
+        report.thursday = 0
+        report.friday = 0
+        
+        for worked in query:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek :
+                if worked.checkin.isocalendar()[2] == 1:
+                    report.monday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                if worked.checkin.isocalendar()[2] == 2:
+                    report.tuesday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 3:
+                    report.wednesday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 4:
+                    report.thursday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 5:
+                    report.friday = int((worked.checkout - worked.checkin).total_seconds())/3600
         report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
         return report
 
@@ -175,6 +174,6 @@ class MainPage(remote.Service):
 
 
 
-# [END guestbook] dayWorkTime = day.check_out - day.check_in
+# [END guestbook]
 
 application = endpoints.api_server([MainPage], restricted=False)
