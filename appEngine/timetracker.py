@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.reportMessages import JsonMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -131,35 +132,44 @@ class MainPage(remote.Service):
         return CheckInGetMessage(response_date="No hay fecha de checkin")
 
 
+@endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
+    def report(self, request):
+        workedDays = []
+        day = datetime.today()
+        if datetime.today().isocalendar()[2] != 1:
+            query = Employee.query().fetch()
+            for currentEmployee in query:
+                self.workedDays.append(singleReport(self, currentEmployee, day))
+        return ReportResponseMessage(response_report=workedDays)
 
 
-    # @endpoints.method(ReportMessage, ReportResponseMessage, path='report', http_method='GET', name='report')
-    # def report(self, request):
-    #     day = datetime.today()
-    #     if datetime.today().isocalendar()[2] != 1:
-    #         query = Employee.query().fetch()
-    #         for currentEmployee in query:
-    #             report =
-    #             report =  report + "name:" + currentEmployee.name
-    #             report1 = report + self.singleReport(currentEmployee, day)
-    #         return ReportResponseMessage(response_code=200, response_report=report)
-    #     return ReportResponseMessage(response_code=502, response_report="no existe reporte")
-
-    # def singleReport(self, employee, date):
-    #     report = {}
-    #     weekdays = ['twilday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    #     currentDay = date.today()
-    #     currentWeek = currentDay.isocalendar()[1]
-    #     for day in employee.workday:
-    #         if day.checkin.isocalendar()[1] == currentWeek:
-    #             dayWorkTime = day.checkout.hour - day.checkin.hour
-    #             print weekdays[day.checkin.isocalendar()[2]]
-    #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
-    #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
-    #     return json.dumps(report, dayWorkTime)
-
-
-
+    def singleReport(self, employee, date):
+        report = JsonMessage
+        currentDay = date.today()
+        currentWeek = currentDay.isocalendar()[1]
+        query = Workday.query().fetch()
+        query = Workday.filter(Workday.employee.email == employee.email)
+        for workedDay in query
+            if workedDay.check_in.isocalendar()[0] == date.year and workedDay.check_in.isocalendar()[1] == currentWeek :
+                if workedDay.check_in.isocalendar()[2] == 1:
+                    report.monday = 0
+                    report.monday = workedDay.check_out - workedDay.check_in
+                elif workedDay.check_in.isocalendar()[2] == 2:
+                    report.tuesday = 0
+                    report.tuesday = workedDay.check_out - workedDay.check_in
+                elif workedDay.check_in.isocalendar()[2] == 3:
+                    report.tuesday = 0
+                    report.wednesday = workedDay.check_out - workedDay.check_in
+                elif workedDay.check_in.isocalendar()[2] == 4:
+                    report.thursday = 0
+                    report.thursday = workedDay.check_out - workedDay.check_in
+                elif workedDay.check_in.isocalendar()[2] == 5:
+                    report.friday = 0
+                    report.friday = workedDay.check_out - workedDay.check_in
+        report.name = employee.name
+        report.email = employee.email
+        report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
+        return report
 
 
 
