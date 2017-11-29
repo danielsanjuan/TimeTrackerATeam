@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -36,6 +37,12 @@ class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
     employee = ndb.StructuredProperty(Employee, indexed=True)
+
+class Incidences(ndb.Model):
+    message = ndb.StringProperty(indexed=True)
+    incidenceDate = ndb.DateTimeProperty(indexed=True)
+    employee = ndb.StructuredProperty(Employee, indexed=True)
+    check = ndb.BooleanProperty(indexed=True)
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -69,6 +76,22 @@ class MainPage(remote.Service):
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
             return False
+    
+    
+    def set_incidences(self, message, date, email, check):
+        '''Comment here TODO'''
+
+        query = Employee.query()
+        query = query.filter(Employee.email == email).get()
+        finalMessage = query.name + message
+        incidences = Incidences (
+            message= finalMessage,
+            incidenceDate=date,
+            employee=Employee (name=query.name,email=query.email,role=query.role),
+            check=check
+        )
+        incidences.put()
+
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -87,6 +110,9 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
+                message = "ha llegado fuera de los limites horarios"
+                check = False
+                self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
@@ -103,6 +129,9 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
+            message = "ha realizado un checkout antes de la hora minima"
+            check = False            
+            self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
 
@@ -129,6 +158,15 @@ class MainPage(remote.Service):
             if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
+
+    @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
+    def setCheckIncidence(self, request):
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == request.email).fetch()
+        for incidence in query:
+            incidence.check=True
+            incidence.put()
+        return CheckIncidenceResponse()
 
 
 
