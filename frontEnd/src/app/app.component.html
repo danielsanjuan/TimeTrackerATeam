@@ -12,12 +12,13 @@
           <div class="nav navbar-nav navbar-form navbar-right">
             <img class="img_user" [routerLink]="['login']" src="{{imagen}}" alt="User">
             <span>{{nombre}}</span>
+            <app-logout></app-logout>
           </div>
         </ul>
       </div>
     </div>
   </nav>
-  
+
   <div class="container animated fadeIn">
 
     <router-outlet></router-outlet>

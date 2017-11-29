@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { CheckInService } from '../providers/check-in.service';
-import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
+import { Router } from '@angular/router';
+import { SessionStorageService } from 'ngx-webstorage';
+
 
 @Component({
   selector: 'app-home',
@@ -19,8 +21,11 @@ export class HomeComponent implements OnInit {
   fechaNow:Date;
   fechaCheckIn:Date;
 
-  constructor(private services:CheckInService,
-              private sesionService: SessionStorageService) { }
+  constructor(private services:CheckInService, private sessionSt: SessionStorageService, private router: Router) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
     this.nombre = this.sesionService.retrieve('name');
@@ -51,7 +56,7 @@ export class HomeComponent implements OnInit {
     let timeWeek = new Date(timeOfWeek);
     this.hours_week = time.toTimeString().split(' ')[0];
     this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
-    
+
   }
 
 }

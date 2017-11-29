@@ -18,6 +18,7 @@ import { LoginComponent } from './login/login.component';
 import { CheckComponent } from './check/check.component';
 import { HomeComponent } from './home/home.component';
 import { ReportComponent } from './report/report.component';
+import { LogoutComponent } from './logout/logout.component';
 
 
 const appRoutes: Routes = [
@@ -33,7 +34,8 @@ const appRoutes: Routes = [
     CheckComponent,
     LoginComponent,
     HomeComponent,
-    ReportComponent
+    ReportComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
