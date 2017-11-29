@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SessionStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: 'app-report',
@@ -140,14 +142,18 @@ export class ReportComponent implements OnInit {
   }
 ];
 
-  constructor() {}
+  constructor(private router: Router, private sessionSt: SessionStorageService) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
   }
-  
+
   weekReportButton(){
     this.monthReport = false;
-    this.weekReport = true;  
+    this.weekReport = true;
   }
 
   monthReportButton(){

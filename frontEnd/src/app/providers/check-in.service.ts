@@ -16,20 +16,24 @@ export class CheckInService {
   postCheckIn():Observable<any>{
     console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.localRoute + "/timetracker/v1/check_in", body);
+    return this.http.post(this.serverRoute + "/timetracker/v1/check_in", body);
   }
 
   postCheckOut():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.localRoute + "/timetracker/v1/check_out", body);
+    return this.http.post(this.serverRoute + "/timetracker/v1/check_out", body);
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.localRoute + "/timetracker/v1/getCheckin");
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin");
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport");
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReport");
+  }
+
+  getDateNow(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getDateNow");
   }
 
 }

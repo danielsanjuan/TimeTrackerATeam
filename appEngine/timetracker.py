@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
+from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -130,13 +131,14 @@ class MainPage(remote.Service):
             if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
+<<<<<<< HEAD
 
     @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
     def report(self, request):
         workedDays = []
         day = datetime.today()
         if datetime.today().isocalendar()[2] != 1:
-            query = Employee.query()    
+            query = Employee.query()
             for currentEmployee in query:
                 workedDays.append(self.singleReport(currentEmployee, day))
         return ReportResponseMessage(response_report=workedDays)
@@ -154,7 +156,7 @@ class MainPage(remote.Service):
         report.wednesday = 0
         report.thursday = 0
         report.friday = 0
-        
+
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek :
                 if worked.checkin.isocalendar()[2] == 1:
@@ -175,5 +177,48 @@ class MainPage(remote.Service):
 
 
 # [END guestbook]
+=======
+
+    @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
+    def getDateNow(self, request):
+        date = datetime.now()
+        return DateNowGetMessage(response_date=str(date))
+
+
+
+    # @endpoints.method(ReportMessage, ReportResponseMessage, path='report', http_method='GET', name='report')
+    # def report(self, request):
+    #     day = datetime.today()
+    #     if datetime.today().isocalendar()[2] != 1:
+    #         query = Employee.query().fetch()
+    #         for currentEmployee in query:
+    #             report =
+    #             report =  report + "name:" + currentEmployee.name
+    #             report1 = report + self.singleReport(currentEmployee, day)
+    #         return ReportResponseMessage(response_code=200, response_report=report)
+    #     return ReportResponseMessage(response_code=502, response_report="no existe reporte")
+
+    # def singleReport(self, employee, date):
+    #     report = {}
+    #     weekdays = ['twilday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    #     currentDay = date.today()
+    #     currentWeek = currentDay.isocalendar()[1]
+    #     for day in employee.workday:
+    #         if day.checkin.isocalendar()[1] == currentWeek:
+    #             dayWorkTime = day.checkout.hour - day.checkin.hour
+    #             print weekdays[day.checkin.isocalendar()[2]]
+    #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
+    #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
+    #     return json.dumps(report, dayWorkTime)
+
+
+
+
+
+
+
+
+# [END guestbook] dayWorkTime = day.check_out - day.check_in
+>>>>>>> develop
 
 application = endpoints.api_server([MainPage], restricted=False)
