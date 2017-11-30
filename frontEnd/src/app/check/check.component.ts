@@ -4,6 +4,7 @@ import { NgClass } from '@angular/common';
 import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 @Component({
   selector: 'app-check',
@@ -20,17 +21,26 @@ export class CheckComponent implements OnInit {
 
   constructor( private services:CheckInService,
                private router: Router,
-               public toastr: ToastsManager, vcr: ViewContainerRef) {
+               public toastr: ToastsManager, vcr: ViewContainerRef,
+               private localSt: LocalStorageService) {
        this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
-
+    if (this.localSt.retrieve('existCheckIn') != null){
+      if (this.localSt.retrieve('existCheckIn') == true){
+        this.doClick = false;
+      } else {
+        this.doClick = true;
+      }
+    } else {
+      this.localSt.store('existCheckIn', false);
+    }
   }
-
+  
   timeCheckIn(){
     // this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
-     this.doClick=false;
+    this.doClick=false;
     // console.log(this.checkInTime);
     this.services.postCheckIn().subscribe( (data)=>{
       //console.log(data);
@@ -42,12 +52,14 @@ export class CheckComponent implements OnInit {
             this.checkInTime = data.response_date;
             let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
             this.toastr.success('Has hecho check-in a las '+timeOk, 'Success!');
+            this.localSt.store('existCheckIn', true);
             break;
         case "202":
             this.checkInTime = data.response_date;
             let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
             this.toastr.warning('Que son estas horas de llegar '+ timeLate, 'Alert!');
             this.E202=true;
+            this.localSt.store('existCheckIn', true);
             break;
         case "406":
             this.E406=true;
@@ -82,12 +94,14 @@ export class CheckComponent implements OnInit {
               this.checkOutTime = data.response_date;
               this.toastr.success('Buen Trabajo!', 'Success!');
               this.doClick=true;
+              this.localSt.store('existCheckIn', false);
               break;
           case "202":
               this.checkOutTime = data.response_date;
               this.toastr.warning('Te vas muy pronto, NO?', 'Alert!');
               this.doClick=true;
               this.E202=true;
+              this.localSt.store('existCheckIn', false);
               break;
           case "406":
               this.E406=true;
