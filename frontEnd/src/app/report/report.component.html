@@ -9,7 +9,7 @@
   </div>
 </div>
 <ng-container *ngIf="weekReport; else elseTemplate">
-  <ng-container *ngIf="employees.length>0; else elseTemplate">
+  <ng-container *ngIf="employees.length>0; else noReportWeek">
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>
@@ -61,7 +61,7 @@
       </table>
     </div>
   </ng-container>
-  <ng-template #elseTemplate>
+  <ng-template #noReportWeek>
     <div class="row no-data">
       <div class="col-xs-8 col-xs-offset-3 col-sm-8 col-sm-offset-4">
         <img src="/assets/img/logo_250.png" alt="">
@@ -75,62 +75,48 @@
   </ng-template>
 </ng-container>
 <ng-template #elseTemplate>
-  <div *ngFor="let employee of employees;let i = index" class="table-responsive">
-    <table *ngIf="i<=4" class="table table-striped">
-      <thead>
-        <tr>
-          <th>Nombre y Apellidos</th>
-          <th>Semana</th>
-          <th>Lunes</th>
-          <th>Martes</th>
-          <th>Miercoles</th>
-          <th>Jueves</th>
-          <th>Viernes</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{employee.first_name}} {{employee.last_name}}</td>
-          <td scope="row">
-            <strong>1</strong>
-          </td>
-          <td>{{employee.monday}}</td>
-          <td>{{employee.tuesday}}</td>
-          <td>{{employee.wednesday}}</td>
-          <td>{{employee.thursday}}</td>
-          <td>{{employee.friday}}</td>
-          <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40, 'good_hours': employee.total==40}">{{employee.total}}</td>
-        </tr>
-        <tr *ngFor="let user of employees; let i = index">
-          <ng-container *ngIf="i<=3">
-            <td></td>
-            <td scope="row">
-              <strong>{{i+2}}</strong>
-            </td>
-            <td>{{user.monday}}</td>
-            <td>{{user.tuesday}}</td>
-            <td>{{user.wednesday}}</td>
-            <td>{{user.thursday}}</td>
-            <td>{{user.friday}}</td>
-            <td [ngClass]="{'min_hours': user.total<40, 'max_hours': user.total>40, 'good_hours': user.total==40}">{{employee.total}}</td>
-          </ng-container>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>
-            <strong>Total Mes</strong>
-          </td>
-          <td>
-            <strong>160</strong>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <ng-container *ngIf="employeesMonthly.length>0; else noReportMonthly">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr class="hidden-xs">
+            <th>Empleado</th>
+            <th *ngFor="let horasM of employeesMonthly[0].hours; let i = index">{{i+1}}</th>
+            <th>Total</th>
+          </tr>
+          <tr class="visible-xs">
+            <th>Empleado</th>
+            <th>Jornadas</th>
+            <th>Total horas</th>
+          </tr>   
+        </thead>
+        <tbody>
+          <tr class="hidden-xs" *ngFor="let worker of employeesMonthly">
+            <td>{{worker.first_name}} </td>
+            <td *ngFor="let horasM of worker.hours">{{horasM}}</td>
+            <td>{{worker.total}} </td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr class="visible-xs" *ngFor="let worker of employeesMonthly">
+            <td>{{worker.first_name}} </td>
+            <td>14 </td>
+            <td>{{worker.total}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #noReportMonthly>
+    <div class="row no-data">
+      <div class="col-xs-8 col-xs-offset-3 col-sm-8 col-sm-offset-4">
+        <img src="/assets/img/logo_250.png" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>NO DATA AVAILABLE</h2>
+      </div>
+    </div>
+  </ng-template>
 </ng-template>
