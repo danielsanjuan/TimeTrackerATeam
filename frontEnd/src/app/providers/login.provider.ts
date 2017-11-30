@@ -55,7 +55,7 @@ export class LoginProvider {
       this.sessionSt.store('email', profile.getEmail());
       this.sessionSt.store('name', profile.getName());
       this.sessionSt.store('image', profile.getImageUrl());
-  	  this.doSomething(profile.getName());
+  	  this.doSomething(profile.getName(), profile.getImageUrl());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
         });
@@ -63,8 +63,8 @@ export class LoginProvider {
 
 
 
-    doSomething(Name) {
-      gapi.client.timetracker.login({email:"TODO", password: "password", name: Name}).execute((response: any) => {
+    doSomething(name, imageUrl) {
+      gapi.client.timetracker.login({email:"TODO", password: "password", name: name, image: imageUrl }).execute((response: any) => {
           if (response.error) {
             console.log(response.error);
 

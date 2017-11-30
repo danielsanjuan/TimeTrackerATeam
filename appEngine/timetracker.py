@@ -11,7 +11,7 @@ from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, Che
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
-from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, UsersListMessage, IncidencesReportResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -32,6 +32,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
+    image = ndb.StringProperty(indexed=False)
     role = ndb.IntegerProperty(indexed=True)
     status = ndb.BooleanProperty(indexed=True)
 
@@ -112,7 +113,7 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
-                message = "ha llegado fuera de los limites horarios"
+                message = " ha llegado fuera de los limites horarios"
                 check = False
                 self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -131,7 +132,7 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
-            message = "ha realizado un checkout antes de la hora minima"
+            message = " ha realizado un checkout antes de la hora minima"
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -145,6 +146,7 @@ class MainPage(remote.Service):
             employee = Employee(
                 name=request.name,
                 email=current_user.email(),
+                image=request.image,
                 role=0
             )
             employee.put()
@@ -180,7 +182,6 @@ class MainPage(remote.Service):
                 workedDays.append(self.singleReport(currentEmployee, day))
         return ReportResponseMessage(response_report=workedDays)
 
-
     def singleReport(self, currentEmployee, date):
         report = JsonMessage()
         currentDay = date
@@ -208,6 +209,35 @@ class MainPage(remote.Service):
                     report.friday = int((worked.checkout - worked.checkin).total_seconds())/3600
         report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
         return report
+
+    @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
+    def incidencesReport(self, request):
+        users = []
+        query = Employee.query()
+        for currentEmployee in query:
+            users.append(self.usersList(currentEmployee))
+        return IncidencesReportResponseMessage(users=users)
+
+    def usersList(self, currentEmployee):
+        employee = UsersListMessage()
+        employee.name = currentEmployee.name
+        employee.email = currentEmployee.email
+        employee.image = currentEmployee.image
+        employee.incidences = self.incidencesList(currentEmployee)
+        return employee
+
+    def incidencesList(self, currentEmployee):
+        allIncidences = []
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == currentEmployee.email)
+        query = query.filter(Incidences.check == False).fetch()
+        for oneIncidence in query:
+            incidence = IncidencesMessage()
+            incidence.date = str(oneIncidence.incidenceDate)
+            incidence.message = oneIncidence.message
+            allIncidences.append(incidence)
+        return allIncidences
+
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
     def getDateNow(self, request):
