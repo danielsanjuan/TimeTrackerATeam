@@ -185,23 +185,23 @@ class MainPage(remote.Service):
 
     def singleMonthlyReport(self, currentEmployee, date):
         reportMonth = JsonMonthlyMessage()
-        reportDay = JsonSingleDayMessage()
         currentmonth = date.month
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        reportMonth.hours_day = []
         reportMonth.name = currentEmployee.name
         reportMonth.month = int(currentmonth)
         reportMonth.jornadas = 0
         reportMonth.total = 0
-        reportMonth.hours_day = []
 
         for worked in query:
+            reportDay = JsonSingleDayMessage()
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
                 reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
                 reportDay.day = worked.checkin.day
                 reportMonth.hours_day.append(reportDay)
                 reportMonth.jornadas = reportMonth.jornadas + 1
-            reportMonth.total = reportMonth.total+reportDay.hour
+                reportMonth.total = reportMonth.total+reportDay.hour
         return reportMonth
 
 
