@@ -12,6 +12,7 @@ from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, UsersListMessage, IncidencesReportResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -32,6 +33,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
+    image = ndb.StringProperty(indexed=False)
     role = ndb.IntegerProperty(indexed=True)
     status = ndb.BooleanProperty(indexed=True)
 
@@ -39,6 +41,12 @@ class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
     employee = ndb.StructuredProperty(Employee, indexed=True)
+
+class Incidences(ndb.Model):
+    message = ndb.StringProperty(indexed=True)
+    incidenceDate = ndb.DateTimeProperty(indexed=True)
+    employee = ndb.StructuredProperty(Employee, indexed=True)
+    check = ndb.BooleanProperty(indexed=True)
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -112,90 +120,6 @@ class MainPage(remote.Service):
         report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
         return report
 
-
-    @endpoints.method(CheckInMessage, CheckInResponseMessage,
-    path = 'check_in', http_method = 'POST', name = 'check_in')
-    def check_in(self, request):
-        date = datetime.now()
-        if self.filter_checkin(date, request.email):
-            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        else:
-            if date.hour >= 7 and date.hour < 9:
-                self.set_checkin(date, request.email)
-                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-            elif date.hour == 9 and date.minute == 00:
-                self.set_checkin(date, request.email)
-                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-            elif date.hour < 7 or date.hour > 19:
-                return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
-            else:
-                self.set_checkin(date, request.email)
-                return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
-
-    @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
-    path = 'check_out', http_method = 'POST', name = 'check_out')
-    def check_out(self, request):
-        date = datetime.now()
-        if date.hour >= 14 and date.hour < 19:
-            self.set_checkout(date, request.email)
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        elif date.hour == 19 and date.minute == 00:
-            self.set_checkout(date, request.email)
-            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        elif date.hour < 7 or date.hour > 19:
-            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        else:
-            self.set_checkout(date, request.email)
-            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
-
-
-    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
-    def login(self, request):
-        current_user = endpoints.get_current_user()
-        profile = Employee.query(Employee.email == current_user.email()).get()
-        if profile is None:
-            employee = Employee(
-                name=request.name,
-                email=current_user.email(),
-                role=0
-            )
-            employee.put()
-            return LoginMessageResponse(response_code=200, email=employee.email, name=employee.name)
-        else:
-            return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
-
-    @endpoints.method(CheckInMessage, CheckInGetMessage, path='getCheckin', http_method='GET', name='getCheckin')
-    def getCheckin(self, request):
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email).fetch()
-        for day in query:
-            if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                return CheckInGetMessage(response_date=str(day.checkin))
-        return CheckInGetMessage(response_date="No hay fecha de checkin")
-
-    @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
-    def report(self, request):
-        workedDays = []
-        day = datetime.today()
-        if datetime.today().isocalendar()[2] != 1:
-            query = Employee.query()
-            for currentEmployee in query:
-                workedDays.append(self.singleReport(currentEmployee, day))
-        return ReportResponseMessage(response_report=workedDays)
-
-
-
-    @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
-    def reportMonthly(self, request):
-        workedDays = []
-        date = datetime.today()
-        month = date.month
-        query = Employee.query()
-        for currentEmployee in query:
-            workedDays.append(self.singleMonthlyReport(currentEmployee, date))
-        return ReportMonthlyResponseMessage(response_report=workedDays)
-
-
     def singleMonthlyReport(self, currentEmployee, date):
         reportMonth = JsonMonthlyMessage()
         currentmonth = date.month
@@ -216,6 +140,149 @@ class MainPage(remote.Service):
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
         return reportMonth
+    
+    def usersList(self, currentEmployee):
+        employee = UsersListMessage()
+        employee.name = currentEmployee.name
+        employee.email = currentEmployee.email
+        employee.image = currentEmployee.image
+        employee.incidences = self.incidencesList(currentEmployee)
+        return employee
+
+    def incidencesList(self, currentEmployee):
+        allIncidences = []
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == currentEmployee.email)
+        query = query.filter(Incidences.check == False).fetch()
+        for oneIncidence in query:
+            incidence = IncidencesMessage()
+            incidence.date = str(oneIncidence.incidenceDate)
+            incidence.message = oneIncidence.message
+            allIncidences.append(incidence)
+        return allIncidences
+
+    def set_incidences(self, message, date, email, check):
+        '''Comment here TODO'''
+
+        query = Employee.query()
+        query = query.filter(Employee.email == email).get()
+        finalMessage = query.name + message
+        incidences = Incidences (
+            message= finalMessage,
+            incidenceDate=date,
+            employee=Employee (name=query.name,email=query.email,role=query.role),
+            check=check
+        )
+        incidences.put()
+
+
+    @endpoints.method(CheckInMessage, CheckInResponseMessage,
+    path = 'check_in', http_method = 'POST', name = 'check_in')
+    def check_in(self, request):
+        date = datetime.now()
+        if self.filter_checkin(date, request.email):
+            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
+        else:
+            if date.hour >= 7 and date.hour < 9:
+                self.set_checkin(date, request.email)
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
+            elif date.hour == 9 and date.minute == 00:
+                self.set_checkin(date, request.email)
+                return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
+            elif date.hour < 7 or date.hour > 19:
+                return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
+            else:
+                self.set_checkin(date, request.email)
+                message = " ha llegado fuera de los limites horarios"
+                check = False
+                self.set_incidences(message, date, request.email, check)
+                return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
+
+    @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
+    path = 'check_out', http_method = 'POST', name = 'check_out')
+    def check_out(self, request):
+        date = datetime.now()
+        if date.hour >= 14 and date.hour < 19:
+            self.set_checkout(date, request.email)
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
+        elif date.hour == 19 and date.minute == 00:
+            self.set_checkout(date, request.email)
+            return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
+        elif date.hour < 7 or date.hour > 19:
+            return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
+        else:
+            self.set_checkout(date, request.email)
+            message = " ha realizado un checkout antes de la hora minima"
+            check = False
+            self.set_incidences(message, date, request.email, check)
+            return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
+
+
+    @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
+    def login(self, request):
+        current_user = endpoints.get_current_user()
+        profile = Employee.query(Employee.email == current_user.email()).get()
+        if profile is None:
+            employee = Employee(
+                name=request.name,
+                email=current_user.email(),
+                image=request.image,
+                role=0
+            )
+            employee.put()
+            return LoginMessageResponse(response_code=200, email=employee.email, name=employee.name)
+        else:
+            return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
+
+    @endpoints.method(CheckInMessage, CheckInGetMessage, path='getCheckin', http_method='GET', name='getCheckin')
+    def getCheckin(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).fetch()
+        for day in query:
+            if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                return CheckInGetMessage(response_date=str(day.checkin))
+        return CheckInGetMessage(response_date="No hay fecha de checkin")
+
+    @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
+    def setCheckIncidence(self, request):
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == request.email).fetch()
+        for incidence in query:
+            incidence.check=True
+            incidence.put()
+        return CheckIncidenceResponse()
+    
+    @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
+    def report(self, request):
+        workedDays = []
+        day = datetime.today()
+        if datetime.today().isocalendar()[2] != 1:
+            query = Employee.query()
+            for currentEmployee in query:
+                workedDays.append(self.singleReport(currentEmployee, day))
+        return ReportResponseMessage(response_report=workedDays)
+
+
+    @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
+    def reportMonthly(self, request):
+        workedDays = []
+        date = datetime.today()
+        month = date.month
+        query = Employee.query()
+        for currentEmployee in query:
+            workedDays.append(self.singleMonthlyReport(currentEmployee, date))
+        return ReportMonthlyResponseMessage(response_report=workedDays)
+
+
+    @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
+    def incidencesReport(self, request):
+        users = []
+        query = Employee.query()
+        for currentEmployee in query:
+            users.append(self.usersList(currentEmployee))
+        return IncidencesReportResponseMessage(users=users)
+
+    
 
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
