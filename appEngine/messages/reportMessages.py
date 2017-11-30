@@ -9,7 +9,7 @@ class JsonMessage(messages.Message):
     wednesday = messages.IntegerField(4)
     thursday = messages.IntegerField(5)
     friday = messages.IntegerField(6)
-    total = messages.IntegerField(7)
+    total = messages.StringField(7)
 
 class ReportResponseMessage(messages.Message):
     response_report = messages.MessageField(JsonMessage, 1, repeated=True)

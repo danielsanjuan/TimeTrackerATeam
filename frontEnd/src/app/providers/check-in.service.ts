@@ -37,4 +37,8 @@ export class CheckInService {
     return this.http.get<any>(this.serverRoute + "/timetracker/v1/getDateNow");
   }
 
+  getMontlyReport(): Observable<any>{
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReport");    
+  }
+
 }
