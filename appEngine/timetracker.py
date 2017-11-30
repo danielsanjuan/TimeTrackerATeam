@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
+from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse
 
 from google.appengine.api import users
@@ -76,8 +78,8 @@ class MainPage(remote.Service):
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
             return False
-    
-    
+
+
     def set_incidences(self, message, date, email, check):
         '''Comment here TODO'''
 
@@ -130,7 +132,7 @@ class MainPage(remote.Service):
         else:
             self.set_checkout(date, request.email)
             message = "ha realizado un checkout antes de la hora minima"
-            check = False            
+            check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
@@ -167,42 +169,53 @@ class MainPage(remote.Service):
             incidence.check=True
             incidence.put()
         return CheckIncidenceResponse()
+    
+    @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
+    def report(self, request):
+        workedDays = []
+        day = datetime.today()
+        if datetime.today().isocalendar()[2] != 1:
+            query = Employee.query()
+            for currentEmployee in query:
+                workedDays.append(self.singleReport(currentEmployee, day))
+        return ReportResponseMessage(response_report=workedDays)
+
+
+    def singleReport(self, currentEmployee, date):
+        report = JsonMessage()
+        currentDay = date
+        currentWeek = currentDay.isocalendar()[1]
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        report.name = currentEmployee.name
+        report.monday = 0
+        report.tuesday = 0
+        report.wednesday = 0
+        report.thursday = 0
+        report.friday = 0
+
+        for worked in query:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek :
+                if worked.checkin.isocalendar()[2] == 1:
+                    report.monday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                if worked.checkin.isocalendar()[2] == 2:
+                    report.tuesday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 3:
+                    report.wednesday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 4:
+                    report.thursday = int((worked.checkout - worked.checkin).total_seconds())/3600
+                elif worked.checkin.isocalendar()[2] == 5:
+                    report.friday = int((worked.checkout - worked.checkin).total_seconds())/3600
+        report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
+        return report
+
+    @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
+    def getDateNow(self, request):
+        date = datetime.now()
+        return DateNowGetMessage(response_date=str(date))
 
 
 
-
-    # @endpoints.method(ReportMessage, ReportResponseMessage, path='report', http_method='GET', name='report')
-    # def report(self, request):
-    #     day = datetime.today()
-    #     if datetime.today().isocalendar()[2] != 1:
-    #         query = Employee.query().fetch()
-    #         for currentEmployee in query:
-    #             report =
-    #             report =  report + "name:" + currentEmployee.name
-    #             report1 = report + self.singleReport(currentEmployee, day)
-    #         return ReportResponseMessage(response_code=200, response_report=report)
-    #     return ReportResponseMessage(response_code=502, response_report="no existe reporte")
-
-    # def singleReport(self, employee, date):
-    #     report = {}
-    #     weekdays = ['twilday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    #     currentDay = date.today()
-    #     currentWeek = currentDay.isocalendar()[1]
-    #     for day in employee.workday:
-    #         if day.checkin.isocalendar()[1] == currentWeek:
-    #             dayWorkTime = day.checkout.hour - day.checkin.hour
-    #             print weekdays[day.checkin.isocalendar()[2]]
-    #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
-    #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
-    #     return json.dumps(report, dayWorkTime)
-
-
-
-
-
-
-
-
-# [END guestbook] dayWorkTime = day.check_out - day.check_in
+# [END guestbook]
 
 application = endpoints.api_server([MainPage], restricted=False)

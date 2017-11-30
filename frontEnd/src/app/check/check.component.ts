@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import * as moment from 'moment';
-import { NgClass } from '@angular/common'; 
+import { NgClass } from '@angular/common';
 import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 @Component({
   selector: 'app-check',
@@ -20,40 +21,52 @@ export class CheckComponent implements OnInit {
 
   constructor( private services:CheckInService,
                private router: Router,
-               public toastr: ToastsManager, vcr: ViewContainerRef) {
+               public toastr: ToastsManager, vcr: ViewContainerRef,
+               private localSt: LocalStorageService) {
        this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
-    
+    if (this.localSt.retrieve('existCheckIn') != null){
+      if (this.localSt.retrieve('existCheckIn') == true){
+        this.doClick = false;
+      } else {
+        this.doClick = true;
+      }
+    } else {
+      this.localSt.store('existCheckIn', false);
+    }
   }
   
   timeCheckIn(){
-    // this.checkInTime = moment().format('YYYY/MM/DD, hh:mm:ss');
      this.doClick=false;
-    // console.log(this.checkInTime);
     this.services.postCheckIn().subscribe( (data)=>{
-      //console.log(data);
       console.log(data.response_code);
       console.log(data.response_date);
       console.log(data.response_status);
       switch(data.response_code){
         case "200":
             this.checkInTime = data.response_date;
-            this.toastr.success('You are awesome!', 'Success!');
-            break;  
+            let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.success('Has hecho check-in a las '+timeOk, 'Success!');
+            this.localSt.store('existCheckIn', true);
+            break;
         case "202":
             this.checkInTime = data.response_date;
-            this.toastr.warning('Llegas tarde', 'Alert!');
+            let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.warning('Que son estas horas de llegar '+ timeLate, 'Alert!');
             this.E202=true;
-            break; 
+            this.localSt.store('existCheckIn', true);
+            break;
         case "406":
             this.E406=true;
             this.toastr.error('No puedes trabajar ha esta hora', 'Oops!');
+            this.doClick=true;
             break; 
         case "500":
             this.E500=true;
             this.toastr.error('No puedes 2 check-in el mismo dia', 'Oops!');
+            this.doClick=true;
             break; 
       }
     });
@@ -62,8 +75,31 @@ export class CheckComponent implements OnInit {
 
 
   timeCheckOut(){
-    this.checkOutTime = moment().format('YYYY/MM/DD, hh:mm:ss');
-    this.doClick=true;
-    console.log(this.checkOutTime);
-  }
+      this.doClick=false;
+      this.services.postCheckOut().subscribe( (data)=>{
+        console.log(data.response_code);
+        console.log(data.response_date);
+        console.log(data.response_status);
+        switch(data.response_code){
+          case "200":
+              this.checkOutTime = data.response_date;
+              this.toastr.success('Buen Trabajo!', 'Success!');
+              this.doClick=true;
+              this.localSt.store('existCheckIn', false);
+              break;
+          case "202":
+              this.checkOutTime = data.response_date;
+              this.toastr.warning('Te vas muy pronto, NO?', 'Alert!');
+              this.doClick=true;
+              this.E202=true;
+              this.localSt.store('existCheckIn', false);
+              break;
+          case "406":
+              this.E406=true;
+              this.doClick=true;
+              this.toastr.error('Deberias estar con tu familia', 'Oops!');
+              break;
+        }
+      });
+    }
 }
