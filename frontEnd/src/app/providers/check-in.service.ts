@@ -34,7 +34,7 @@ export class CheckInService {
   }
 
   getDateNow(): Observable<any>{
-    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getDateNow");
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/getDateNow");
   }
 
 }
