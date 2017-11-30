@@ -15,6 +15,7 @@ export class LoginProvider {
     public localRoute = "http://localhost:8080/_ah/api";
     public serverRoute = "https://timetrackerateam.appspot.com/_ah/api";
     subject: Subject<any> = new Subject<any>();
+    subject2: Subject<any> = new Subject<any>();
     public nameUser:string;
 
     constructor(private http: HttpClient,
@@ -73,6 +74,8 @@ export class LoginProvider {
             this.zone.run(()=>{
               this.router.navigate(['/home']);
             });
+            this.subject.next(this.sessionSt.retrieve('name'));
+            this.subject2.next(this.sessionSt.retrieve('image'));
             //window.location.reload();
 
           }
@@ -80,8 +83,17 @@ export class LoginProvider {
       );
     }
 
+    setSubjests(){
+      this.subject.next(this.sessionSt.retrieve('name'));
+      this.subject2.next(this.sessionSt.retrieve('image'));
+    }
+
     getNameUser():Observable<any>{
       return this.subject.asObservable();
+    }
+
+    getImgUser():Observable<any>{
+      return this.subject2.asObservable();
     }
 
 }
