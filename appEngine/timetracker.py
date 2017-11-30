@@ -71,6 +71,46 @@ class MainPage(remote.Service):
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
             return False
+    
+    def singleReport(self, currentEmployee, date):
+        report = JsonMessage()
+        currentDay = date
+        currentWeek = currentDay.isocalendar()[1]
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        report.name = currentEmployee.name
+        report.monday = 0
+        report.tuesday = 0
+        report.wednesday = 0
+        report.thursday = 0
+        report.friday = 0
+        monday = 0
+        tuesday = 0
+        wednesday = 0
+        thursday = 0
+        friday = 0
+
+        for worked in query:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek and worked.checkout != None:
+                if worked.checkin.isocalendar()[2] == 1:
+                    monday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.monday = monday/60
+                elif worked.checkin.isocalendar()[2] == 2:
+                    tuesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.tuesday = tuesday/60
+                elif worked.checkin.isocalendar()[2] == 3:
+                    wednesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.wednesday = wednesday/60
+                elif worked.checkin.isocalendar()[2] == 4:
+                    thursday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.thursday = thursday/60
+                elif worked.checkin.isocalendar()[2] == 5:
+                    friday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.friday = friday/60
+        total = monday + tuesday + wednesday + thursday + friday
+        report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
+        return report
+
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -143,33 +183,6 @@ class MainPage(remote.Service):
         return ReportResponseMessage(response_report=workedDays)
 
 
-    def singleReport(self, currentEmployee, date):
-        report = JsonMessage()
-        currentDay = date
-        currentWeek = currentDay.isocalendar()[1]
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
-        report.name = currentEmployee.name
-        report.monday = 0
-        report.tuesday = 0
-        report.wednesday = 0
-        report.thursday = 0
-        report.friday = 0
-
-        for worked in query:
-            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek :
-                if worked.checkin.isocalendar()[2] == 1:
-                    report.monday = int((worked.checkout - worked.checkin).total_seconds())/3600
-                if worked.checkin.isocalendar()[2] == 2:
-                    report.tuesday = int((worked.checkout - worked.checkin).total_seconds())/3600
-                elif worked.checkin.isocalendar()[2] == 3:
-                    report.wednesday = int((worked.checkout - worked.checkin).total_seconds())/3600
-                elif worked.checkin.isocalendar()[2] == 4:
-                    report.thursday = int((worked.checkout - worked.checkin).total_seconds())/3600
-                elif worked.checkin.isocalendar()[2] == 5:
-                    report.friday = int((worked.checkout - worked.checkin).total_seconds())/3600
-        report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
-        return report
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
     def getDateNow(self, request):
