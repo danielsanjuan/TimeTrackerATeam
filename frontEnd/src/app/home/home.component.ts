@@ -18,8 +18,8 @@ export class HomeComponent implements OnInit {
   hours_today:string;
   hours_week:string;
   nombre:string;
-  fechaNow:Date;
-  fechaCheckIn:Date;
+  fechaNow:any = "00:00";
+  fechaCheckIn:any = "00:00";
 
   constructor(private services:CheckInService, private sessionSt: SessionStorageService, private router: Router) {
     if (this.sessionSt.retrieve('email') == null){
@@ -28,21 +28,21 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.nombre = this.sesionService.retrieve('name');
+    this.nombre = this.sessionSt.retrieve('name');
   }
 
 
   time(){
     this.services.getCheckIn().subscribe((data)=>{
+      console.log((data) + "hola estoy haciendo el getCheckIn");
       this.fechaCheckIn = new Date(data.response_date);
       console.log("in "+this.fechaCheckIn);
     });
     this.services.getDateNow().subscribe((data)=>{
+      console.log("Hola estoy estrando en el getDateNow");
       this.fechaNow = new Date(data.response_date);
       console.log("now "+this.fechaNow);
     });
-    console.log("inOut "+this.fechaCheckIn);
-    console.log("nowout "+this.fechaNow);
     this.workDayTime(this.fechaCheckIn, this.fechaNow);
 
   }
