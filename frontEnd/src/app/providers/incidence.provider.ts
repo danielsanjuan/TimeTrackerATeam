@@ -6,11 +6,18 @@ import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 
 @Injectable()
 export class IncidenceService {
-  constructor(){
+
+  subject: Subject<any> = new Subject<any>();
+  public localRoute = "http://localhost:8080/_ah/api";
+  public serverRoute = "https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/";
+
+  constructor(private http: HttpClient){
 
   }
 
-  
+  getIncidenceReport():Observable<any>{
+    return this.http.get(this.serverRoute + 'incidencesReport');
+  }
 
 
 }
