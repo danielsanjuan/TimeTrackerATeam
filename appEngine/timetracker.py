@@ -171,7 +171,10 @@ class MainPage(remote.Service):
         report.total = report.monday + report.tuesday + report.wednesday + report.thursday + report.friday
         return report
 
-
+    @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
+    def getDateNow(self, request):
+        date = datetime.now()
+        return DateNowGetMessage(response_date=str(date))
 
 
 
