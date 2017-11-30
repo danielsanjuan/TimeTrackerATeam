@@ -21,16 +21,16 @@ export class ReportComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  weekReportButton(){
-    this.monthReport = false;
-    this.weekReport = true;
     this.services.getWeeklyReport().subscribe((data) => {
       console.log("estoy dentro")
       console.log(data);
       this.employees = data.response_report;
     });
+  }
+
+  weekReportButton(){
+    this.monthReport = false;
+    this.weekReport = true;
   }
 
   monthReportButton(){

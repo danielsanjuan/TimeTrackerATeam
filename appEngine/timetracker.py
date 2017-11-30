@@ -11,6 +11,7 @@ from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, Che
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
+from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -182,6 +183,39 @@ class MainPage(remote.Service):
                 workedDays.append(self.singleReport(currentEmployee, day))
         return ReportResponseMessage(response_report=workedDays)
 
+
+
+    @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
+    def reportMonthly(self, request):
+        workedDays = []
+        date = datetime.today()
+        month = date.month
+        query = Employee.query()
+        for currentEmployee in query:
+            workedDays.append(self.singleMonthlyReport(currentEmployee, date))
+        return ReportMonthlyResponseMessage(response_report=workedDays)
+
+
+    def singleMonthlyReport(self, currentEmployee, date):
+        reportMonth = JsonMonthlyMessage()
+        currentmonth = date.month
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        reportMonth.hours_day = []
+        reportMonth.name = currentEmployee.name
+        reportMonth.month = int(currentmonth)
+        reportMonth.jornadas = 0
+        reportMonth.total = 0
+
+        for worked in query:
+            reportDay = JsonSingleDayMessage()
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
+                reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
+                reportDay.day = worked.checkin.day
+                reportMonth.hours_day.append(reportDay)
+                reportMonth.jornadas = reportMonth.jornadas + 1
+                reportMonth.total = reportMonth.total+reportDay.hour
+        return reportMonth
 
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
