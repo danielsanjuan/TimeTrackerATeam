@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.nombre = this.sesionService.retrieve('name');
+    this.nombre = this.sessionSt.retrieve('name');
   }
 
 
