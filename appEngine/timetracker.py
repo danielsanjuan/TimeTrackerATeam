@@ -122,7 +122,7 @@ class MainPage(remote.Service):
 
     def singleMonthlyReport(self, currentEmployee, date):
         reportMonth = JsonMonthlyMessage()
-        currentmonth = date.month
+        currentmonth = date.month - 1
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
         reportMonth.hours_day = []
@@ -292,7 +292,6 @@ class MainPage(remote.Service):
     def reportMonthly(self, request):
         workedDays = []
         date = datetime.today()
-        month = date.month
         query = Employee.query()
         for currentEmployee in query:
             workedDays.append(self.singleMonthlyReport(currentEmployee, date))
