@@ -81,7 +81,7 @@
           <thead>
             <tr class="hidden-xs">
               <th>Empleado</th>
-              <th *ngFor="let horasM of employeesMonthly[0].hours; let i = index">{{i+1}}</th>
+              <th *ngFor="let horasM of employeesMonthly[1].hours_day; let i = index">{{i+1}}</th>
               <th>Total</th>
             </tr>
             <tr class="visible-xs">
@@ -91,15 +91,15 @@
             </tr>   
           </thead>
           <tbody>
-            <tr class="hidden-xs" *ngFor="let worker of employeesMonthly">
-              <td>{{worker.first_name}} </td>
-              <td *ngFor="let horasM of worker.hours">{{horasM}}</td>
+            <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
+              <td>{{worker.name}} </td>
+              <td *ngFor="let horasM of employeesMonthly[i].hours_day">{{horasM.hour}}</td>
               <td>{{worker.total}} </td>
             </tr>
           </tbody>
           <tbody>
             <tr class="visible-xs" *ngFor="let worker of employeesMonthly">
-              <td>{{worker.first_name}} </td>
+              <td>{{worker.name}} </td>
               <td>14 </td>
               <td>{{worker.total}} </td>
             </tr>

@@ -9,6 +9,10 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
+from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
+from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
+from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, UsersListMessage, IncidencesReportResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -29,6 +33,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class Employee(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
+    image = ndb.StringProperty(indexed=False)
     role = ndb.IntegerProperty(indexed=True)
     status = ndb.BooleanProperty(indexed=True)
 
@@ -36,6 +41,12 @@ class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
     employee = ndb.StructuredProperty(Employee, indexed=True)
+
+class Incidences(ndb.Model):
+    message = ndb.StringProperty(indexed=True)
+    incidenceDate = ndb.DateTimeProperty(indexed=True)
+    employee = ndb.StructuredProperty(Employee, indexed=True)
+    check = ndb.BooleanProperty(indexed=True)
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -69,6 +80,101 @@ class MainPage(remote.Service):
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
             return False
+    
+    def singleReport(self, currentEmployee, date):
+        report = JsonMessage()
+        currentDay = date
+        currentWeek = currentDay.isocalendar()[1]
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        report.name = currentEmployee.name
+        report.monday = 0
+        report.tuesday = 0
+        report.wednesday = 0
+        report.thursday = 0
+        report.friday = 0
+        monday = 0
+        tuesday = 0
+        wednesday = 0
+        thursday = 0
+        friday = 0
+
+        for worked in query:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek and worked.checkout != None:
+                if worked.checkin.isocalendar()[2] == 1:
+                    monday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.monday = monday/60
+                elif worked.checkin.isocalendar()[2] == 2:
+                    tuesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.tuesday = tuesday/60
+                elif worked.checkin.isocalendar()[2] == 3:
+                    wednesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.wednesday = wednesday/60
+                elif worked.checkin.isocalendar()[2] == 4:
+                    thursday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.thursday = thursday/60
+                elif worked.checkin.isocalendar()[2] == 5:
+                    friday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.friday = friday/60
+        total = monday + tuesday + wednesday + thursday + friday
+        report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
+        return report
+
+    def singleMonthlyReport(self, currentEmployee, date):
+        reportMonth = JsonMonthlyMessage()
+        currentmonth = date.month
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        reportMonth.hours_day = []
+        reportMonth.name = currentEmployee.name
+        reportMonth.month = int(currentmonth)
+        reportMonth.jornadas = 0
+        reportMonth.total = 0
+
+        for worked in query:
+            reportDay = JsonSingleDayMessage()
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
+                reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
+                reportDay.day = worked.checkin.day
+                reportMonth.hours_day.append(reportDay)
+                reportMonth.jornadas = reportMonth.jornadas + 1
+                reportMonth.total = reportMonth.total+reportDay.hour
+        return reportMonth
+    
+    def usersList(self, currentEmployee):
+        employee = UsersListMessage()
+        employee.name = currentEmployee.name
+        employee.email = currentEmployee.email
+        employee.image = currentEmployee.image
+        employee.incidences = self.incidencesList(currentEmployee)
+        return employee
+
+    def incidencesList(self, currentEmployee):
+        allIncidences = []
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == currentEmployee.email)
+        query = query.filter(Incidences.check == False).fetch()
+        for oneIncidence in query:
+            incidence = IncidencesMessage()
+            incidence.date = str(oneIncidence.incidenceDate)
+            incidence.message = oneIncidence.message
+            allIncidences.append(incidence)
+        return allIncidences
+
+    def set_incidences(self, message, date, email, check):
+        '''Comment here TODO'''
+
+        query = Employee.query()
+        query = query.filter(Employee.email == email).get()
+        finalMessage = query.name + message
+        incidences = Incidences (
+            message= finalMessage,
+            incidenceDate=date,
+            employee=Employee (name=query.name,email=query.email,role=query.role),
+            check=check
+        )
+        incidences.put()
+
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -87,6 +193,9 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
+                message = " ha llegado fuera de los limites horarios"
+                check = False
+                self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
@@ -103,6 +212,9 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
+            message = " ha realizado un checkout antes de la hora minima"
+            check = False
+            self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
 
@@ -114,6 +226,7 @@ class MainPage(remote.Service):
             employee = Employee(
                 name=request.name,
                 email=current_user.email(),
+                image=request.image,
                 role=0
             )
             employee.put()
@@ -130,41 +243,55 @@ class MainPage(remote.Service):
                 return CheckInGetMessage(response_date=str(day.checkin))
         return CheckInGetMessage(response_date="No hay fecha de checkin")
 
+    @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
+    def setCheckIncidence(self, request):
+        query = Incidences.query()
+        query = query.filter(Incidences.employee.email == request.email).fetch()
+        for incidence in query:
+            incidence.check=True
+            incidence.put()
+        return CheckIncidenceResponse()
+    
+    @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
+    def report(self, request):
+        workedDays = []
+        day = datetime.today()
+        if datetime.today().isocalendar()[2] != 1:
+            query = Employee.query()
+            for currentEmployee in query:
+                workedDays.append(self.singleReport(currentEmployee, day))
+        return ReportResponseMessage(response_report=workedDays)
+
+
+    @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
+    def reportMonthly(self, request):
+        workedDays = []
+        date = datetime.today()
+        month = date.month
+        query = Employee.query()
+        for currentEmployee in query:
+            workedDays.append(self.singleMonthlyReport(currentEmployee, date))
+        return ReportMonthlyResponseMessage(response_report=workedDays)
+
+
+    @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
+    def incidencesReport(self, request):
+        users = []
+        query = Employee.query()
+        for currentEmployee in query:
+            users.append(self.usersList(currentEmployee))
+        return IncidencesReportResponseMessage(users=users)
+
+    
+
+
+    @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
+    def getDateNow(self, request):
+        date = datetime.now()
+        return DateNowGetMessage(response_date=str(date))
 
 
 
-    # @endpoints.method(ReportMessage, ReportResponseMessage, path='report', http_method='GET', name='report')
-    # def report(self, request):
-    #     day = datetime.today()
-    #     if datetime.today().isocalendar()[2] != 1:
-    #         query = Employee.query().fetch()
-    #         for currentEmployee in query:
-    #             report =
-    #             report =  report + "name:" + currentEmployee.name
-    #             report1 = report + self.singleReport(currentEmployee, day)
-    #         return ReportResponseMessage(response_code=200, response_report=report)
-    #     return ReportResponseMessage(response_code=502, response_report="no existe reporte")
-
-    # def singleReport(self, employee, date):
-    #     report = {}
-    #     weekdays = ['twilday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    #     currentDay = date.today()
-    #     currentWeek = currentDay.isocalendar()[1]
-    #     for day in employee.workday:
-    #         if day.checkin.isocalendar()[1] == currentWeek:
-    #             dayWorkTime = day.checkout.hour - day.checkin.hour
-    #             print weekdays[day.checkin.isocalendar()[2]]
-    #             #cogemos el dia de la semana del isocalendar que va de 1 a 7
-    #             report =({weekdays[day.checkin.isocalendar()[2]]: dayWorkTime})
-    #     return json.dumps(report, dayWorkTime)
-
-
-
-
-
-
-
-
-# [END guestbook] dayWorkTime = day.check_out - day.check_in
+# [END guestbook]
 
 application = endpoints.api_server([MainPage], restricted=False)

@@ -29,10 +29,9 @@ export class ReportComponent implements OnInit {
       this.employees = data.response_report;
     });
     this.services.getMontlyReport().subscribe((data) => {
-      console.log(data + "HABER KE HOSTIAS ME ESTAS PASANDO IOPUTA");
+      console.log(data.response_report[1].name + "   " + data.response_report[1].hours_day[0].day + "   " + data.response_report[1].hours_day[0].hour + "  " + data.response_report[1].month + "  " + data.response_report[1].jornadas + "  " + data.response_report[1].total);
       this.employeesMonthly = data.response_report;
-      this.workerHours = data.response_report.hours_day.hour;
-      console.log(this.workerHours);
+      this.workerHours = data.response_report.hours_day;
     });
   }
 

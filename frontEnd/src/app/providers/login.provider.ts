@@ -15,6 +15,7 @@ export class LoginProvider {
     public localRoute = "http://localhost:8080/_ah/api";
     public serverRoute = "https://timetrackerateam.appspot.com/_ah/api";
     subject: Subject<any> = new Subject<any>();
+    subject2: Subject<any> = new Subject<any>();
     public nameUser:string;
 
     constructor(private http: HttpClient,
@@ -51,8 +52,10 @@ export class LoginProvider {
           console.log('Image URL: ' + profile.getImageUrl());
           console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
-      this.sessionSt.store('email', profile.getEmail())
-  	  this.doSomething(profile.getName());
+      this.sessionSt.store('email', profile.getEmail());
+      this.sessionSt.store('name', profile.getName());
+      this.sessionSt.store('image', profile.getImageUrl());
+  	  this.doSomething(profile.getName(), profile.getImageUrl());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
         });
@@ -60,8 +63,8 @@ export class LoginProvider {
 
 
 
-    doSomething(Name) {
-      gapi.client.timetracker.login({email:"TODO", password: "password", name: Name}).execute((response: any) => {
+    doSomething(name, imageUrl) {
+      gapi.client.timetracker.login({email:"TODO", password: "password", name: name, image: imageUrl }).execute((response: any) => {
           if (response.error) {
             console.log(response.error);
 
@@ -71,6 +74,8 @@ export class LoginProvider {
             this.zone.run(()=>{
               this.router.navigate(['/home']);
             });
+            this.subject.next(this.sessionSt.retrieve('name'));
+            this.subject2.next(this.sessionSt.retrieve('image'));
             //window.location.reload();
 
           }
@@ -78,8 +83,17 @@ export class LoginProvider {
       );
     }
 
+    setSubjests(){
+      this.subject.next(this.sessionSt.retrieve('name'));
+      this.subject2.next(this.sessionSt.retrieve('image'));
+    }
+
     getNameUser():Observable<any>{
       return this.subject.asObservable();
+    }
+
+    getImgUser():Observable<any>{
+      return this.subject2.asObservable();
     }
 
 }
