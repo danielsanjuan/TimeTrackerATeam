@@ -156,6 +156,11 @@ class MainPage(remote.Service):
         )
         incidences.put()
 
+    def incidencesList(self, oneIncidence):
+        incidence = IncidencesMessage()
+        incidence.date = str(oneIncidence.incidenceDate)    
+        incidence.message = oneIncidence.message
+        return incidence
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -265,11 +270,7 @@ class MainPage(remote.Service):
             incidences.append(self.incidencesList(oneIncidence))
         return IncidencesReportResponseMessage(incidences=incidences)
     
-    def incidencesList(self, oneIncidence):
-        incidence = IncidencesMessage()
-        incidence.date = str(oneIncidence.incidenceDate)    
-        incidence.message = oneIncidence.message
-        return incidence
+   
 
 
     @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='usersList', http_method='GET', name='usersList')    
@@ -277,16 +278,19 @@ class MainPage(remote.Service):
         users = []
         allIncidences = Incidences.query()
         for oneIncidence in allIncidences:
-            incidence = UsersListMessage()
-            incidence.name = oneIncidence.employee.name
-            incidence.email = oneIncidence.employee.email
-            incidence.image = oneIncidence.employee.image
-            users.append(incidence)
+            employee = UsersListMessage()
+            employee.name = oneIncidence.employee.name
+            employee.email = oneIncidence.employee.email
+            employee.image = oneIncidence.employee.image
+            query = allIncidences.filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
+            employee.incidencesNumber = len(query)
+            users.append(employee)
         allUsers = []
         for user in users:
             if user not in allUsers:
                 allUsers.append(user)
         return IncidencesUserListResponseMessage(users=allUsers)
+
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
     def getDateNow(self, request):
