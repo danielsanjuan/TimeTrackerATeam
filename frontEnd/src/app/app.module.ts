@@ -11,6 +11,7 @@ import {Ng2Webstorage} from 'ngx-webstorage';
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
+import { IncidenceService } from './providers/incidence.provider';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -58,7 +59,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     CheckInService,
-    LoginProvider
+    LoginProvider,
+    IncidenceService
   ],
   bootstrap: [AppComponent]
 })

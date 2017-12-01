@@ -7,7 +7,7 @@ import json
 
 from datetime import datetime, timedelta
 
-from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckInGetMessage
+from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckResponse
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
@@ -80,7 +80,7 @@ class MainPage(remote.Service):
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
                     return True
             return False
-    
+
     def singleReport(self, currentEmployee, date):
         report = JsonMessage()
         currentDay = date
@@ -140,7 +140,7 @@ class MainPage(remote.Service):
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
         return reportMonth
-    
+
     def usersList(self, currentEmployee):
         employee = UsersListMessage()
         employee.name = currentEmployee.name
@@ -234,14 +234,39 @@ class MainPage(remote.Service):
         else:
             return LoginMessageResponse(response_code=300, email=current_user.email(), name=request.name)
 
-    @endpoints.method(CheckInMessage, CheckInGetMessage, path='getCheckin', http_method='GET', name='getCheckin')
+    @endpoints.method(CheckInMessage, CheckResponse, path='checkWorkedDay', http_method='GET', name='checkWorkedDay')
+    def checkWorkedDay(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).fetch()
+        for day in query:
+            if day.checkin != None:
+                print day.checkin
+                if day.checkout != None:
+                    print day.checkout
+                    if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                        if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                            return CheckResponse(response_date=str(day.checkin))
+                else:
+                    return CheckResponse(response_date="No has hecho checkout")
+        return CheckResponse(response_date="No has hecho checkin")
+
+    @endpoints.method(CheckInMessage, CheckResponse, path='getCheckin', http_method='GET', name='getCheckin')
     def getCheckin(self, request):
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email).fetch()
         for day in query:
             if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                return CheckResponse(response_date=str(day.checkin))
+        return CheckResponse(response_date="No hay fecha de checkin")
+
+    @endpoints.method(CheckOutMessage, CheckResponse, path='getCheckout', http_method='GET', name='getCheckout')
+    def getCheckout(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).fetch()
+        for day in query:
+            if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
                 return CheckInGetMessage(response_date=str(day.checkin))
-        return CheckInGetMessage(response_date="No hay fecha de checkin")
+        return CheckResponse(response_date="No hay fecha de checkout")
 
     @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
     def setCheckIncidence(self, request):
@@ -251,7 +276,7 @@ class MainPage(remote.Service):
             incidence.check=True
             incidence.put()
         return CheckIncidenceResponse()
-    
+
     @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
     def report(self, request):
         workedDays = []
@@ -282,7 +307,7 @@ class MainPage(remote.Service):
             users.append(self.usersList(currentEmployee))
         return IncidencesReportResponseMessage(users=users)
 
-    
+
 
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
