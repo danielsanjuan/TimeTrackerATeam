@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SessionStorageService } from 'ngx-webstorage';
+import { CheckInService } from '../providers/check-in.service';
 
 @Component({
   selector: 'app-report',
@@ -10,89 +13,32 @@ export class ReportComponent implements OnInit {
   monthReport: boolean = false;
 
   employees = [];
-employeesMonthly1 = [];
-employeesMonthly = [{
-  "first_name": "Amblyrhynchus cristatus",
-  "hours":[ 9,
-   9,
-   10,
-   11,
-   11,
-   0,
-   0,
-   12,
-   9,
-   10,
-   11,
-   12,
-   0,
-   0,
-   11,
-   12,
-   10,
-   8,
-   12,
-   0,
-   0,
-   11,
-   9,
-   11,
-   9,
-   12,
-   0,
-   0,
-   8,
-   12,
-   9],
-  "total": 160
-},  
-{ "first_name": "mecagoentusmuertos cristatus",
-"hours":[ 9,
- 9,
- 10,
- 11,
- 11,
- 0,
- 0,
- 12,
- 9,
- 10,
- 11,
- 12,
- 0,
- 0,
- 11,
- 12,
- 10,
- 8,
- 12,
- 0,
- 0,
- 11,
- 9,
- 11,
- 9,
- 12,
- 0,
- 0,
- 8,
- 12,
- 9],
-"total": 160}];
+  employeesMonthly = [];
+  workerHours = [];
 
-
-
-
-
-
-  constructor() {}
+  constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
+  }
 
   ngOnInit() {
+    this.services.getWeeklyReport().subscribe((data) => {
+      console.log("estoy dentro")
+      console.log(data);
+      this.employees = data.response_report;
+    });
+    this.services.getMontlyReport().subscribe((data) => {
+      console.log(data + "HABER KE HOSTIAS ME ESTAS PASANDO IOPUTA");
+      this.employeesMonthly = data.response_report;
+      this.workerHours = data.response_report.hours_day.hour;
+      console.log(this.workerHours);
+    });
   }
-  
+
   weekReportButton(){
     this.monthReport = false;
-    this.weekReport = true;  
+    this.weekReport = true;
   }
 
   monthReportButton(){

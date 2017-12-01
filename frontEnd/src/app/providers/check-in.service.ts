@@ -26,8 +26,17 @@ export class CheckInService {
     return this.http.get("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getCheckin");
   }
 
-  getWeekReport(): Observable<any>{
-    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/report");
+
+  getWeeklyReport(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/weeklyReport");
+  }
+
+  getDateNow(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/getDateNow");
+  }
+
+  getMontlyReport(): Observable<any>{
+    return this.http.get<any>("https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/monthlyReport");    
   }
 
 }
