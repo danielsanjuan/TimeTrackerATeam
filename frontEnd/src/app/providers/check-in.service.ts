@@ -24,7 +24,7 @@ export class CheckInService {
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.serverRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
