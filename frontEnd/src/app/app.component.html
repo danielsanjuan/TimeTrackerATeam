@@ -1,34 +1,31 @@
 <nav *ngIf="router.url !== '/login'" class="navbar navbar-inverse navbar-top animated fadeIn">
-  <div class="container-fluid">
-    <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#" [routerLink]="['home']">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" (click)="isCollapsed = !isCollapsed" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span> 
+          </button>
+          <a class="navbar-brand" href="#" [routerLink]="['home']">
             <img alt="Brand" class="logo" src="../assets/logo.png">
           </a>
-      </div>
-      <div class="pos-f-t">
-        <div class="collapse" id="navbarToggleExternalContent">
-          <div class="bg-inverse p-4">
-            <h4 class="text-white">Collapsed content</h4>
-            <span class="text-muted">Toggleable via the navbar brand.</span>
-          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar" [ngbCollapse]="isCollapsed">
+          <ul class="nav navbar-nav">
+            <li routerLinkActive="active"><a href="#" [routerLink]="['report']">Reports</a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><img class="img_user" [routerLink]="['login']" src="{{imagen}}" alt="User">
+            <span>{{nombre}}</span></li>
+            <li class="log-out"><app-logout></app-logout></li>
+          </ul>
         </div>
       </div>
-      <ul class="nav navbar-nav menu">
-        <li routerLinkActive="active"><a href="#" [routerLink]="['report']">Reports</a></li>
-        <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        <div class="nav navbar-nav navbar-form navbar-right">
-          <img class="img_user" [routerLink]="['login']" src="{{imagen}}" alt="User">
-          <span class="name_user">{{nombre}}</span>
-          <app-logout></app-logout>
-        </div>
-      </ul>
     </div>
-  </div>
 </nav>
+
 
 <div class="container animated fadeIn">
 

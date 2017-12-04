@@ -244,8 +244,9 @@ class MainPage(remote.Service):
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email).fetch()
         for day in query:
-            if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                return CheckResponse(response_date=str(day.checkin))
+            if(day.checkin != None):
+                if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                    return CheckResponse(response_date=str(day.checkin))
         return CheckResponse(response_date="No hay fecha de checkin")
 
     @endpoints.method(CheckOutMessage, CheckResponse, path='getCheckout', http_method='GET', name='getCheckout')
@@ -253,8 +254,9 @@ class MainPage(remote.Service):
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email).fetch()
         for day in query:
-            if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                return CheckResponse(response_date=str(day.checkout))
+            if(day.checkout != None):
+                if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
+                    return CheckResponse(response_date=str(day.checkout))
         return CheckResponse(response_date="No hay fecha de checkout")
 
     @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
