@@ -145,7 +145,7 @@ class MainPage(remote.Service):
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
 
-        
+
         return reportMonth
 
     def set_incidences(self, message, date, email, check):
@@ -304,13 +304,13 @@ class MainPage(remote.Service):
     def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
-        allIncidences = allIncidences.filter(Incidences.check != True)
+        allIncidences = allIncidences.filter(Incidences.check != True).fetch()
         for oneIncidence in allIncidences:
             employee = incidencesUsersListMessage()
             employee.name = oneIncidence.employee.name
             employee.email = oneIncidence.employee.email
             employee.image = oneIncidence.employee.image
-            query = allIncidences.filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
+            query = Incidences.query().filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
             employee.incidencesNumber = len(query)
             users.append(employee)
         allUsers = []
