@@ -88,13 +88,26 @@
     border-bottom-right-radius: 3%!important;
 }
 
+@media screen and (max-width: 768px){ 
+    .name_user{
+        display: none;
+    }
+}
+
+@media (min-width: 768px){
+    .responsive_user{
+        display: none;
+    }
+
+}
+
 @media screen and (min-device-width: 350px) and (max-device-width: 600px) { 
     .panel-heading[_ngcontent-c1] {
         font-size: 1em
     }
 }
 
-@media (max-width: 375px){
+@media (max-width: 414px){
     
     .panel-heading {
         font-size: 1em;

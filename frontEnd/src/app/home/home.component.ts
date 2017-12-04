@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   hours_today:string;
   hours_week:string;
   nombre:string;
+  nombreResponsive:string;
   fechaNow:any = "00:00";
   fechaCheckIn:any = "00:00";
   fechaCheckout:any;
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.nombre = this.sessionSt.retrieve('name');
+    this.nombreResponsive = this.nombre.split(" ")[0];
     this.services.getWeeklyReport().subscribe((data) => {
       this.employees = data.response_report;
     });
