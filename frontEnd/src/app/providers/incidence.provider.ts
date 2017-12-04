@@ -20,11 +20,15 @@ export class IncidenceService {
   }
 
   getEmployee(email):Observable<any>{
-    return this.http.get(this.localRoute + 'getEmployee?email=' + email)
+    return this.http.get(this.serverRoute + 'getEmployee?email=' + email);
   }
 
   getPersonalIncidences(email):Observable<any>{
-    return this.http.get(this.serverRoute + 'incidencesReport?email=' + email))
+    return this.http.get(this.serverRoute + 'incidencesReport?email=' + email);
   }
 
+  setIncidencesChecked(email):Observable<any>{
+    let body = { "email": email};
+    return this.http.post(this.serverRoute + 'setCheckIncidence', body);
+  }
 }

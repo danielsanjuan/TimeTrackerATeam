@@ -1,0 +1,13 @@
+
+.glyphicon-log-out{
+  display:none;
+}
+
+@media (max-width: 500px){
+  .logout{
+    display:none;
+  }
+  .glyphicon-log-out{
+    display:block;
+  }
+}

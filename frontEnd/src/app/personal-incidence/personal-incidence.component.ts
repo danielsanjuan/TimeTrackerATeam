@@ -9,7 +9,7 @@ import { IncidenceService } from '../providers/incidence.provider';
 })
 export class PersonalIncidenceComponent implements OnInit {
 
-  message: any;
+  email: any;
   private sub: any;
   employees = [];
   incidences = [];
@@ -18,15 +18,15 @@ export class PersonalIncidenceComponent implements OnInit {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe((params) =>{
-      this.message = params['email'];
+      this.email = params['email'];
     });
-    this.services.getEmployee(this.message).subscribe((data) =>{
+    this.services.getEmployee(this.email).subscribe((data) =>{
       this.employees = data.employee;
-      console.log(data.employee);
     })
-    this.services.getPersonalIncidences(this.message).subscribe((data) => {
+    this.services.getPersonalIncidences(this.email).subscribe((data) => {
       this.incidences = data.incidences;
-      console.log(data.incidences);
+    })
+    this.services.setIncidencesChecked(this.email).subscribe((data) => {
     })
   }
 

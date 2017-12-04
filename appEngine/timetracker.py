@@ -300,6 +300,7 @@ class MainPage(remote.Service):
     def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
+        allIncidences = allIncidences.filter(Incidences.check != True)
         for oneIncidence in allIncidences:
             employee = incidencesUsersListMessage()
             employee.name = oneIncidence.employee.name
