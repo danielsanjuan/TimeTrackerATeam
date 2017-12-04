@@ -310,7 +310,8 @@ class MainPage(remote.Service):
                 employee.name = oneIncidence.employee.name
                 employee.email = oneIncidence.employee.email
                 employee.image = oneIncidence.employee.image
-                query = allIncidences.filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
+                query = Incidences.query().filter(Incidences.employee.email == oneIncidence.employee.email)
+                query = query.filter(Incidences.check != True).fetch()
                 employee.incidencesNumber = len(query)
                 users.append(employee)
         allUsers = []
