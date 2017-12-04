@@ -32,11 +32,10 @@ export class ReportComponent implements OnInit {
     });
     this.services.getMontlyReport().subscribe((data) => {
       if (data.response_report != undefined){
-        console.log(data.response_report[0].month);
-        console.log(data.response_report[0].year);
-        console.log(data.response_report[0])
+
         if(data.response_report.month == 2){
-          this.totalDays=28;
+          if(this.leapYear(data.response_report.year)) this.totalDays = 29;
+          else this.totalDays=28;
         }
         else if (data.response_report.month == 4 || data.response_report.month == 6 || data.response_report.month == 9 || data.response_report.month == 10) this.totalDays=30;
         else this.totalDays = 31
@@ -60,6 +59,11 @@ export class ReportComponent implements OnInit {
         }
       }
     });
+  }
+
+
+  leapYear(year){
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
   weekReportButton(){
