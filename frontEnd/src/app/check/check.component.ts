@@ -27,17 +27,18 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.localSt.retrieve('existCheckIn') != null){
-      if (this.localSt.retrieve('existCheckIn') == true){
+    this.services.getCheckIn().subscribe((data) => {
+      console.log(data)
+      if (data.response_date == "No has hecho checkin"){
+        this.doClick = true;
+      }else if(data.response_date == "No has hecho checkout"){
         this.doClick = false;
-      } else {
+      }else{
         this.doClick = true;
       }
-    } else {
-      this.localSt.store('existCheckIn', false);
-    }
+    });
   }
-  
+
   timeCheckIn(){
      this.doClick=false;
     this.services.postCheckIn().subscribe( (data)=>{
@@ -62,12 +63,12 @@ export class CheckComponent implements OnInit {
             this.E406=true;
             this.toastr.error('No puedes trabajar ha esta hora', 'Oops!');
             this.doClick=true;
-            break; 
+            break;
         case "500":
             this.E500=true;
             this.toastr.error('No puedes 2 check-in el mismo dia', 'Oops!');
             this.doClick=true;
-            break; 
+            break;
       }
     });
 

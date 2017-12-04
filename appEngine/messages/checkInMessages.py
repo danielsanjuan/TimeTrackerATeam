@@ -16,5 +16,5 @@ class CheckOutResponseMessage(messages.Message):
     response_status = messages.StringField(2)
     response_date = messages.StringField(3)
 
-class CheckInGetMessage(messages.Message):
+class CheckResponse(messages.Message):
     response_date = messages.StringField(1)

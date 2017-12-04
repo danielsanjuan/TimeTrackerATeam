@@ -14,7 +14,6 @@ export class CheckInService {
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
   postCheckIn():Observable<any>{
-    console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
     return this.http.post(this.serverRoute + "check_in", body);
   }
@@ -25,8 +24,7 @@ export class CheckInService {
   }
 
   getCheckIn():Observable<any>{
-    let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.get(this.serverRoute + "getCheckin?email=" + body);
+    return this.http.get(this.serverRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
