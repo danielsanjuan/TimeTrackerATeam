@@ -13,7 +13,7 @@ from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMe
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage
-from messages.IncidencesUsersListMessages import IncidencesUsersMessage, UsersListMessage, IncidencesUserListResponseMessage
+from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -144,29 +144,7 @@ class MainPage(remote.Service):
                 reportMonth.total = reportMonth.total+reportDay.hour
         return reportMonth
 
-    def usersList(self, currentEmployee):
-        employee = UsersListMessage()
-        employee.name = currentEmployee.name
-        employee.email = currentEmployee.email
-        employee.image = currentEmployee.image
-        employee.incidences = self.incidencesList(currentEmployee)
-        return employee
-
-    def incidencesList(self, currentEmployee):
-        allIncidences = []
-        query = Incidences.query()
-        query = query.filter(Incidences.employee.email == currentEmployee.email)
-        query = query.filter(Incidences.check == False).fetch()
-        for oneIncidence in query:
-            incidence = IncidencesMessage()
-            incidence.date = str(oneIncidence.incidenceDate)
-            incidence.message = oneIncidence.message
-            allIncidences.append(incidence)
-        return allIncidences
-
     def set_incidences(self, message, date, email, check):
-        '''Comment here TODO'''
-
         query = Employee.query()
         query = query.filter(Employee.email == email).get()
         finalMessage = query.name + message
@@ -224,7 +202,6 @@ class MainPage(remote.Service):
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
-
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
@@ -293,7 +270,9 @@ class MainPage(remote.Service):
             query = Employee.query()
             for currentEmployee in query:
                 workedDays.append(self.singleReport(currentEmployee, day))
-        return ReportResponseMessage(response_report=workedDays)
+            return ReportResponseMessage(response_report=workedDays)
+        else:
+            return ReportResponseMessage(response_report=[])
 
 
     @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
@@ -317,14 +296,12 @@ class MainPage(remote.Service):
         return IncidencesReportResponseMessage(incidences=incidences)
 
 
-
-
-    @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='usersList', http_method='GET', name='usersList')
-    def usersList(self, request):
+    @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='incidencesUsersList', http_method='GET', name='incidencesUsersList')
+    def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
         for oneIncidence in allIncidences:
-            employee = UsersListMessage()
+            employee = incidencesUsersListMessage()
             employee.name = oneIncidence.employee.name
             employee.email = oneIncidence.employee.email
             employee.image = oneIncidence.employee.image

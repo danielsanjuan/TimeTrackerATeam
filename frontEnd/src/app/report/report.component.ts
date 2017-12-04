@@ -24,7 +24,9 @@ export class ReportComponent implements OnInit {
     this.services.getWeeklyReport().subscribe((data) => {
       console.log("estoy dentro")
       console.log(data.response_report);
-      this.employees = data.response_report;
+      if (data.response_report != undefined){
+        this.employees = data.response_report;
+      }
     });
   }
 
