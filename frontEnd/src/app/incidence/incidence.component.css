@@ -1,0 +1,14 @@
+@media (max-width: 412px) {
+  a {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.margin_from_nav{
+  margin-top: 5%;
+}
+
+.center_employee_data{
+  margin-top: 10%;
+}

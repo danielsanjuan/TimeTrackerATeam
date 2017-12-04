@@ -9,7 +9,7 @@
     </div>
   </div>
   <ng-container *ngIf="weekReport; else elseTemplate">
-    <ng-container *ngIf="employees.length>0; else noReportWeek">
+    <ng-container *ngIf="employees.length > 0; else noReportWeek">
       <div class="table-responsive">
         <table class="table table-striped table-bordered">
           <thead>
@@ -93,7 +93,7 @@
           <tbody>
             <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
               <td>{{worker.name}} </td>
-              <td *ngFor="let horasM of employeesMonthly[i].hours_day">{{horasM.hour}}</td>
+              <td *ngFor="let horasM of employeesMonthly[i].hours_day">{{horasM}}</td>
               <td>{{worker.total}} </td>
             </tr>
           </tbody>

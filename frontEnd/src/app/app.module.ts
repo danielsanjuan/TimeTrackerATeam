@@ -11,6 +11,7 @@ import {Ng2Webstorage} from 'ngx-webstorage';
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
+import { IncidenceService } from './providers/incidence.provider';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -19,9 +20,12 @@ import { CheckComponent } from './check/check.component';
 import { HomeComponent } from './home/home.component';
 import { ReportComponent } from './report/report.component';
 import { LogoutComponent } from './logout/logout.component';
-
+import { IncidenceComponent } from './incidence/incidence.component';
+import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 
 const appRoutes: Routes = [
+  { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
+  { path: 'incidence', component: IncidenceComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
   { path: 'report', component: ReportComponent },
@@ -35,7 +39,9 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     ReportComponent,
-    LogoutComponent
+    LogoutComponent,
+    IncidenceComponent,
+    PersonalIncidenceComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +59,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     CheckInService,
-    LoginProvider
+    LoginProvider,
+    IncidenceService
   ],
   bootstrap: [AppComponent]
 })

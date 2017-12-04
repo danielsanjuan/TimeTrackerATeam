@@ -14,7 +14,6 @@ export class CheckInService {
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
   postCheckIn():Observable<any>{
-    console.log(this.sessionSt.retrieve('email'))
     let body = {"email": this.sessionSt.retrieve('email')}
     return this.http.post(this.serverRoute + "/timetracker/v1/check_in", body);
   }
@@ -25,8 +24,7 @@ export class CheckInService {
   }
 
   getCheckIn():Observable<any>{
-    let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + body);
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
@@ -38,35 +36,6 @@ export class CheckInService {
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute +"/timetracker/v1/monthlyReport");    
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReport");
   }
-/*
-postCheckIn():Observable<any>{
-  console.log(this.sessionSt.retrieve('email'))
-  let body = {"email": this.sessionSt.retrieve('email')}
-  return this.http.post(this.localRoute + "/timetracker/v1/check_in", body);
-}
-
-postCheckOut():Observable<any>{
-  let body = {"email": this.sessionSt.retrieve('email')}
-  return this.http.post(this.localRoute + "/timetracker/v1/check_out", body);
-}
-
-getCheckIn():Observable<any>{
-  let body = {"email": this.sessionSt.retrieve('email')}
-  return this.http.get(this.localRoute + "/timetracker/v1/getCheckin?email=" + body);
-}
-
-getWeeklyReport(): Observable<any>{
-  return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport");
-}
-
-getDateNow(): Observable<any>{
-  return this.http.get<any>(this.localRoute + "/timetracker/v1/getDateNow");
-}
-
-getMontlyReport(): Observable<any>{
-  return this.http.get<any>(this.serverRoute +"/timetracker/v1/monthlyReport");    
-}*/
-
 }
