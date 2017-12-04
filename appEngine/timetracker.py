@@ -13,7 +13,7 @@ from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMe
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage
-from messages.IncidencesUsersListMessages import IncidencesUsersMessage, UsersListMessage, IncidencesUserListResponseMessage
+from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -273,12 +273,12 @@ class MainPage(remote.Service):
    
 
 
-    @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='usersList', http_method='GET', name='usersList')    
-    def usersList(self, request):
+    @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='incidencesUsersList', http_method='GET', name='incidencesUsersList')    
+    def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
         for oneIncidence in allIncidences:
-            employee = UsersListMessage()
+            employee = incidencesUsersListMessage()
             employee.name = oneIncidence.employee.name
             employee.email = oneIncidence.employee.email
             employee.image = oneIncidence.employee.image
