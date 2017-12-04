@@ -8,7 +8,7 @@ import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 export class IncidenceService {
 
   subject: Subject<any> = new Subject<any>();
-  public localRoute = "http://localhost:8080/_ah/api";
+  public localRoute = "http://localhost:8080/_ah/api/timetracker/v1/";
   public serverRoute = "https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/";
 
   constructor(private http: HttpClient){
@@ -16,7 +16,7 @@ export class IncidenceService {
   }
 
   getIncidenceReport():Observable<any>{
-    return this.http.get(this.serverRoute + 'incidencesReport');
+    return this.http.get(this.serverRoute + 'incidencesUsersList');
   }
 
 
