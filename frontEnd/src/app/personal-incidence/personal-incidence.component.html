@@ -1,15 +1,19 @@
-<div class="row" *ngFor="let employee of employees">
+<div class="row">
   <div class="col-xs-4 col-md-6 margin_from_nav">
     <a  class="thumbnail">
-        <img src="{{employee.image}}" alt="...">
+        <img src="{{employees.image}}" alt="...">
     </a>
   </div>
   <div class="col-xs-6 col-md-6 center_employee_data">
-    <p>{{employee.name}}</p>
-    <p>{{employee.email}}</p>
+    <p>{{employees.name}}</p>
+    <p>{{employees.email}}</p>
   </div>
-  <div>
-    <p>{{employee.incidences.date}}
-    <p>{{employee.incidences.message}}
-  </div>
+</div>
+<div class="row" *ngFor="let incidence of incidences">
+    <div class="col-xs-4 col-md-6 margin_from_nav">
+      {{incidence.date}}
+    </div>
+    <div class="col-xs-6 col-md-6 center_employee_data">
+      {{incidence.message}}
+    </div>
 </div>

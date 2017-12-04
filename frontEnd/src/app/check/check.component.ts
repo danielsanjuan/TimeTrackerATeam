@@ -29,12 +29,10 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     this.services.getCheckIn().subscribe((data) => {
       console.log(data)
-      if (data.response_date == "No has hecho checkin"){
+      if (data.response_date == "No hay fecha de checkin"){
         this.doClick = true;
-      }else if(data.response_date == "No has hecho checkout"){
-        this.doClick = false;
       }else{
-        this.doClick = true;
+        this.doClick = false;
       }
     });
   }

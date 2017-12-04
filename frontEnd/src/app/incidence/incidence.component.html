@@ -1,7 +1,8 @@
-<div (click)="showPersonalIncidence(employee.email)" class="row" *ngFor="let employee of employees">
+<div (click)="showPersonalIncidence(employee.email)" class="row thumbnail margin_thumbnail" *ngFor="let employee of employees">
   <div class="col-xs-4 col-md-6 margin_from_nav">
-    <a  class="thumbnail">
+    <a>
         <img src="{{employee.image}}" alt="...">
+        <span class="badge">{{employee.incidencesNumber}}</span>
     </a>
   </div>
   <div class="col-xs-6 col-md-6 center_employee_data">
@@ -9,4 +10,3 @@
     <p>{{employee.email}}</p>
   </div>
 </div>
-  
