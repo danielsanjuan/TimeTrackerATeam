@@ -162,8 +162,6 @@ class MainPage(remote.Service):
         return allIncidences
 
     def set_incidences(self, message, date, email, check):
-        '''Comment here TODO'''
-
         query = Employee.query()
         query = query.filter(Employee.email == email).get()
         finalMessage = query.name + message
@@ -174,7 +172,6 @@ class MainPage(remote.Service):
             check=check
         )
         incidences.put()
-
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -216,7 +213,6 @@ class MainPage(remote.Service):
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
-
 
     @endpoints.method(LoginMessage, LoginMessageResponse, path='login', http_method='POST', name='login')
     def login(self, request):
@@ -262,7 +258,6 @@ class MainPage(remote.Service):
                 workedDays.append(self.singleReport(currentEmployee, day))
         return ReportResponseMessage(response_report=workedDays)
 
-
     @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
     def reportMonthly(self, request):
         workedDays = []
@@ -273,7 +268,6 @@ class MainPage(remote.Service):
             workedDays.append(self.singleMonthlyReport(currentEmployee, date))
         return ReportMonthlyResponseMessage(response_report=workedDays)
 
-
     @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
     def incidencesReport(self, request):
         users = []
@@ -282,15 +276,12 @@ class MainPage(remote.Service):
             users.append(self.usersList(currentEmployee))
         return IncidencesReportResponseMessage(users=users)
 
-    
-
-
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
     def getDateNow(self, request):
         date = datetime.now()
         return DateNowGetMessage(response_date=str(date))
 
-
+    @endpoints.method(UserListMessage, UserListResponseMessage, path='getUserList', http_method='GET', name='getUserList')
 
 # [END guestbook]
 
