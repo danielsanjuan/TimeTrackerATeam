@@ -83,24 +83,7 @@ class MainPage(remote.Service):
             return False
 
     def singleReport(self, currentEmployee, date):
-        report = JsonMessage()
-        currentDay = date
-        currentWeek = currentDay.isocalendar()[1]
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
-        report.name = currentEmployee.name
-        report.monday = 0
-        report.tuesday = 0
-        report.wednesday = 0
-        report.thursday = 0
-        report.friday = 0
-        monday = 0
-        tuesday = 0
-        wednesday = 0
-        thursday = 0
-        friday = 0
-
-    def singleReport(self, currentEmployee, date):
+        print "Estoy dentro de singleReport"
         report = JsonMessage()
         currentDay = date
         currentWeek = currentDay.isocalendar()[1]
@@ -137,6 +120,7 @@ class MainPage(remote.Service):
                     report.friday = friday/60
         total = monday + tuesday + wednesday + thursday + friday
         report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
+        print "Este es el total", total
         return report
 
     def singleMonthlyReport(self, currentEmployee, date):
@@ -180,27 +164,6 @@ class MainPage(remote.Service):
             allIncidences.append(incidence)
         return allIncidences
 
-    def singleMonthlyReport(self, currentEmployee, date):
-        reportMonth = JsonMonthlyMessage()
-        currentmonth = date.month
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
-        reportMonth.hours_day = []
-        reportMonth.name = currentEmployee.name
-        reportMonth.month = int(currentmonth)
-        reportMonth.jornadas = 0
-        reportMonth.total = 0
-
-        for worked in query:
-            reportDay = JsonSingleDayMessage()
-            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
-                reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
-                reportDay.day = worked.checkin.day
-                reportMonth.hours_day.append(reportDay)
-                reportMonth.jornadas = reportMonth.jornadas + 1
-                reportMonth.total = reportMonth.total+reportDay.hour
-        return reportMonth
-
     def set_incidences(self, message, date, email, check):
         '''Comment here TODO'''
 
@@ -210,7 +173,7 @@ class MainPage(remote.Service):
         incidences = Incidences (
             message= finalMessage,
             incidenceDate=date,
-            employee=Employee (name=query.name,email=query.email,role=query.role),
+            employee=Employee (name=query.name,email=query.email,role=query.role,image=query.image),
             check=check
         )
         incidences.put()

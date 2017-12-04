@@ -23,7 +23,7 @@ export class ReportComponent implements OnInit {
   ngOnInit() {
     this.services.getWeeklyReport().subscribe((data) => {
       console.log("estoy dentro")
-      console.log(data);
+      console.log(data.response_report);
       this.employees = data.response_report;
     });
   }
