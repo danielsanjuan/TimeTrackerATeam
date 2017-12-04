@@ -12,6 +12,8 @@ class JsonMonthlyMessage(messages.Message):
     month = messages.IntegerField(3)
     jornadas = messages.IntegerField(4)
     total = messages.IntegerField(5)
+    month = messages.IntegerField(6)
+    year = messages.IntegerField(7)
 
 class ReportMonthlyResponseMessage(messages.Message):
     response_report = messages.MessageField(JsonMonthlyMessage, 1, repeated=True)

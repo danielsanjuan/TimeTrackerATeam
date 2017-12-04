@@ -133,6 +133,8 @@ class MainPage(remote.Service):
         reportMonth.month = int(currentmonth)
         reportMonth.jornadas = 0
         reportMonth.total = 0
+        if(date.month == 1): reportMonth.year = date.year - 1
+        else: reportMonth.year = date.year
 
         for worked in query:
             reportDay = JsonSingleDayMessage()
@@ -142,6 +144,8 @@ class MainPage(remote.Service):
                 reportMonth.hours_day.append(reportDay)
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
+
+        
         return reportMonth
 
     def set_incidences(self, message, date, email, check):
