@@ -27,6 +27,10 @@ export class CheckInService {
     return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
+  getCheckout():Observable<any>{
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckout?email=" + this.sessionSt.retrieve('email'));
+  }
+
   getWeeklyReport(): Observable<any>{
     return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReport");
   }
@@ -37,6 +41,10 @@ export class CheckInService {
 
   getMontlyReport(): Observable<any>{
     return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReport");
+  }
+
+  checkWorkedDay(): Observable<any>{
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
 }

@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
   nombre:string;
   fechaNow:any = "00:00";
   fechaCheckIn:any = "00:00";
+  fechaCheckout:any;
   week:number = 0;
   interval:any;
   employees = [];
@@ -56,6 +57,11 @@ export class HomeComponent implements OnInit {
       this.fechaCheckIn = new Date(data.response_date);
       console.log("in "+this.fechaCheckIn);
     });
+    this.services.getCheckout().subscribe((data)=>{
+      this.fechaCheckout = new Date(data.response_date);
+      console.log("MANOLO LAMA ");
+    });
+    //if(this.fechaCheckout != null)
     this.services.getDateNow().subscribe((data)=>{
       this.fechaNow = new Date(data.response_date);
       console.log("now "+this.fechaNow);
