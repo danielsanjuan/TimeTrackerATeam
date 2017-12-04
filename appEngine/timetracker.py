@@ -304,17 +304,15 @@ class MainPage(remote.Service):
     def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
-        allIncidences = allIncidences.filter(Incidences.check != True).fetch()
-        query = Incidences.query()
-        query = query.filter(Incidences.check != True)
         for oneIncidence in allIncidences:
-            employee = incidencesUsersListMessage()
-            employee.name = oneIncidence.employee.name
-            employee.email = oneIncidence.employee.email
-            employee.image = oneIncidence.employee.image
-            query = query.filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
-            employee.incidencesNumber = len(query)
-            users.append(employee)
+            if (oneIncidence.check != True):
+                employee = incidencesUsersListMessage()
+                employee.name = oneIncidence.employee.name
+                employee.email = oneIncidence.employee.email
+                employee.image = oneIncidence.employee.image
+                query = allIncidences.filter(Incidences.employee.email == oneIncidence.employee.email).fetch()
+                employee.incidencesNumber = len(query)
+                users.append(employee)
         allUsers = []
         for user in users:
             if user not in allUsers:
