@@ -133,7 +133,7 @@ class MainPage(remote.Service):
         reportMonth.month = int(currentmonth)
         reportMonth.jornadas = 0
         reportMonth.total = 0
-        if(date.month == 1): reportMonth.year = date.year - 1
+        if(currentmonth == 1): reportMonth.year = date.year - 1
         else: reportMonth.year = date.year
 
         for worked in query:
