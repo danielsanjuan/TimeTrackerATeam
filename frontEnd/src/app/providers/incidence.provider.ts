@@ -19,5 +19,16 @@ export class IncidenceService {
     return this.http.get(this.serverRoute + 'incidencesUsersList');
   }
 
+  getEmployee(email):Observable<any>{
+    return this.http.get(this.serverRoute + 'getEmployee?email=' + email);
+  }
 
+  getPersonalIncidences(email):Observable<any>{
+    return this.http.get(this.serverRoute + 'incidencesReport?email=' + email);
+  }
+
+  setIncidencesChecked(email):Observable<any>{
+    let body = { "email": email};
+    return this.http.post(this.serverRoute + 'setCheckIncidence', body);
+  }
 }

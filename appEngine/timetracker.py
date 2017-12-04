@@ -13,7 +13,7 @@ from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMe
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage
-from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage
+from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -304,6 +304,7 @@ class MainPage(remote.Service):
     def incidencesUsersList(self, request):
         users = []
         allIncidences = Incidences.query()
+        allIncidences = allIncidences.filter(Incidences.check != True)
         for oneIncidence in allIncidences:
             employee = incidencesUsersListMessage()
             employee.name = oneIncidence.employee.name
@@ -324,6 +325,17 @@ class MainPage(remote.Service):
         date = datetime.now()
         return DateNowGetMessage(response_date=str(date))
 
+    @endpoints.method(EmployeeMessage, EmployeeMessageResponse, path='getEmployee', http_method='GET', name='getEmployee')
+    def getEmployee(self, request):
+        query = Employee.query()
+        query = query.filter(Employee.email == request.email).get()
+        print "Impresion", query
+        employee = JsonEmployee(
+            name=query.name,
+            email=query.email,
+            image=query.image
+        )
+        return EmployeeMessageResponse(employee=employee)
 
 
 # [END guestbook]

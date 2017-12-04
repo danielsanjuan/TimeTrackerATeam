@@ -1,15 +1,27 @@
-<div class="row" *ngFor="let employee of employees">
-  <div class="col-xs-4 col-md-6 margin_from_nav">
-    <a  class="thumbnail">
-        <img src="{{employee.image}}" alt="...">
+<div class="row margin_thumbnail">
+  <div class="col-xs-7 col-xs-offset-4 col-sm-12 col-md-2 col-md-offset-5">
+    <a>
+        <img src="{{employees.image}}">
     </a>
   </div>
-  <div class="col-xs-6 col-md-6 center_employee_data">
-    <p>{{employee.name}}</p>
-    <p>{{employee.email}}</p>
-  </div>
-  <div>
-    <p>{{employee.incidences.date}}
-    <p>{{employee.incidences.message}}
+</div>
+<div>
+  <div class="text-center">
+    <p>{{employees.name}}</p>
+    <p>{{employees.email}}</p>
   </div>
 </div>
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Incidencia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let incidence of incidences">
+      <td>{{incidence.date | date:'dd/MM/yyyy HH:mm'}}</td>
+      <td>{{incidence.message}}</td>
+    </tr>
+  </tbody>
+</table>
