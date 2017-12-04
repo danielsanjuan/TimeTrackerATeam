@@ -24,7 +24,7 @@ export class IncidenceService {
   }
 
   getPersonalIncidences(email):Observable<any>{
-    return this.http.get(this.localRoute + 'incidencesReport?email=' + email))
+    return this.http.get(this.serverRoute + 'incidencesReport?email=' + email))
   }
 
 }
