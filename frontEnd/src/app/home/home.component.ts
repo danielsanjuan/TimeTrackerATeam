@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Moment } from 'moment';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Moment, invalid } from 'moment';
 import * as moment from 'moment';
 import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { FormsModule } from '@angular/forms';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 
 @Component({
@@ -24,12 +25,17 @@ export class HomeComponent implements OnInit {
   fechaCheckout:any;
   week:number = 0;
   interval:any;
+  timeControl:boolean = false;
   employees = [];
 
-  constructor(private services:CheckInService, private sessionSt: SessionStorageService, private router: Router) {
+  constructor(private services:CheckInService,
+              public toastr: ToastsManager, vcr: ViewContainerRef, 
+              private sessionSt: SessionStorageService, 
+              private router: Router) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
+    this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
@@ -42,42 +48,47 @@ export class HomeComponent implements OnInit {
 
   time(){
     this.seeTime();
-    //this.workWeekTime();
-    this.interval = setInterval(()=>{this.seeTime()},1000); 
-    if(this.employees != undefined)
-      this.workWeekTime();
+    //this.interval = setInterval(()=>{this.seeTime()},1000); 
+    if(this.employees != undefined){
+      this.workWeekTime();      
+    }
   }
 
-  stopTime(){
-    clearInterval(this.interval);
-  }
+  // stopTime(){
+  //   clearInterval(this.interval);
+  // }
 
   seeTime(){
     this.services.getCheckIn().subscribe((data)=>{
       this.fechaCheckIn = new Date(data.response_date);
-      console.log("in "+this.fechaCheckIn);
+      if(data.response_date != "No hay fecha de checkin"){
+        this.timeControl = true;
+      }else{
+        this.toastr.error('No has hecho Check In', 'Oops!');        
+      }
+      this.services.getDateNow().subscribe((data)=>{
+        this.fechaNow = new Date(data.response_date);
+        this.services.getCheckout().subscribe((data)=>{
+          this.fechaCheckout = new Date(data.response_date);
+          if(data.response_date == "No hay fecha de checkout"){
+            this.workDayTime(this.fechaCheckIn, this.fechaNow);
+          }else{
+            this.workDayTime(this.fechaCheckIn, this.fechaCheckout);
+          }
+        });
+      });
     });
-    this.services.getCheckout().subscribe((data)=>{
-      this.fechaCheckout = new Date(data.response_date);
-      console.log("MANOLO LAMA ");
-    });
-    //if(this.fechaCheckout != null)
-    this.services.getDateNow().subscribe((data)=>{
-      this.fechaNow = new Date(data.response_date);
-      console.log("now "+this.fechaNow);
-    });
-    setTimeout(()=>{this.workDayTime(this.fechaCheckIn, this.fechaNow)}, 500);
   }
 
   workDayTime(dateCheck, dateNow){
     let timetoday = (dateNow - dateCheck);
     let time = new Date(timetoday);
     this.hours_today = time.toTimeString().split(' ')[0];
-    //this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
+    this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
     let timeOfWeek = ((dateNow - dateCheck));
     let timeWeek = new Date(timeOfWeek+this.week);
     this.hours_week = timeWeek.toTimeString().split(' ')[0];
-    //this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+    this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
   }
 
   workWeekTime(){

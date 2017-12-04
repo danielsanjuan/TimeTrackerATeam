@@ -4,10 +4,10 @@
         <div class="panel panel-default animated fadeIn fast">
           <div class="panel-heading">
             <div class="dropdown">
-                <button (click)="time()" (blur)="stopTime()" type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                <button (click)="time()" type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                   <span class="glyphicon glyphicon-time"></span>
                 </button>
-                <div class="dropdown-menu panel-left animated fadeInDown">
+                <div *ngIf="timeControl" class="dropdown-menu panel-left animated fadeInDown">
                     <div class="dropdown-item">
                       <div class="item-title">
                           <span>Today Time</span>
