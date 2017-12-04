@@ -27,36 +27,26 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.localSt.retrieve('existCheckIn') != null){
-      if (this.localSt.retrieve('existCheckIn') == true){
-        this.doClick = false;
-      } else {
-        this.doClick = true;
-      }
-    } else {
-      this.localSt.store('existCheckIn', false);
-    }
+  
   }
   
   timeCheckIn(){
-     this.doClick=false;
+    this.doClick=false;
     this.services.postCheckIn().subscribe( (data)=>{
       console.log(data.response_code);
-      console.log(data.response_date);
+      console.log(data.response_date + "al principio");
       console.log(data.response_status);
       switch(data.response_code){
         case "200":
             this.checkInTime = data.response_date;
             let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
             this.toastr.success('Has hecho check-in a las '+timeOk, 'Success!');
-            this.localSt.store('existCheckIn', true);
             break;
         case "202":
             this.checkInTime = data.response_date;
             let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
             this.toastr.warning('Que son estas horas de llegar '+ timeLate, 'Alert!');
             this.E202=true;
-            this.localSt.store('existCheckIn', true);
             break;
         case "406":
             this.E406=true;
@@ -69,6 +59,10 @@ export class CheckComponent implements OnInit {
             this.doClick=true;
             break; 
       }
+    });
+    this.services.getCheckIn().subscribe((data)=>{
+        console.log((data.response_date) + " getCheckIn");
+        console.log("in "+new Date(data.response_date));
     });
 
   }
@@ -85,14 +79,12 @@ export class CheckComponent implements OnInit {
               this.checkOutTime = data.response_date;
               this.toastr.success('Buen Trabajo!', 'Success!');
               this.doClick=true;
-              this.localSt.store('existCheckIn', false);
               break;
           case "202":
               this.checkOutTime = data.response_date;
               this.toastr.warning('Te vas muy pronto, NO?', 'Alert!');
               this.doClick=true;
               this.E202=true;
-              this.localSt.store('existCheckIn', false);
               break;
           case "406":
               this.E406=true;

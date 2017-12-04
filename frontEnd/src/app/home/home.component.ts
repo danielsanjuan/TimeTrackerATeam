@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -20,6 +21,9 @@ export class HomeComponent implements OnInit {
   nombre:string;
   fechaNow:any = "00:00";
   fechaCheckIn:any = "00:00";
+  week:number = 0;
+  interval:any;
+  employees = [];
 
   constructor(private services:CheckInService, private sessionSt: SessionStorageService, private router: Router) {
     if (this.sessionSt.retrieve('email') == null){
@@ -29,34 +33,54 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.nombre = this.sessionSt.retrieve('name');
+    this.services.getWeeklyReport().subscribe((data) => {
+      this.employees = data.response_report;
+    });
   }
 
 
   time(){
+    this.seeTime();
+    //this.workWeekTime();
+    this.interval = setInterval(()=>{this.seeTime()},1000); 
+    if(this.employees != undefined)
+      this.workWeekTime();
+  }
+
+  stopTime(){
+    clearInterval(this.interval);
+  }
+
+  seeTime(){
     this.services.getCheckIn().subscribe((data)=>{
-      console.log((data) + "hola estoy haciendo el getCheckIn");
       this.fechaCheckIn = new Date(data.response_date);
       console.log("in "+this.fechaCheckIn);
     });
     this.services.getDateNow().subscribe((data)=>{
-      console.log("Hola estoy estrando en el getDateNow");
       this.fechaNow = new Date(data.response_date);
       console.log("now "+this.fechaNow);
     });
-    this.workDayTime(this.fechaCheckIn, this.fechaNow);
-
+    setTimeout(()=>{this.workDayTime(this.fechaCheckIn, this.fechaNow)}, 500);
   }
 
   workDayTime(dateCheck, dateNow){
     let timetoday = (dateNow - dateCheck);
     let time = new Date(timetoday);
     this.hours_today = time.toTimeString().split(' ')[0];
-    this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
-    let timeOfWeek = ((dateNow - dateCheck)+54000000);
-    let timeWeek = new Date(timeOfWeek);
-    this.hours_week = time.toTimeString().split(' ')[0];
-    this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+    //this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
+    let timeOfWeek = ((dateNow - dateCheck));
+    let timeWeek = new Date(timeOfWeek+this.week);
+    this.hours_week = timeWeek.toTimeString().split(' ')[0];
+    //this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+  }
 
+  workWeekTime(){
+    for(let i=0; i<=this.employees.length; i++){
+      if(this.employees[i].name == this.nombre){
+        this.week = parseInt(this.employees[i].total);
+        this.week = this.week*3600000; 
+      }
+    }
   }
 
 }
