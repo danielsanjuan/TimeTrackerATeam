@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+  import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
@@ -21,7 +21,7 @@ export class UserlistComponent implements OnInit {
     this.services.getUserList().subscribe((data) => {
       console.log("entrando en la user list")
       console.log(data);
-      this.employees = data.response_report;
+      this.employees = data.response_list;
     });
   }
 

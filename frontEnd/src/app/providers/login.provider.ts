@@ -41,7 +41,7 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, this.serverRoute)
+      gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
 

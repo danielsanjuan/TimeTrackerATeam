@@ -15,30 +15,30 @@ export class CheckInService {
 
   postCheckIn():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.serverRoute + "check_in", body);
+    return this.http.post(this.localRoute + "check_in", body);
   }
 
   postCheckOut():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.serverRoute + "check_out", body);
+    return this.http.post(this.localRoute + "check_out", body);
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.serverRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.localRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "weeklyReport");
+    return this.http.get<any>(this.localRoute + "weeklyReport");
   }
 
   getDateNow(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "getDateNow");
+    return this.http.get<any>(this.localRoute + "getDateNow");
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "monthlyReport");    
+    return this.http.get<any>(this.localRoute + "monthlyReport");    
   }
   getUserList(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "getUser")
+    return this.http.get<any>(this.localRoute + "getUserList")
   }
 }

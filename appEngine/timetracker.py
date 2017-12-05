@@ -14,6 +14,7 @@ from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage
 from messages.IncidencesUsersListMessages import IncidencesUsersMessage, UsersListMessage, IncidencesUserListResponseMessage
+from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -218,6 +219,14 @@ class MainPage(remote.Service):
         incidence.date = str(oneIncidence.incidenceDate)
         incidence.message = oneIncidence.message
         return incidence
+    
+    def getSingleUser(self, employee):
+        user = JsonUserMessage()
+        user.name = employee.name
+        user.email = employee.email
+        user.role = employee.role
+        user.image = employee.image
+        return user
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
@@ -376,6 +385,13 @@ class MainPage(remote.Service):
         return DateNowGetMessage(response_date=str(date))
 
     @endpoints.method(UserListMessage, UserListResponseMessage, path='getUserList', http_method='GET', name='getUserList')
+    def getUserList(self, request):
+        userList = []
+        query = Employee.query()
+        for employee in query:
+            userList.append(self.getSingleUser(employee))
+        return UserListResponseMessage(response_list=userList)
+
 
 # [END guestbook]
 

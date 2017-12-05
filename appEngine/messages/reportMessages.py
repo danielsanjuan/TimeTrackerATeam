@@ -12,4 +12,4 @@ class JsonMessage(messages.Message):
     total = messages.StringField(7)
 
 class ReportResponseMessage(messages.Message):
-    response_report = messages.MessageField(JsonMessage, 1, repeated=True)
+    response_list = messages.MessageField(JsonMessage, 1, repeated=True)
