@@ -37,7 +37,7 @@
           <tbody>
             <tr class="hidden-xs" *ngFor="let employee of employees; let i = index">
               <th scope="row">{{i}}</th>
-              <td>{{employee.first_name}} {{employee.last_name}}</td>
+              <td>{{employee.name}}</td>
               <td>{{employee.monday}}</td>
               <td>{{employee.tuesday}}</td>
               <td>{{employee.wednesday}}</td>
@@ -49,7 +49,7 @@
           <tbody>
             <tr class="visible-xs" *ngFor="let employee of employees; let i = index">
               <th scope="row">{{i}}</th>
-              <td>{{employee.first_name}} {{employee.last_name}}</td>
+              <td>{{employee.name}}</td>
               <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40, 'good_hours': employee.total==40}">{{employee.total}}</td>
               <td>{{employee.monday}}</td>
               <td>{{employee.tuesday}}</td>
@@ -88,7 +88,7 @@
               <th>Empleado</th>
               <th>Jornadas</th>
               <th>Total horas</th>
-            </tr>   
+            </tr>
           </thead>
           <tbody>
             <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
@@ -120,4 +120,3 @@
       </div>
     </ng-template>
   </ng-template>
-  

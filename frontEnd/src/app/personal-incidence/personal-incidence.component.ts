@@ -26,8 +26,8 @@ export class PersonalIncidenceComponent implements OnInit {
     this.services.getPersonalIncidences(this.email).subscribe((data) => {
       this.incidences = data.incidences;
     })
-    // this.services.setIncidencesChecked(this.email).subscribe((data) => {
-    // })
+    this.services.setIncidencesChecked(this.email).subscribe((data) => {
+    })
   }
 
 }
