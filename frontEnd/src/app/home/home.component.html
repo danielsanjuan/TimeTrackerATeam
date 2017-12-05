@@ -1,0 +1,39 @@
+
+    <div class="row main">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default animated fadeIn fast">
+          <div class="panel-heading">
+            <div class="dropdown">
+                <button (click)="time()" type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                  <span class="glyphicon glyphicon-time"></span>
+                </button>
+                <div *ngIf="timeControl" class="dropdown-menu panel-left animated fadeInDown">
+                    <div class="dropdown-item">
+                      <div class="item-title">
+                          <span>Today Time</span>
+                      </div>
+                      <div class="item-time">
+                          <span>{{hours_today}}</span>
+                      </div>
+                    </div> 
+                    <div class="dropdown-item">
+                        <div class="item-title">
+                            <span>Week Time</span>
+                        </div>
+                        <div class="item-time">
+                            <span>{{hours_week}}</span>
+                        </div>
+                    </div>  
+                </div>
+                <span class="panel-welcome">Welcome <b class="name_user">{{nombre}}</b><b class="responsive_user">{{nombreResponsive}}</b></span>
+                <span class="panel-date">{{today}}</span>
+            </div>
+          </div>
+          <div class="panel-body col-md-12">
+            <app-check></app-check>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  

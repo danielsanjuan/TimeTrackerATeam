@@ -1,0 +1,122 @@
+.main{
+    margin-top: 10%;
+}
+
+.glyphicon-option-vertical{
+    color: #fff;
+}
+
+.panel {
+    border: 0px solid transparent !important;
+}
+
+.panel-body {
+    padding: 0px !important;
+    background-color: lightgray;
+    z-index: -2;
+}
+
+.panel-heading{
+    background-color: #333!important;
+    color: #fff!important;
+    font-size: 1.5em;
+    border-bottom: 0px!important;
+    z-index: 0;
+}
+
+.panel-welcome{
+    margin-left: 0.5em;
+    margin-right: 1em;
+}
+
+.panel-date{
+    float: right;
+    font-size: 0.8em;
+}
+
+.panel-left{
+    background-color: rgba(85,85,85, 0.8);
+    width: 30%;
+    z-index: -1;
+    opacity: 0.8!important;
+
+}
+
+.btn-default {
+    background-color: #777;
+    border-color: #666;
+}
+
+.item-title{
+    color: #fff;
+    text-align: center;
+    font-size: 1.2em;
+    background-color: #333;
+    width: 80%;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
+    margin: 10% 10% 0% 10%;
+}
+.item-time{
+    color: #222;
+    text-align: center;
+    font-size: 1.5em;
+    background-color: lightgray;
+    width: 80%;
+    border-bottom-left-radius: 5%;
+    border-bottom-right-radius: 5%;
+    margin: 0% 10% 10% 10%;
+}
+
+
+.report{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.incident{
+    margin:2em 1em 1em 1em;
+    text-align: center;
+    width: 85%!important;
+}
+
+.dropdown-menu{
+    margin-top: 8px;
+    margin-left: -16px;
+    border-bottom-left-radius: 3%!important;
+    border-bottom-right-radius: 3%!important;
+}
+
+@media screen and (max-width: 768px){ 
+    .name_user{
+        display: none;
+    }
+}
+
+@media (min-width: 768px){
+    .responsive_user{
+        display: none;
+    }
+
+}
+
+@media screen and (min-device-width: 350px) and (max-device-width: 600px) { 
+    .panel-heading[_ngcontent-c1] {
+        font-size: 1em
+    }
+}
+
+@media (max-width: 414px){
+    
+    .panel-heading {
+        font-size: 1em;
+        height: 4.5em;
+    }
+
+    .panel-welcome {
+        margin-right: 0em;
+    }
+
+}
+

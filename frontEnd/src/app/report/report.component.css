@@ -1,0 +1,81 @@
+.container{
+    margin: 20px 0 5px 0;
+}
+.min_hours{
+    /* background-color: #ff3535e0; */
+    color: #ff3535e0;
+    font-weight: bold;
+}
+
+.max_hours{
+    /* background-color: rgb(247, 181, 67); */
+    color: blue;
+    font-weight: bold;
+}
+
+.good_hours{
+    color: green;
+    font-weight: bold;
+    
+}
+.choose{
+    color: #fff;
+    background-color: #204d74;
+    border-color: #8c8c8c;
+}
+
+table{
+    text-align: center; 
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+
+
+thead tr th {
+    /* background-color: lightgray; */
+    text-align: center;
+}
+
+.no-data{
+    margin-top: 5em;
+}
+
+img{
+    max-width: 50%;
+}
+
+h2{
+    text-align: center;
+}
+
+/***** Media queries *****/
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (max-width: 767px) {}
+
+@media (max-width: 415px) {
+	
+	thead tr th {
+        font-size: 16px;
+    }
+    tbody tr td{
+        text-align: center;
+        font-size: 16px;
+        
+    }
+
+    img{
+        max-width: 80%;
+    }
+
+    
+
+}
+
+
