@@ -6,19 +6,22 @@ a {
 img+span.badge {
   position: relative;
   font-size: 15px;
-  bottom: 7.2em;
+  bottom: 10.2em;
   right: -96%;
   background-color: red;
 }
 
+.img-size {
+  height: 10em;
+}
+
 img {
   border-radius: 50%;
+  width: 10em;
 }
 
 .thumbnail {
   border-radius: 20px;
-  /*background-color: lightgrey;*/
-  /*border: 1px solid;*/
 }
 
 .margin_thumbnail {

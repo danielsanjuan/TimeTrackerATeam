@@ -2,7 +2,7 @@
   <div  (click)="showPersonalIncidence(employee.email)" class="col-xs-12 col-sm-4 col-md-3" *ngFor="let employee of employees">
     <div class="thumbnail">
       <a>
-          <img src="{{employee.image}}" alt="">
+          <img class="img-size" src="{{employee.image}}" alt="">
           <span class="badge">{{employee.incidencesNumber}}</span>
       </a>
       <div class="text-center">
