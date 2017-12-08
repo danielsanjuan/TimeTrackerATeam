@@ -340,10 +340,10 @@ class MainPage(remote.Service):
         )
         return EmployeeMessageResponse(employee=employee)
 
-    ''' Endpoints to Mock Database '''
+    ''' Endpoint to Mock Database '''
 
-    @endpoints.method(DateNowMessage, DateNowMessage, path='mockEmployees', http_method='POST', name='mockEmployees')
-    def mockEmployees(self, request):
+    @endpoints.method(DateNowMessage, DateNowMessage, path='mockDatabase', http_method='POST', name='mockDatabase')
+    def mockDatabase(self, request):
         employee=Employee(name="Elinor Farryn", email="efarryn0@cocolog-nifty.com", image="http://dummyimage.com/116x156.png/dddddd/000000",role=1, status=False).put()
         employee=Employee(name="Risa Jauncey", email="rjauncey0@wikipedia.org", image="http://dummyimage.com/167x105.png/dddddd/000000",role=1, status=False).put()
         employee=Employee(name="Dominic Esselin", email="desselin0@bloglines.com", image="http://dummyimage.com/224x248.png/ff4444/ffffff", role=0, status=False).put()
@@ -364,10 +364,6 @@ class MainPage(remote.Service):
         employee=Employee(name="Shara Petraitis", email="spetraitis0@gmpg.org", image="http://dummyimage.com/119x127.bmp/5fa2dd/ffffff", role=0, status=True).put()
         employee=Employee(name="Tremaine Cucuzza", email="tcucuzza0@yelp.com", image="http://dummyimage.com/105x244.jpg/cc0000/ffffff", role=1, status=False).put()
         employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True).put()
-        return DateNowMessage()
-
-    @endpoints.method(DateNowMessage, DateNowMessage, path='mockWorkdays', http_method='POST', name='mockWorkdays')
-    def mockWorkdays(self, request):
         workday = Workday(checkin=datetime.strptime("2017-12-10 20:50:10", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-10 22:52:26", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Elinor Farryn", email="efarryn0@cocolog-nifty.com", image="http://dummyimage.com/116x156.png/dddddd/000000",role=1,status=False)).put()
         workday = Workday(checkin=datetime.strptime("2017-12-10 16:20:54", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-10 19:16:08", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Risa Jauncey", email="rjauncey0@wikipedia.org", image="http://dummyimage.com/167x105.png/dddddd/000000",role=1,status=False)).put()
         workday = Workday(checkin=datetime.strptime("2017-12-11 08:38:29", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-11 09:44:41", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Dominic Esselin", email="desselin0@bloglines.com", image="http://dummyimage.com/224x248.png/ff4444/ffffff", role=0, status=False)).put()
@@ -388,10 +384,6 @@ class MainPage(remote.Service):
         workday = Workday(checkin=datetime.strptime("2017-12-09 21:03:27", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-09 23:20:33", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Shara Petraitis", email="spetraitis0@gmpg.org", image="http://dummyimage.com/119x127.bmp/5fa2dd/ffffff", role=0, status=True)).put()
         workday = Workday(checkin=datetime.strptime("2017-12-11 15:55:42", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-11 17:42:17", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Tremaine Cucuzza", email="tcucuzza0@yelp.com", image="http://dummyimage.com/105x244.jpg/cc0000/ffffff", role=1, status=False)).put()
         workday = Workday(checkin=datetime.strptime("2017-12-08 08:26:52", "%Y-%m-%d %H:%M:%S"), checkout=datetime.strptime("2017-12-08 09:43:05", "%Y-%m-%d %H:%M:%S"), employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True)).put()
-        return DateNowMessage()
-
-    @endpoints.method(DateNowMessage, DateNowMessage, path='mockIncidences', http_method='POST', name='mockIncidences')
-    def mockIncidences(self, request):
         incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 20:50:10", "%Y-%m-%d %H:%M:%S"), check=False, message="Checkin fuera de hora", employee=Employee(name="Elinor Farryn", email="efarryn0@cocolog-nifty.com", image="http://dummyimage.com/116x156.png/dddddd/000000",role=1,status=False)).put()
         incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 16:20:54", "%Y-%m-%d %H:%M:%S"), check=False, message="Checkin fuera de hora", employee=Employee(name="Risa Jauncey", email="rjauncey0@wikipedia.org", image="http://dummyimage.com/167x105.png/dddddd/000000",role=1,status=False)).put()
         incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 08:38:29", "%Y-%m-%d %H:%M:%S"), check=False, message="Checkin fuera de hora", employee=Employee(name="Dominic Esselin", email="desselin0@bloglines.com", image="http://dummyimage.com/224x248.png/ff4444/ffffff", role=0, status=False)).put()
