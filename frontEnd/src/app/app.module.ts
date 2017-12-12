@@ -23,6 +23,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 import { UserlistComponent } from './userlist/userlist.component';
+import { ModalUserComponent } from './modal-user/modal-user.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'report', component: ReportComponent },
   { path: 'userlist', component: UserlistComponent },
+  { path: 'userlist/modaluser', component: ModalUserComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -44,7 +46,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     UserlistComponent,
     IncidenceComponent,
-    PersonalIncidenceComponent
+    PersonalIncidenceComponent,
+    ModalUserComponent
   ],
   imports: [
     BrowserModule,

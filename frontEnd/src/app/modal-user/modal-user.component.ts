@@ -4,25 +4,26 @@ import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
 
 @Component({
-  selector: 'app-userlist',
-  templateUrl: './userlist.component.html',
-  styleUrls: ['./userlist.component.css']
+  selector: 'app-modal-user',
+  templateUrl: './modal-user.component.html',
+  styleUrls: ['./modal-user.component.css']
 })
-export class UserlistComponent implements OnInit {
-  employees = [];
-
+export class ModalUserComponent implements OnInit {
+  
   constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
   }
-
   ngOnInit() {
     this.services.getUserList().subscribe((data) => {
-      console.log("entrando en la user list")
+      console.log("entrando en el usuario")
       console.log(data);
-      this.employees = data.response_list;
     });
   }
 
 }
+
+
+
+

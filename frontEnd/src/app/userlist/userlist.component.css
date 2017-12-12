@@ -18,14 +18,13 @@ td{
     vertical-align: middle !important;
 }
 .imagecell{
-   width: 10%;
+   width: 6%;
    margin: 0;
 }
 img{
-    max-width: 100%;
+    max-width: 80%;
+    border-radius: 50%;
 }
-
-
 
 /***** Media queries *****/
 

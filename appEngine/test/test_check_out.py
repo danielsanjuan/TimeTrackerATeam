@@ -10,6 +10,8 @@ def check_out(date):
     else:
         return "Check_out before 14:00, report will be sended"
 
+
+
 class CheckOutTest(unittest.TestCase):
     def test_check_out(self):
         date = datetime(2017, 11, 16, 15, 14)
