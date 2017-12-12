@@ -7,6 +7,7 @@ import { BsDropdownModule } from 'ng2-bs-dropdown';
 import { ToastModule} from 'ng2-toastr/ng2-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {Ng2Webstorage} from 'ngx-webstorage';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -55,6 +56,7 @@ const appRoutes: Routes = [
     BsDropdownModule,
     HttpClientModule,
     Ng2Webstorage,
+    NgbModule.forRoot(),
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only

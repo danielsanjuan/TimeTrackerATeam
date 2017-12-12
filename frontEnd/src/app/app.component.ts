@@ -19,6 +19,7 @@ export class AppComponent implements OnInit{
   nombre:string="";
   subscription: Subscription;
   subscription2: Subscription;
+  isCollapsed:boolean=true;
   
   constructor(private services:LoginProvider,  
               private router: Router, 
@@ -41,12 +42,5 @@ export class AppComponent implements OnInit{
   ngAfterViewInit(){
     this.services.setSubjests();
   }
-  ngOnDestroy() {
-    // unsubscribe to ensure no memory leaks
-    //this.subscription.unsubscribe();
-    //this.subscription2.unsubscribe();
-}
   
-  
-
 }

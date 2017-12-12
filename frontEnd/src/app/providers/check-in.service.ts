@@ -27,6 +27,10 @@ export class CheckInService {
     return this.http.get(this.localRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
+  getCheckout():Observable<any>{
+    return this.http.get(this.localRoute + "getCheckout?email=" + this.sessionSt.retrieve('email'));
+  }
+
   getWeeklyReport(): Observable<any>{
     return this.http.get<any>(this.localRoute + "weeklyReport");
   }
@@ -40,5 +44,9 @@ export class CheckInService {
   }
   getUserList(): Observable<any>{
     return this.http.get<any>(this.localRoute + "getUserList")
+  }
+
+  checkWorkedDay(): Observable<any>{
+    return this.http.get<any>(this.localRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 }
