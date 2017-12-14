@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="row datePicker">
+    <div class="col-sm-4">
+      <form>
+        <label>Select a date to generate a weekly report</label>
+        <div class="input-group">
+
+          <input class="form-control" style="float:none" placeholder="Select a date" ngx-mydatepicker name="mydate" [(ngModel)]="model"
+            [options]="myOptions" #dp="ngx-mydatepicker" (dateChanged)="onDateChanged($event)" />
+
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" (click)="dp.clearDate()">
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+            <button type="button" class="btn btn-default" (click)="dp.toggleCalendar()">
+              <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  <ng-container *ngIf="employees.length > 0; else noReportWeek">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre y Apellidos</th>
+            <th>Total</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miercoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sabado</th>
+            <th>Domingo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees; let i = index">
+            <th scope="row">{{i}}</th>
+            <td>{{employee.name}}</td>
+            <td [ngClass]="{'min_hours': employee.total<40, 'max_hours': employee.total>40, 'good_hours': employee.total==40}">{{employee.total}}</td>
+            <td>{{employee.monday}}</td>
+            <td>{{employee.tuesday}}</td>
+            <td>{{employee.wednesday}}</td>
+            <td>{{employee.thursday}}</td>
+            <td>{{employee.friday}}</td>
+            <td>{{employee.saturday}}</td>
+            <td>{{employee.sunday}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #noReportWeek>
+    <div class="row no-data">
+      <div class="col-xs-8 col-xs-offset-3 col-sm-8 col-sm-offset-4">
+        <img src="/assets/img/logo_250.png" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>NO DATA AVAILABLE</h2>
+      </div>
+    </div>
+  </ng-template>
+</div>

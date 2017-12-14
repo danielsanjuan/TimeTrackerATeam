@@ -34,6 +34,10 @@ export class CheckInService {
   getWeeklyReport(): Observable<any>{
     return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport");
   }
+  
+  getWeeklyReportWithDate(week):Observable<any>{
+    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport" + week);
+  }
 
   getDateNow(): Observable<any>{
     return this.http.get<any>(this.localRoute + "/timetracker/v1/getDateNow");

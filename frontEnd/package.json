@@ -27,6 +27,7 @@
     "moment": "^2.19.2",
     "ng2-bs-dropdown": "^0.7.0",
     "ng2-toastr": "^4.1.2",
+    "ngx-mydatepicker": "^2.3.4",
     "ngx-webstorage": "^2.0.0",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14"
