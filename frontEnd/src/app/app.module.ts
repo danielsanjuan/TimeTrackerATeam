@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {Ng2Webstorage} from 'ngx-webstorage';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, Input, NgZone } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Input, NgZone, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IncidenceService } from '../providers/incidence.provider';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -38,7 +38,6 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   openModal(incidence, template: TemplateRef<any>) {
-    console.log(incidence);
     this.incidence = incidence;
     this.modalRef = this.modalService.show(template);
   }
