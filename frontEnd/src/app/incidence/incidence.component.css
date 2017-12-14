@@ -1,14 +1,58 @@
+a {
+  width: 100%;
+  height: 100%;
+}
+
+img+span.badge {
+  position: relative;
+  font-size: 15px;
+  bottom: 10.2em;
+  right: -96%;
+  background-color: red;
+}
+
+.img-size {
+  height: 10em;
+}
+
+img {
+  border-radius: 50%;
+  width: 10em;
+}
+
+.thumbnail {
+  border-radius: 20px;
+}
+
+.margin_thumbnail {
+  margin-top: 15px;
+}
+
 @media (max-width: 412px) {
   a {
     width: 100%;
     height: 100%;
   }
+
+  img+span.badge {
+    position: relative;
+    font-size: 15px;
+    bottom: 10.2em;
+    right: -96%;
+    background-color: red;
+    width: 8%;
+    height: 23px;
+  }
+  
+  .margin_thumbnail {
+    margin-top: 15px;
+  }
 }
 
-.margin_from_nav{
+.margin_from_nav {
   margin-top: 5%;
 }
 
-.center_employee_data{
+.center_employee_data {
   margin-top: 10%;
 }

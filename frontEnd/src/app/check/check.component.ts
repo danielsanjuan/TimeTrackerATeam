@@ -43,7 +43,7 @@ export class CheckComponent implements OnInit {
       console.log(data)
       if (data.response_date == "No has hecho checkin"){
         this.doClick = true;
-      }else if(data.response_date == "No has hecho checkout"){
+      }else if (data.response_date == "No has hecho checkout"){
         this.doClick = false;
       }else{
         this.doClick = true;

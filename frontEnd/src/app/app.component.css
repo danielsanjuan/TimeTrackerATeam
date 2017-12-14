@@ -34,7 +34,6 @@
     margin-right: 0.5em;
 }
 
-
 @media screen and (max-width: 768px){ 
     .navbar-right[_ngcontent-c0] {
         float: left;
@@ -53,11 +52,15 @@
 
 }
 
-@media screen and (min-device-width: 500px) and (max-device-width:768px) { 
+@media screen and (min-device-width: 500px) and (max-device-width:768px) {
     .panel-heading[_ngcontent-c1] {
         font-size: 1em
     }
 }
 
+@media (max-width: 500px){
+    .img_user{
+        margin-left: -2em;
+    }
 
-
+}

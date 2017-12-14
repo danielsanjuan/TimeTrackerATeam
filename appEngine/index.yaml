@@ -4,3 +4,7 @@ indexes:
   properties:
   - name: date
     direction: desc
+- kind: Incidences
+  properties:
+  - name: employee.email
+  - name: check
