@@ -31,4 +31,9 @@ export class IncidenceService {
     let body = { "email": email};
     return this.http.post(this.localRoute + 'setCheckIncidence', body);
   }
+
+  solveIncidence(date):Observable<any>{
+    let body = { "incidenceDate": date};
+    return this.http.post(this.localRoute + 'solveIncidence', body);
+  }
 }

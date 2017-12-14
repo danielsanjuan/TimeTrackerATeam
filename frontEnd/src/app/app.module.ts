@@ -7,7 +7,8 @@ import { BsDropdownModule } from 'ng2-bs-dropdown';
 import { ToastModule} from 'ng2-toastr/ng2-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {Ng2Webstorage} from 'ngx-webstorage';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalModule } from 'ngx-bootstrap';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -56,8 +57,8 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     ),
     ToastModule.forRoot(),
-    BrowserAnimationsModule
-
+    BrowserAnimationsModule,
+    ModalModule.forRoot()
   ],
   providers: [
     CheckInService,
