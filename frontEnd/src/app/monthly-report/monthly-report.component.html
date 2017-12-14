@@ -39,7 +39,7 @@
           <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
             <td>{{worker.name}} </td>
             <td>{{worker.total}} </td>
-            <td *ngFor="let horasM of employeesMonthly[i].hours_day">{{horasM}}</td>
+            <td *ngFor="let horasM of employeesMonthly[i].hours_day; let j = index" [ngClass]="{'weekends': isWeekend(j+1)}">{{horasM}}</td>
           </tr>
         </tbody>
         <tbody>

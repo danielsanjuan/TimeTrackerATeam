@@ -33,8 +33,7 @@ export class MonthlyReportComponent implements OnInit {
 
   ngOnInit() {
     this.services.getMontlyReport().subscribe((data) => {
-      this.firstSat = this.firstMonday(2017, data.response_report[0].month);
-      console.log(this.firstSat);
+      this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
@@ -78,7 +77,7 @@ export class MonthlyReportComponent implements OnInit {
   }
 
 
-  firstMonday(year, month){
+  firstSaturday(year, month){
     var dia = 1;
     var d= new Date(year, month, dia, 0, 0, 0);
     var day = d.getDay();
@@ -100,4 +99,7 @@ export class MonthlyReportComponent implements OnInit {
     console.log(event);
   }
 
+  isWeekend(day){
+    return ((day)%7 == 0|| (day)%7 == 1);
+  }
 }
