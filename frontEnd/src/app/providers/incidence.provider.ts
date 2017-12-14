@@ -16,7 +16,7 @@ export class IncidenceService {
   }
 
   getIncidenceReport():Observable<any>{
-    return this.http.get(this.serverRoute + 'incidencesUsersList');
+    return this.http.get(this.localRoute + 'incidencesUsersList');
   }
 
 
