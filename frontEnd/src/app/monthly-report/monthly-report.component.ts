@@ -2,21 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
+import { resetFakeAsyncZone } from '@angular/core/testing';
+import { IMyDateModel, INgxMyDpOptions } from 'ngx-mydatepicker';
 
 @Component({
-  selector: 'app-report',
-  templateUrl: './report.component.html',
-  styleUrls: ['./report.component.css']
+  selector: 'app-monthly-report',
+  templateUrl: './monthly-report.component.html',
+  styleUrls: ['./monthly-report.component.css']
 })
-export class ReportComponent implements OnInit {
+export class MonthlyReportComponent implements OnInit {
   weekReport: boolean = true;
   monthReport: boolean = false;
-
+  firstSat;
   employees = [];
   employeesMonthly = [];
   workerHours = [];
   totalDays; 
   mes = [];
+  myOptions: INgxMyDpOptions = {
+    // other options...
+    dateFormat: 'dd.mm.yyyy',
+    
+  };
 
   constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
     if (this.sessionSt.retrieve('email') == null){
@@ -25,20 +32,23 @@ export class ReportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.services.getWeeklyReport().subscribe((data) => {
-      if (data.response_report != undefined){
-        this.employees = data.response_report;
-      }
-    });
     this.services.getMontlyReport().subscribe((data) => {
+      this.firstSat = this.firstMonday(2017, data.response_report[0].month);
+      console.log(this.firstSat);
       if (data.response_report != undefined){
-
-        if(data.response_report.month == 2){
-          if(this.leapYear(data.response_report.year)) this.totalDays = 29;
+        this.leapYear(28);
+        if(data.response_report[0].month == 2){
+          if(this.leapYear(data.response_report[0].year)) this.totalDays = 29;
           else this.totalDays=28;
         }
-        else if (data.response_report.month == 4 || data.response_report.month == 6 || data.response_report.month == 9 || data.response_report.month == 10) this.totalDays=30;
-        else this.totalDays = 31
+        else {
+          if (data.response_report[0].month == 4 || data.response_report[0].month == 6 || data.response_report[0].month == 9 || data.response_report[0].month == 11){
+             this.totalDays=30;
+          }
+          else this.totalDays = 31;
+          
+        }
+          
         for(let k=0; k<this.totalDays; k++) this.mes[k] = 0;
         
 
@@ -63,16 +73,31 @@ export class ReportComponent implements OnInit {
 
 
   leapYear(year){
+    console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
-  weekReportButton(){
-    this.monthReport = false;
-    this.weekReport = true;
+
+  firstMonday(year, month){
+    var dia = 1;
+    var d= new Date(year, month, dia, 0, 0, 0);
+    var day = d.getDay();
+    while(day != 6) {
+      dia++;
+      d.setDate(dia);
+      day = d.getDay();
+    }
+    return dia;
   }
 
-  monthReportButton(){
-    this.weekReport = false;
-    this.monthReport = true;
+  onDateChanged(event: IMyDateModel): void {
+    //realizar llamada al metodo del servicio
+    // this.services.getWeeklyReportWithDate(event).subscribe((data) => {
+    //   if (data.response_report != undefined){
+    //     this.employees = data.response_report;
+    //   }
+    // });
+    console.log(event);
   }
+
 }
