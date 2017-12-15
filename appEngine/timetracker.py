@@ -99,11 +99,15 @@ class MainPage(remote.Service):
         report.wednesday = 0
         report.thursday = 0
         report.friday = 0
+        report.saturday = 0
+        report.sunday = 0
         monday = 0
         tuesday = 0
         wednesday = 0
         thursday = 0
         friday = 0
+        saturday = 0
+        sunday = 0
 
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek and worked.checkout != None:
@@ -122,6 +126,8 @@ class MainPage(remote.Service):
                 elif worked.checkin.isocalendar()[2] == 5:
                     friday = int((worked.checkout - worked.checkin).total_seconds())/60
                     report.friday = friday/60
+                elif worked.checkin.isocalendar()[2] == 6:
+                    saturday = int((worked.checkout - worked.checkin).total_seconds())/60
         total = monday + tuesday + wednesday + thursday + friday
         report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
         print "Este es el total", total
@@ -352,7 +358,8 @@ class MainPage(remote.Service):
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
-            image=query.image
+            image=query.image,
+            role=query.role
         )
         return EmployeeMessageResponse(employee=employee)
 

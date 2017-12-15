@@ -13,6 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
+import { UserService } from './providers/user.provider';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -33,7 +34,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'report', component: ReportComponent },
   { path: 'userlist', component: UserlistComponent },
-  { path: 'userlist/modaluser', component: ModalUserComponent },
+  { path: 'modaluser/:email', component: ModalUserComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -68,7 +69,8 @@ const appRoutes: Routes = [
   providers: [
     CheckInService,
     LoginProvider,
-    IncidenceService
+    IncidenceService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

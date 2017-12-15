@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { SessionStorageService } from 'ngx-webstorage';
-import { CheckInService } from '../providers/check-in.service';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../providers/user.provider';
+
 
 @Component({
   selector: 'app-modal-user',
@@ -10,18 +10,30 @@ import { CheckInService } from '../providers/check-in.service';
 })
 export class ModalUserComponent implements OnInit {
   
-  constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
-    if (this.sessionSt.retrieve('email') == null){
-      this.router.navigate([''])
+  email: any;
+  role: any;
+  private sub: any;
+  employees = [];
+
+  constructor(private route: ActivatedRoute, private services: UserService) { }
+  
+  ngOnInit() {
+    this.sub = this.route.params.subscribe((params) => {
+      this.email = params['email'];
+      
+    });
+    this.services.getEmployee(this.email).subscribe((data) => {
+      this.employees = data.employee;
+      this.role = data.employee.role;
+    })
+  }
+  changeRole() {
+    if (this.role == 0){
+      this.role = 1;
+    } else {
+      this.role = 0;
     }
   }
-  ngOnInit() {
-    this.services.getUserList().subscribe((data) => {
-      console.log("entrando en el usuario")
-      console.log(data);
-    });
-  }
-
 }
 
 

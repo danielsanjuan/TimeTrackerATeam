@@ -16,6 +16,7 @@ class JsonEmployee(messages.Message):
     name = messages.StringField(1)
     email = messages.StringField(2)
     image = messages.StringField(3)
+    role = messages.IntegerField(4)
 
 class EmployeeMessage(messages.Message):
     email = messages.StringField(1)

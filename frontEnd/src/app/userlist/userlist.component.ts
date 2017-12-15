@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
-import { CheckInService } from '../providers/check-in.service';
+import { UserService } from '../providers/user.provider';
 
 @Component({
   selector: 'app-userlist',
@@ -11,7 +11,7 @@ import { CheckInService } from '../providers/check-in.service';
 export class UserlistComponent implements OnInit {
   employees = [];
 
-  constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
+  constructor(private router: Router, private sessionSt: SessionStorageService, private services: UserService) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
@@ -24,5 +24,11 @@ export class UserlistComponent implements OnInit {
       this.employees = data.response_list;
     });
   }
+  
 
+  showUserInfo(email){
+    console.log(email)
+    this.router.navigate(['/modaluser', email]); 
+    }
+  
 }

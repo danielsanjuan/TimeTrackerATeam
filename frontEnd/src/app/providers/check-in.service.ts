@@ -42,11 +42,9 @@ export class CheckInService {
   getMontlyReport(): Observable<any>{
     return this.http.get<any>(this.localRoute + "monthlyReport");    
   }
-  getUserList(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "getUserList")
-  }
-
+  
   checkWorkedDay(): Observable<any>{
     return this.http.get<any>(this.localRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
+
 }
