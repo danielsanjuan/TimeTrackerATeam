@@ -15,6 +15,7 @@
           <ul class="nav navbar-nav">
             <li routerLinkActive="active"><a href="#" [routerLink]="['weeklyReport']" (click)="isCollapsed = !isCollapsed">Weekly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><img class="img_user" [routerLink]="['login']" src="{{imagen}}" alt="User">
@@ -28,6 +29,5 @@
 
 
 <div class="container animated fadeIn">
-
   <router-outlet></router-outlet>
 </div>
