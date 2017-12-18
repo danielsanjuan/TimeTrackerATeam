@@ -33,7 +33,33 @@ export class MonthlyReportComponent implements OnInit {
 
   ngOnInit() {
     this.services.getMontlyReport().subscribe((data) => {
+      this.checkMonth(data);
+    });
+  }
+
+
+  leapYear(year){
+    console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+  }
+
+
+  firstSaturday(year, month){
+    var dia = 1;
+    var d= new Date(year, month, dia, 0, 0, 0);
+    var day = d.getDay();
+    while(day != 6) {
+      dia++;
+      d.setDate(dia);
+      day = d.getDay();
+    }
+    console.log(dia);
+    return dia;
+  }
+
+  checkMonth(data){
       this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
+      console.log(data.response_report[0].month);
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
@@ -67,39 +93,19 @@ export class MonthlyReportComponent implements OnInit {
             this.employeesMonthly[i].hours_day = [].concat(this.mes);
         }
       }
-    });
-  }
-
-
-  leapYear(year){
-    console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
-    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
-  }
-
-
-  firstSaturday(year, month){
-    var dia = 1;
-    var d= new Date(year, month, dia, 0, 0, 0);
-    var day = d.getDay();
-    while(day != 6) {
-      dia++;
-      d.setDate(dia);
-      day = d.getDay();
-    }
-    return dia;
   }
 
   onDateChanged(event: IMyDateModel): void {
     //realizar llamada al metodo del servicio
-    // this.services.getWeeklyReportWithDate(event).subscribe((data) => {
-    //   if (data.response_report != undefined){
-    //     this.employees = data.response_report;
-    //   }
-    // });
+    this.services.getMonthlyReportWithDate(event).subscribe((data) => {
+      if (data.response_report != undefined){
+        this.checkMonth(data);
+      }   
+    });
     console.log(event);
   }
 
   isWeekend(day){
-    return ((day)%7 == 0|| (day)%7 == 1);
+    return ((day-this.firstSat)%7 == 0|| (day-this.firstSat)%7 == 1);
   }
 }
