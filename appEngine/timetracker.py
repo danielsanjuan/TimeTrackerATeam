@@ -348,6 +348,17 @@ class MainPage(remote.Service):
         query.put()
         return SolveIncidenceResponse()
 
+    @endpoints.method(message_types.VoidMessage, message_types.VoidMessage, path='autoCheckOut', http_method='GET', name='autoCheckOut')
+    def autoCheckOut(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.checkout == None).fetch()
+        for userWithoutCheckOut in query:
+            userWithoutCheckOut.checkout = datetime.now()
+            userWithoutCheckOut.put()
+            self.set_incidences("The user didn't check out, this is the automatic check out", datetime.now(), userWithoutCheckOut.employee.email, False)
+
+        return message_types.VoidMessage()
+
     ''' Endpoint to Mock Database '''
 
     @endpoints.method(DateNowMessage, DateNowMessage, path='mockDatabase', http_method='POST', name='mockDatabase')
