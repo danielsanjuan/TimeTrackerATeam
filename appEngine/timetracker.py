@@ -157,7 +157,8 @@ class MainPage(remote.Service):
             message= finalMessage,
             incidenceDate=date,
             employee=Employee (name=query.name,email=query.email,role=query.role,image=query.image),
-            check=check
+            check=check,
+            solved=False
         )
         incidences.put()
 
@@ -230,9 +231,7 @@ class MainPage(remote.Service):
         query = query.filter(Workday.employee.email == request.email).fetch()
         for day in query:
             if day.checkin != None:
-                print day.checkin
                 if day.checkout != None:
-                    print day.checkout
                     if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
                         if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
                             return CheckResponse(response_date=str(day.checkin))
@@ -333,7 +332,6 @@ class MainPage(remote.Service):
     def getEmployee(self, request):
         query = Employee.query()
         query = query.filter(Employee.email == request.email).get()
-        print "Impresion", query
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
@@ -345,7 +343,7 @@ class MainPage(remote.Service):
     @endpoints.method(SolveIncidence, SolveIncidenceResponse, path='solveIncidence', http_method='POST', name='solveIncidence')
     def solveIncidence(self, request):
         query = Incidences.query()
-        query = query.filter(Incidences.incidenceDate == datetime.strptime(request.incidenceDate, "%Y-%m-%d %H:%M:%S")).get()
+        query = query.filter(Incidences.incidenceDate == datetime.strptime(request.incidenceDate, "%Y-%m-%d %H:%M:%S.%f")).get()
         query.solved = True
         query.put()
         return SolveIncidenceResponse()
