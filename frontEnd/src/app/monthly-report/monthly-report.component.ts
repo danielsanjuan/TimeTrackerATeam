@@ -97,12 +97,12 @@ export class MonthlyReportComponent implements OnInit {
 
   onDateChanged(event: IMyDateModel): void {
     //realizar llamada al metodo del servicio
-    this.services.getMonthlyReportWithDate(event).subscribe((data) => {
+    this.services.getMonthlyReportWithDate(event.formatted).subscribe((data) => {
       if (data.response_report != undefined){
         this.checkMonth(data);
       }   
     });
-    console.log(event);
+    console.log(event.formatted);
   }
 
   isWeekend(day){

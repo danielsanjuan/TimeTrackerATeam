@@ -48,7 +48,7 @@ export class CheckInService {
   }
 
   getMonthlyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/monthlyReport" + date);
+    return this.http.get<any>(this.localRoute + "/timetracker/v1/monthlyReportDate?monthDate=" + date);
   }
   
   checkWorkedDay(): Observable<any>{
