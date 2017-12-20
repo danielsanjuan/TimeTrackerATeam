@@ -93,6 +93,9 @@ export class MonthlyReportComponent implements OnInit {
             this.employeesMonthly[i].hours_day = [].concat(this.mes);
         }
       }
+      else{
+        this.employeesMonthly = [];
+      }
   }
 
   onDateChanged(event: IMyDateModel): void {
