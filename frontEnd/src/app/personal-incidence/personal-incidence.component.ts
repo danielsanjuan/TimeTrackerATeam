@@ -4,6 +4,8 @@ import { IncidenceService } from '../providers/incidence.provider';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { Router } from '@angular/router';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+
 
 @Component({
   selector: 'app-personal-incidence',

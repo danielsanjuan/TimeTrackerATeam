@@ -33,6 +33,7 @@ export class IncidenceService {
   }
 
   solveIncidence(date):Observable<any>{
+    console.log("Fecha por aqui" + date);
     let body = { "incidenceDate": date};
     return this.http.post(this.localRoute + 'solveIncidence', body);
   }

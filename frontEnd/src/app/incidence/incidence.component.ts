@@ -14,8 +14,9 @@ export class IncidenceComponent implements OnInit {
 
   ngOnInit() {
     this.service.getIncidenceReport().subscribe((data) => {
-      this.employees = data.users;
-      console.log(data);
+      if (data != undefined){
+        this.employees = data.users;
+      }
     })
   }
 

@@ -10,6 +10,7 @@ import {Ng2Webstorage} from 'ngx-webstorage';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -60,7 +61,8 @@ const appRoutes: Routes = [
     ToastModule.forRoot(),
     BrowserAnimationsModule,
     NgxMyDatePickerModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    TooltipModule.forRoot()
   ],
   providers: [
     CheckInService,
