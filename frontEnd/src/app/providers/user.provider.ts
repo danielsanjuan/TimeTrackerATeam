@@ -24,6 +24,6 @@ export class UserService {
 
   setRole(email):Observable<any>{
     let body = { "email": email};
-    return this.http.post(this.localRoute + 'setCheckIncidence', body);
+    return this.http.post(this.localRoute + 'setRole', body);
   }  
 }

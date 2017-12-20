@@ -28,11 +28,11 @@ export class ModalUserComponent implements OnInit {
     })
   }
   changeRole() {
-    if (this.role == 0){
-      this.role = 1;
-    } else {
-      this.role = 0;
-    }
+    this.services.setRole(this.email).subscribe((data) => {
+      console.log(data.employee.role);
+      this.role = data.employee.role;
+      
+    })
   }
 }
 
