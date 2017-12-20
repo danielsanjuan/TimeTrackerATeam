@@ -53,7 +53,7 @@
           <tr *ngFor="let employee of employees; let i = index">
             <th scope="row">{{i}}</th>
             <td class="hidden-xs">{{employee.name}}</td>
-            <td class="visible-xs">{{employee.name}}</td>
+            <td class="visible-xs">{{responsiveName[i]}}</td>
             <td [ngClass]="{'good_hours': employee.total>=2400 && employee.total<=2459, 'min_hours': employee.total<2400, 'max_hours': employee.total>2459}">{{employee.totalhm}}</td>
             <td>{{employee.monday}}</td>
             <td>{{employee.tuesday}}</td>
