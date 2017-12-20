@@ -17,6 +17,7 @@ export class WeeklyReportComponent implements OnInit {
       dateFormat: 'dd.mm.yyyy',
       showWeekNumbers: true
   };
+  responsiveName: string[] = [];
   
   // Initialized to specific date (09.10.2018)
 
@@ -28,20 +29,33 @@ export class WeeklyReportComponent implements OnInit {
   // optional date changed callback
   onDateChanged(event: IMyDateModel): void {
       //realizar llamada al metodo del servicio
-      this.services.getWeeklyReportWithDate(event).subscribe((data) => {
-        if (data.response_report != undefined){
-          this.employees = data.response_report;
-        }
+      this.services.getWeeklyReportWithDate(event.formatted).subscribe((data) => {
+        if (data.response_list != undefined){   
+          this.employees = data.response_list;
+          this.setResponsiveName(this.employees);
+        }else{
+          this.employees = [];
+        }     
       });
-      console.log(event);
   }
 
   ngOnInit() {
     this.services.getWeeklyReport().subscribe((data) => {
-      if (data.response_report != undefined){
-        this.employees = data.response_report;
+      if (data.response_list != undefined){
+        this.employees = data.response_list;
+        this.setResponsiveName(this.employees);        
       }
     });
   }
-
+  
+  setResponsiveName(employees){
+    for (var i = 0; i < employees.length; i++) {
+      let separate = employees[i].name.split(" ");
+      if(separate.length>3){
+        this.responsiveName[i] = separate[0]+" "+separate[2];
+      }else{
+        this.responsiveName[i] = separate[0]+" "+separate[1];
+      }
+    }
+  }
 }

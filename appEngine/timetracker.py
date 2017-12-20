@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckResponse
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
-from messages.reportMessages import ReportMessage, ReportResponseMessage, JsonMessage
+from messages.reportMessages import ReportMessage, ReportDateMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
@@ -87,8 +87,7 @@ class MainPage(remote.Service):
 
     def singleReport(self, currentEmployee, date):
         report = JsonMessage()
-        currentDay = date
-        currentWeek = currentDay.isocalendar()[1]
+        week = date.isocalendar()[1]
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
         report.name = currentEmployee.name
@@ -97,14 +96,12 @@ class MainPage(remote.Service):
         report.wednesday = 0
         report.thursday = 0
         report.friday = 0
-        monday = 0
-        tuesday = 0
-        wednesday = 0
-        thursday = 0
-        friday = 0
-
+        report.saturday = 0
+        report.sunday = 0
+        monday = tuesday = wednesday = thursday = friday = saturday = sunday = 0
+        
         for worked in query:
-            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == currentWeek and worked.checkout != None:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == week and worked.checkout != None:
                 if worked.checkin.isocalendar()[2] == 1:
                     monday = int((worked.checkout - worked.checkin).total_seconds())/60
                     report.monday = monday/60
@@ -120,8 +117,15 @@ class MainPage(remote.Service):
                 elif worked.checkin.isocalendar()[2] == 5:
                     friday = int((worked.checkout - worked.checkin).total_seconds())/60
                     report.friday = friday/60
-        total = monday + tuesday + wednesday + thursday + friday
-        report.total = '{:02d}:{:02d}'.format(*divmod(total, 60))
+                elif worked.checkin.isocalendar()[2] == 5:
+                    saturday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.saturday = saturday/60
+                elif worked.checkin.isocalendar()[2] == 5:
+                    sunday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    report.sunday = sunday/60
+        report.total = monday + tuesday + wednesday + thursday + friday + saturday + sunday
+        report.totalhm = '{:02d}:{:02d}'.format(*divmod(report.total, 60))
+        print "Este es el total", report.total
         return report
 
     def singleMonthlyReport(self, currentEmployee, date):
@@ -294,17 +298,29 @@ class MainPage(remote.Service):
         return CheckIncidenceResponse()
 
     @endpoints.method(ReportMessage, ReportResponseMessage, path='weeklyReport', http_method='GET', name='weeklyReport')
-    def report(self, request):
+    def weeklyReport(self, request):
         workedDays = []
         day = datetime.today()
         if datetime.today().isocalendar()[2] != 1:
             query = Employee.query()
             for currentEmployee in query:
                 workedDays.append(self.singleReport(currentEmployee, day))
-            return ReportResponseMessage(response_report=workedDays)
+            return ReportResponseMessage(response_list=workedDays)
         else:
-            return ReportResponseMessage(response_report=[])
+            return ReportResponseMessage(response_list=[])
 
+    @endpoints.method(ReportDateMessage, ReportResponseMessage, path='weeklyReportWithDate', http_method='GET', name='weeklyReportWithDate')
+    def reportWithDate(self, request):
+        workedDays = []
+        week = datetime(int(request.week[6:10]),int(request.week[3:5]),int(request.week[0:2]))
+        query = Employee.query()
+        print datetime.today()
+        if week < datetime.today():
+            for currentEmployee in query:
+                workedDays.append(self.singleReport(currentEmployee, week))
+            return ReportResponseMessage(response_list=workedDays)
+        else:
+            return ReportResponseMessage(response_list=[])
 
     @endpoints.method(ReportMonthlyMessage, ReportMonthlyResponseMessage, path='monthlyReport', http_method='GET', name='monthlyReport')
     def reportMonthly(self, request):
