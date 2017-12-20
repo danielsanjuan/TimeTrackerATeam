@@ -103,7 +103,10 @@ export class MonthlyReportComponent implements OnInit {
     this.services.getMonthlyReportWithDate(event.formatted).subscribe((data) => {
       if (data.response_report != undefined){
         this.checkMonth(data);
-      }   
+      } 
+      else{
+        this.employeesMonthly = [];
+      }  
     });
     console.log(event.formatted);
   }
