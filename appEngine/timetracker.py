@@ -321,10 +321,14 @@ class MainPage(remote.Service):
     def reportMonthlyWithDate(self, request):
         workedDays = []
         date = datetime(int(request.monthDate[6:10]),int(request.monthDate[3:5]), int(request.monthDate[0:2]))
+        today = datetime.today()
         query = Employee.query()
-        for currentEmployee in query:
-            workedDays.append(self.singleMonthlyReportWithDate(currentEmployee, date))
-        return ReportMonthlyResponseMessage(response_report=workedDays)
+        if date.year <= today.year and date.month <= today.month :
+            for currentEmployee in query:
+                workedDays.append(self.singleMonthlyReportWithDate(currentEmployee, date))
+            return ReportMonthlyResponseMessage(response_report=workedDays)
+        else:
+            return ReportMonthlyResponseMessage(response_report=[])
 
     @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
     def incidencesReport(self, request):
