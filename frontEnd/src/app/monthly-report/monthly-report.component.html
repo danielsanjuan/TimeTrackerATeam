@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row datePicker">
+    <div class="col-sm-4">
+      <form>
+        <label>Select a date to generate a monthly report</label>
+        <div class="input-group">
+
+          <input class="form-control" style="float:none" placeholder="Select a date" ngx-mydatepicker name="mydate" [(ngModel)]="model"
+            [options]="myOptions" #dp="ngx-mydatepicker" (dateChanged)="onDateChanged($event)" />
+
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" (click)="dp.clearDate()">
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+            <button type="button" class="btn btn-default" (click)="dp.toggleCalendar()">
+              <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  <ng-container *ngIf="employeesMonthly.length>0; else noReportMonthly">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr class="hidden-xs">
+            <th>Empleado</th>
+            <th>Total</th>
+            <th *ngFor="let horasM of employeesMonthly[0].hours_day; let i = index">{{i+1}}</th>
+          </tr>
+          <tr class="visible-xs">
+            <th>Empleado</th>
+            <th>Total horas</th>
+            <th>Jornadas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
+            <td>{{worker.name}} </td>
+            <td>{{worker.total}} </td>
+            <td *ngFor="let horasM of employeesMonthly[i].hours_day; let j = index" [ngClass]="{'weekends': isWeekend(j+1)}">{{horasM}}</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr class="visible-xs" *ngFor="let worker of employeesMonthly">
+            <td>{{worker.name}} </td>
+            <td>{{worker.total}} </td>
+            <td>{{worker.jornadas}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #noReportMonthly>
+    <div class="row no-data">
+      <div class="col-xs-8 col-xs-offset-3 col-sm-8 col-sm-offset-4">
+        <img src="/assets/img/logo_250.png" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>NO DATA AVAILABLE</h2>
+      </div>
+    </div>
+  </ng-template>
+</div>

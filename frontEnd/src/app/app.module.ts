@@ -26,6 +26,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
+import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -33,6 +34,7 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent },
+  { path: 'monthlyReport', component: MonthlyReportComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -46,6 +48,7 @@ const appRoutes: Routes = [
     LogoutComponent,
     IncidenceComponent,
     PersonalIncidenceComponent,
+    MonthlyReportComponent,
   ],
   imports: [
     BrowserModule,

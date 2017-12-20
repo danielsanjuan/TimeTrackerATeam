@@ -2,6 +2,9 @@ from protorpc import messages
 class ReportMonthlyMessage(messages.Message):
     pass
 
+class ReportMonthlyMessageWithDate(messages.Message):
+    monthDate = messages.StringField(1)
+
 class JsonSingleDayMessage(messages.Message):
     day = messages.IntegerField(1)
     hour = messages.IntegerField(2)
