@@ -28,18 +28,19 @@ export class WeeklyReportComponent implements OnInit {
   // optional date changed callback
   onDateChanged(event: IMyDateModel): void {
       //realizar llamada al metodo del servicio
-      this.services.getWeeklyReportWithDate(event).subscribe((data) => {
-        if (data.response_report != undefined){
-          this.employees = data.response_report;
-        }
+      this.services.getWeeklyReportWithDate(event.formatted).subscribe((data) => {
+        if (data.response_list != undefined){   
+          this.employees = data.response_list;
+        }else{
+          this.employees = [];
+        }     
       });
-      console.log(event);
   }
 
   ngOnInit() {
     this.services.getWeeklyReport().subscribe((data) => {
-      if (data.response_report != undefined){
-        this.employees = data.response_report;
+      if (data.response_list){
+        this.employees = data.response_list;
       }
     });
   }
