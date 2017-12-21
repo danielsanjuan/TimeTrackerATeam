@@ -31,12 +31,12 @@ export class PersonalIncidenceComponent implements OnInit {
     });
     this.services.getEmployee(this.email).subscribe((data) => {
       this.employees = data.employee;
-    })
+    });
     this.services.getPersonalIncidences(this.email).subscribe((data) => {
       this.incidences = data.incidences;
-    })
+    });
     this.services.setIncidencesChecked(this.email).subscribe((data) => {
-    })
+    });
   }
 
   openModal(incidence, template: TemplateRef<any>) {

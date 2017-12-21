@@ -372,7 +372,8 @@ class MainPage(remote.Service):
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
-            image=query.image
+            image=query.image,
+            role=query.role
         )
         return EmployeeMessageResponse(employee=employee)
 

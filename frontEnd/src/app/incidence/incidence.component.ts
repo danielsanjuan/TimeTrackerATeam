@@ -17,7 +17,7 @@ export class IncidenceComponent implements OnInit {
       if (data != undefined){
         this.employees = data.users;
       }
-    })
+    });
   }
 
   showPersonalIncidence(email){
