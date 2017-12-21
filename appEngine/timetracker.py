@@ -15,6 +15,7 @@ from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
+from messages.changeCheckHoursMessages import ChangeCheckHoursMessage, JsonChangeCheckHoursMessage, FixCheckHoursMessage, ChangeCheckHoursResponseMessage, FixHoursResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -395,6 +396,38 @@ class MainPage(remote.Service):
             self.set_incidences("The user didn't check out, this is the automatic check out", datetime.now(), userWithoutCheckOut.employee.email, False)
 
         return message_types.VoidMessage()
+
+    @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
+    def getCheckHours(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).get()
+        response_change_check = JsonChangeCheckHoursMessage(
+            key = query.key.id(),
+            checkin = str(query.checkin),
+            checkout = str(query.checkout)
+        )
+        return ChangeCheckHoursResponseMessage(response_change_check = response_change_check)
+   
+    @endpoints.method(FixCheckHoursMessage, FixHoursResponseMessage, path='changeCheckHours', http_method='POST', name='changeCheckHours')
+    def changeCheckHours(self, request):
+
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email)
+        for day in query:
+            if day.key.id() == request.key:
+                print "ALGO"
+                newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S")
+                newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S")
+                day.checkin = newCheckin
+                day.checkout = newChekout
+                print day
+                day.put()
+                return FixHoursResponseMessage()
+            
+        return FixHoursResponseMessage()
+        
+
+
 
     ''' Endpoint to Mock Database '''
 
