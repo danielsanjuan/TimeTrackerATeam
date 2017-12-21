@@ -14,11 +14,8 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 })
 export class PersonalIncidenceComponent implements OnInit {
 
-
-
   rForm: FormGroup;
-  post:any;
-
+  key: any;
   email: any;
   private sub: any;
   employees = [];
@@ -27,12 +24,12 @@ export class PersonalIncidenceComponent implements OnInit {
   incidence: any;
   check_in: any;
   check_out: any;
+
   constructor(private zone: NgZone, private route: ActivatedRoute, private services: IncidenceService,
     private modalService: BsModalService, private router: Router, private fb: FormBuilder) {
-
-      this.rForm = fb.group({
-        check_in: [null, Validators.required],
-        check_out: [null, Validators.required]
+      this.rForm = this.fb.group({
+        check_in: ["nada", Validators.required],
+        check_out: ["nada", Validators.required]
       });
   }
 
@@ -53,37 +50,35 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   openModal(incidence, template: TemplateRef<any>) {
-    // this.services.getCheckHoursIncidence(incidence.email, incidence.date).subscribe((data) => {
-    //   this.check_in = data.checkin;
-    //   this.check_out = data.checkout;
-    // });
+    this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
+      this.key = data.response_change_check.key;
+      let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].slice(0,12);
+      this.check_in = dateStringIn;
+      let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].slice(0,12);
+      this.check_out = dateStringOut;
+      this.rForm.patchValue({check_in: data.response_change_check.checkin, check_out: data.response_change_check.checkout});
+    });
     this.incidence = incidence;
     this.modalRef = this.modalService.show(template);
   }
 
-  setSolved(event) {
-    // this.services.solveIncidence(this.incidence.date).subscribe((data) => {
-    //   setTimeout(() => {
-    //     this.zone.run(() => {
-    //       this.modalRef.hide();
-    //       this.modalRef = null;
-    //       this.services.getPersonalIncidences(this.email).subscribe((data) => {
-    //         this.incidences = data.incidences;
-    //       });
-    //     });
-    //   }, 200);
-    // });
-  }
-
-  decline() {
-    this.modalRef.hide();
-    this.modalRef = null;
-  }
-
-  addPost(post) {
-    this.check_in = post.check_in;
-    this.check_out = post.check_out;
-    console.log("Nuevos valores" + this.check_in + "--" + this.check_out);
+  setSolved(formValues) {
+    this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' '), formValues.check_out.replace('T', ' ')).subscribe((data) => {
+      console.log(data.response_code);
+      if (data.response_code == 200){
+        this.services.solveIncidence(this.incidence.date).subscribe((data) => {
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.modalRef.hide();
+              this.modalRef = null;
+              this.services.getPersonalIncidences(this.email).subscribe((data) => {
+                this.incidences = data.incidences;
+              });
+            });
+          }, 200);
+        });
+      }
+    })
   }
 
 }

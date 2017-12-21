@@ -40,9 +40,11 @@
         </button>
       </div>
     </div>
-    <div class="alert" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched">ALERTA</div>
+    <div class="alert" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched">
+      Incorrect Values
+    </div>
     <hr>
-    <form [formGroup]="rForm" (ngSubmit)="addPost(rForm.value)">
+    <form [formGroup]="rForm" (ngSubmit)="setSolved(rForm.value)">
       <div class="row">
         <div class="col-md-5 col-md-offset-1">
           <label>Check In</label>

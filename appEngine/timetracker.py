@@ -400,32 +400,33 @@ class MainPage(remote.Service):
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):
         query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email).get()
-        response_change_check = JsonChangeCheckHoursMessage(
-            key = query.key.id(),
-            checkin = str(query.checkin),
-            checkout = str(query.checkout)
-        )
-        return ChangeCheckHoursResponseMessage(response_change_check = response_change_check)
-   
+        query = query.filter(Workday.employee.email == request.email)
+        newDate = datetime.strptime(request.date, "%Y-%m-%d %H:%M:%S.%f")
+        for day in query:
+            if day.checkin ==  newDate or day.checkout == newDate:
+                response_change_check = JsonChangeCheckHoursMessage(
+                key = day.key.id(),
+                checkin = str(day.checkin),
+                checkout = str(day.checkout))
+                return ChangeCheckHoursResponseMessage(response_change_check = response_change_check)
+        return ChangeCheckHoursResponseMessage(response_change_check = JsonChangeCheckHoursMessage())
+
     @endpoints.method(FixCheckHoursMessage, FixHoursResponseMessage, path='changeCheckHours', http_method='POST', name='changeCheckHours')
     def changeCheckHours(self, request):
-
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email)
         for day in query:
             if day.key.id() == request.key:
-                print "ALGO"
                 newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
                 newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
                 day.checkin = newCheckin
                 day.checkout = newChekout
                 print day
                 day.put()
-                return FixHoursResponseMessage()
-            
-        return FixHoursResponseMessage()
-        
+                return FixHoursResponseMessage(response_code = 200)
+
+        return FixHoursResponseMessage(response_code = 404)
+
 
 
 
@@ -496,26 +497,26 @@ class MainPage(remote.Service):
         workday = Workday(checkin=datetime.strptime("2017-05-09 21:03:27.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2017-05-09 23:20:33.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Shara Petraitis", email="spetraitis0@gmpg.org", image="http://dummyimage.com/119x127.bmp/5fa2dd/ffffff", role=0, status=True)).put()
         workday = Workday(checkin=datetime.strptime("2017-04-11 15:55:42.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2017-04-11 17:42:17.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Tremaine Cucuzza", email="tcucuzza0@yelp.com", image="http://dummyimage.com/105x244.jpg/cc0000/ffffff", role=1, status=False)).put()
         workday = Workday(checkin=datetime.strptime("2017-03-08 08:26:52.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2017-03-08 09:43:05.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 20:50:10.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Elinor Farryn", email="efarryn0@cocolog-nifty.com", image="http://dummyimage.com/116x156.png/dddddd/000000",role=1,status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 16:20:54.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Risa Jauncey", email="rjauncey0@wikipedia.org", image="http://dummyimage.com/167x105.png/dddddd/000000",role=1,status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 08:38:29.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Dominic Esselin", email="desselin0@bloglines.com", image="http://dummyimage.com/224x248.png/ff4444/ffffff", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 03:13:31.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Cassy Kos", email="ckos0@creativecommons.org", image="http://dummyimage.com/193x206.png/ff4444/ffffff", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 09:18:37.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Gregorio Nannetti", email="gnannetti0@tmall.com", image="http://dummyimage.com/213x210.bmp/5fa2dd/ffffff", role=1, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-07 02:13:47.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Lavinia Berntssen", email="lberntssen0@reference.com", image="http://dummyimage.com/216x210.jpg/ff4444/ffffff", role=0, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 11:34:11.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Julianna Dedon", email="jdedon0@unc.edu", image="http://dummyimage.com/214x197.png/dddddd/000000", role=1, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 03:51:56.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Alexine Maxstead", email="amaxstead0@wikipedia.org", image="http://dummyimage.com/247x196.bmp/cc0000/ffffff", role=1, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 16:40:59.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Laurel Brosetti", email="lbrosetti0@taobao.com", image="http://dummyimage.com/183x193.bmp/cc0000/ffffff", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 14:52:29.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Vivia Egger", email="vegger0@walmart.com", image="http://dummyimage.com/208x236.png/ff4444/ffffff", role=1, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 12:46:28.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Oliviero Hutchens", email="ohutchens0@ehow.com", image="http://dummyimage.com/109x143.jpg/dddddd/000000", role=1, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 14:32:46.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Jacynth Levett", email="jlevett0@parallels.com", image="http://dummyimage.com/107x111.bmp/dddddd/000000", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 13:34:16.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Arney Coolahan", email="acoolahan0@google.ru", image="http://dummyimage.com/197x185.jpg/cc0000/ffffff", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-07 20:16:32.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Brynna Hatchette", email="bhatchette0@hubpages.com", image="http://dummyimage.com/104x173.bmp/dddddd/000000", role=0, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 03:18:24.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Arch Lunney", email="alunney0@cyberchimps.com", image="http://dummyimage.com/229x223.bmp/5fa2dd/ffffff", role=0, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 19:36:44.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Lucky Melesk", email="lmelesk0@comsenz.com", image="http://dummyimage.com/205x203.bmp/cc0000/ffffff", role=0, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 15:09:37.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Janet Hadenton", email="jhadenton0@baidu.com", image="http://dummyimage.com/170x178.bmp/ff4444/ffffff", role=1, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 21:03:27.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Shara Petraitis", email="spetraitis0@gmpg.org", image="http://dummyimage.com/119x127.bmp/5fa2dd/ffffff", role=0, status=True)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 15:55:42.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Tremaine Cucuzza", email="tcucuzza0@yelp.com", image="http://dummyimage.com/105x244.jpg/cc0000/ffffff", role=1, status=False)).put()
-        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 08:26:52.199", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 20:50:10.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Elinor Farryn", email="efarryn0@cocolog-nifty.com", image="http://dummyimage.com/116x156.png/dddddd/000000",role=1,status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 16:20:54.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Risa Jauncey", email="rjauncey0@wikipedia.org", image="http://dummyimage.com/167x105.png/dddddd/000000",role=1,status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 08:38:29.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Dominic Esselin", email="desselin0@bloglines.com", image="http://dummyimage.com/224x248.png/ff4444/ffffff", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 03:13:31.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Cassy Kos", email="ckos0@creativecommons.org", image="http://dummyimage.com/193x206.png/ff4444/ffffff", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 09:18:37.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Gregorio Nannetti", email="gnannetti0@tmall.com", image="http://dummyimage.com/213x210.bmp/5fa2dd/ffffff", role=1, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-07 02:13:47.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Lavinia Berntssen", email="lberntssen0@reference.com", image="http://dummyimage.com/216x210.jpg/ff4444/ffffff", role=0, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 11:34:11.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Julianna Dedon", email="jdedon0@unc.edu", image="http://dummyimage.com/214x197.png/dddddd/000000", role=1, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 03:51:56.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Alexine Maxstead", email="amaxstead0@wikipedia.org", image="http://dummyimage.com/247x196.bmp/cc0000/ffffff", role=1, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 16:40:59.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Laurel Brosetti", email="lbrosetti0@taobao.com", image="http://dummyimage.com/183x193.bmp/cc0000/ffffff", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 14:52:29.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Vivia Egger", email="vegger0@walmart.com", image="http://dummyimage.com/208x236.png/ff4444/ffffff", role=1, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 12:46:28.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Oliviero Hutchens", email="ohutchens0@ehow.com", image="http://dummyimage.com/109x143.jpg/dddddd/000000", role=1, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 14:32:46.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Jacynth Levett", email="jlevett0@parallels.com", image="http://dummyimage.com/107x111.bmp/dddddd/000000", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 13:34:16.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Arney Coolahan", email="acoolahan0@google.ru", image="http://dummyimage.com/197x185.jpg/cc0000/ffffff", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-07 20:16:32.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Brynna Hatchette", email="bhatchette0@hubpages.com", image="http://dummyimage.com/104x173.bmp/dddddd/000000", role=0, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 03:18:24.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Arch Lunney", email="alunney0@cyberchimps.com", image="http://dummyimage.com/229x223.bmp/5fa2dd/ffffff", role=0, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-10 19:36:44.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Lucky Melesk", email="lmelesk0@comsenz.com", image="http://dummyimage.com/205x203.bmp/cc0000/ffffff", role=0, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 15:09:37.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Janet Hadenton", email="jhadenton0@baidu.com", image="http://dummyimage.com/170x178.bmp/ff4444/ffffff", role=1, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-09 21:03:27.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Shara Petraitis", email="spetraitis0@gmpg.org", image="http://dummyimage.com/119x127.bmp/5fa2dd/ffffff", role=0, status=True)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-11 15:55:42.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Tremaine Cucuzza", email="tcucuzza0@yelp.com", image="http://dummyimage.com/105x244.jpg/cc0000/ffffff", role=1, status=False)).put()
+        incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 08:26:52.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True)).put()
 
         return DateNowMessage()
 

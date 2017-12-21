@@ -20,4 +20,4 @@ class ChangeCheckHoursResponseMessage(messages.Message):
 
 
 class FixHoursResponseMessage(messages.Message):
-    pass
+    response_code = messages.IntegerField(1)
