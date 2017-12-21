@@ -29,11 +29,36 @@
 </table>
 
 <ng-template #template>
-  <div class="modal-body text-center">
-    Estas a punto de resolver una incidencia.
-    <p>¿De verdad deseas hacerlo?</p>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <h4 class="modal-title pull-left">Management Incidences</h4>
+      </div>
+      <div class="col-md-1 col-md-offset-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="alert" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched">ALERTA</div>
     <hr>
-    <button type="button" class="btn btn-default" (click)="setSolved()">Aceptar</button>
-    <button type="button" class="btn btn-primary" (click)="decline()">Cancelar</button>
+    <form [formGroup]="rForm" (ngSubmit)="addPost(rForm.value)">
+      <div class="row">
+        <div class="col-md-5 col-md-offset-1">
+          <label>Check In</label>
+          <input formControlName="check_in" type="datetime-local" value={{check_in}}>
+        </div>
+        <div class="col-md-5">
+          <label>Check Out</label>
+          <input formControlName="check_out" type="datetime-local" value={{check_out}}>
+        </div>
+      </div>
+      <div class="row padding-on-button">
+        <div class="col-md-1 col-md-offset-8 padding-on-div">
+          <button type="submit" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </form>
+
   </div>
 </ng-template>

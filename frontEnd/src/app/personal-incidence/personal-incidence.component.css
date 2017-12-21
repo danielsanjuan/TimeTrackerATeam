@@ -17,6 +17,14 @@ thead tr th {
   text-align: center;
 }
 
+.padding-on-button {
+  padding-top: 5%;
+}
+
+.padding-on-div {
+  padding-left: 6%;
+}
+
 @media (max-width: 412px){
   img {
     width: 50%;

@@ -37,4 +37,8 @@ export class IncidenceService {
     let body = { "incidenceDate": date};
     return this.http.post(this.localRoute + 'solveIncidence', body);
   }
+
+  getCheckHoursIncidence(email, dateOriginal):Observable<any>{
+    return this.http.get(this.localRoute + 'getCheckHours?email=' + email + '?dateOriginal=' + dateOriginal);
+  }
 }
