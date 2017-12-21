@@ -12,7 +12,7 @@
           </a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar" [ngbCollapse]="isCollapsed">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav" *ngIf="admin">
             <li routerLinkActive="active"><a href="#" [routerLink]="['weeklyReport']" (click)="isCollapsed = !isCollapsed">Weekly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['monthlyReport']" (click)="isCollapsed = !isCollapsed">Monthly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences <span class="badge">{{numberIncidences}}</span></a></li>

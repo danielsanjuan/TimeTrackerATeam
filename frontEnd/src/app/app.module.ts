@@ -16,6 +16,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
+import { ProtectingRoutesGuard } from './protectingRoutes.guard';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -30,11 +31,11 @@ import { MonthlyReportComponent } from './monthly-report/monthly-report.componen
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
-  { path: 'incidence', component: IncidenceComponent },
+  { path: 'incidence', component: IncidenceComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'weeklyReport', component: WeeklyReportComponent },
-  { path: 'monthlyReport', component: MonthlyReportComponent },
+  { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -70,7 +71,8 @@ const appRoutes: Routes = [
   providers: [
     CheckInService,
     LoginProvider,
-    IncidenceService
+    IncidenceService,
+    ProtectingRoutesGuard
   ],
   bootstrap: [AppComponent]
 })

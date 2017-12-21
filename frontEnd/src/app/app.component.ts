@@ -4,6 +4,7 @@ import { LoginProvider } from './providers/login.provider';
 import { Router } from '@angular/router';
 import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 import { Subscription } from 'rxjs/Subscription';
+import { IncidenceService } from './providers/incidence.provider';
 
 
 @Component({
@@ -20,21 +21,34 @@ export class AppComponent implements OnInit{
   subscription: Subscription;
   subscription2: Subscription;
   isCollapsed:boolean=true;
+  email:string;
+  roleUser:string;
+  admin:boolean;
   
   constructor(private services:LoginProvider,  
-              private router: Router, 
+              private router: Router,
+              private serviceIncidence: IncidenceService, 
               private sesionService: SessionStorageService){
-              
+      
   }
 
   ngOnInit() {
     this.subscription = this.services.getNameUser().subscribe(data => { 
-      console.log(data);
       this.nombre = data; 
     });
     this.subscription2 = this.services.getImgUser().subscribe(data => { 
-      console.log(data);
       this.imagen = data; 
+      
+      this.email = this.sesionService.retrieve('email');
+      this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
+        this.roleUser = data.employee.role;
+        if(this.roleUser == "1"){
+          this.admin=true;
+        } 
+        else{
+          this.admin=false;
+        }
+      });
     });
   }
 

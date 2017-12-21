@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   nameResponsive:string;
 
   constructor(public toastr: ToastsManager, vcr: ViewContainerRef, 
-              private sessionSt: SessionStorageService, 
+              private sessionSt: SessionStorageService,
               private router: Router) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
