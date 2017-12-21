@@ -51,4 +51,9 @@ export class CheckInService {
     return this.http.get<any>(this.localRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
+  postCheckTimes(times):Observable<any>{
+    let body = times;
+    return this.http.post(this.localRoute + "/timetracker/v1/setCheckTimes", body);
+  }
+
 }
