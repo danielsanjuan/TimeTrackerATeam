@@ -5,8 +5,7 @@ import endpoints
 import os
 import json
 from protorpc import messages
-
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckResponse
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
@@ -15,6 +14,7 @@ from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
+from messages.CompanyTimesMessages import CompanyTimesMessage, CompanyTimesResponseMessage, CompanyTimesSetResponseMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -51,12 +51,40 @@ class Incidences(ndb.Model):
     check = ndb.BooleanProperty(indexed=True)
     solved = ndb.BooleanProperty(indexed=True)
 
+class CompanyTimes(ndb.Model):
+    checkinmin = ndb.StringProperty(indexed=True)
+    checkinmax = ndb.StringProperty(indexed=True)
+    checkoutmin = ndb.StringProperty(indexed=True)
+    checkoutmax = ndb.StringProperty(indexed=True)
+    checkoutminfriday = ndb.StringProperty(indexed=True)
+    checkoutmaxfriday = ndb.StringProperty(indexed=True)
+
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
         scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
+
+    def set_companyTimes(self, checkinminMT, checkinmaxMT, checkoutminMT, checkoutmaxMT, checkoutminF, checkoutmaxF):
+        query = CompanyTimes.query().get()
+        if query is None:
+            company = CompanyTimes (
+                checkinmin= checkinminMT,
+                checkinmax = checkinmaxMT,
+                checkoutmin = checkoutminMT,
+                checkoutmax = checkoutmaxMT,
+                checkoutminfriday = checkoutminF,
+                checkoutmaxfriday = checkoutmaxF
+            ).put()
+        else:
+            query.checkinmin = checkinminMT
+            query.checkinmax = checkinmaxMT
+            query.checkoutmin = checkoutminMT
+            query.checkoutmax = checkoutmaxMT
+            query.checkoutminfriday = checkoutminF
+            query.checkoutmaxfriday = checkoutmaxF
+            query.put()
 
     def set_checkin(self, date, email):
         query = Employee.query()
@@ -196,6 +224,34 @@ class MainPage(remote.Service):
         incidence.date = str(oneIncidence.incidenceDate)
         incidence.message = oneIncidence.message
         return incidence
+
+    @endpoints.method(message_types.VoidMessage,CompanyTimesResponseMessage,
+    path = 'getCompanyTimes', http_method = 'GET', name = 'getCompanyTimes')
+    def getCompanyTimes(self, request):
+        query = CompanyTimes.query().get()
+        companySettings = CompanyTimesMessage()
+        companySettings.checkinmax = query.checkinmax
+        companySettings.checkinmin = query.checkinmin
+        companySettings.checkoutmax =  query.checkoutmax
+        companySettings.checkoutmaxfriday = query.checkoutmaxfriday
+        companySettings.checkoutmin = query.checkoutmin
+        companySettings.checkoutminfriday = query.checkoutminfriday
+        return CompanyTimesResponseMessage(response = companySettings)
+
+    @endpoints.method(CompanyTimesMessage, CompanyTimesSetResponseMessage,
+    path = 'setCompanyTimes', http_method = 'POST', name = 'setCompanyTimes')
+    def setCompanyTimes(self, request):
+        if (request.checkinmin >= request.checkinmax or request.checkinmin >= request.checkoutmin or
+        request.checkinmin >= request.checkoutmax or request.checkinmin >= request.checkoutminfriday or
+        request.checkinmin >= request.checkoutmaxfriday or request.checkinmax >= request.checkoutmin or
+        request.checkinmax >= request.checkoutmax or request.checkinmax >= request.checkoutminfriday or
+        request.checkinmax >= request.checkoutmaxfriday  or request.checkoutmin >= request.checkoutmax or
+        request.checkoutminfriday >= request. checkoutmaxfriday):
+            return CompanyTimesSetResponseMessage(response_code = 500) 
+        else:
+            self.set_companyTimes(request.checkinmin, request.checkinmax, request.checkoutmin,
+            request.checkoutmax, request.checkoutminfriday, request.checkoutmaxfriday)
+            return CompanyTimesSetResponseMessage(response_code = 200)
 
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
