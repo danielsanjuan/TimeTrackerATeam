@@ -6,58 +6,37 @@
         You can change each of the hours assigned to carry out the monitoring of the schedule to be followed by the company's employees.
       </p>
     </div>
-    <div *ngIf="!companyTimeTrackerForm.valid" class="alert alert-danger required">
-
-      <div *ngIf="!checkinmin">
-        Check in minimun is required.
-      </div>
-      <div *ngIf="!checkinmax">
-        Check in maximun is required.
-      </div>
-      <div *ngIf="!checkoutmin">
-        Check out maximun is required.
-      </div>
-      <div *ngIf="!checkoutmax">
-        Check out maximun is required.
-      </div>
-      <div *ngIf="!checkoutminfriday">
-        Check out Friday maximun is required.
-      </div>
-      <div *ngIf="!checkoutmaxfriday">
-        Check out Friday maximun is required.
-      </div>
-    </div>
     <form class="margin" #companyTimeTrackerForm="ngForm" (ngSubmit)="onFormSubmit(companyTimeTrackerForm)">
       <div class="form-group col-sm-6 col-md-4">
 
         <label for="checkin-min">Checkin Minimun Time</label>
         <span data-toggle="tooltip" title="Set the checkin minimun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkinminMT" [(ngModel)]="checkinmin" #checkinminMT="ngModel" required>
+        <input class="form-control" type="time" name="checkinmin" [(ngModel)]="checkin_min" #checkinmin="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkin-max">Checkin Maximun Time</label>
         <span data-toggle="tooltip" title="Set the checkin maximun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkinmaxMT" [(ngModel)]="checkinmax" #checkinmaxMT="ngModel" required>
+        <input class="form-control" type="time" name="checkinmax" [(ngModel)]="checkin_max" #checkinmax="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkout-min">Checkout Minimun Time</label>
         <span data-toggle="tooltip" title="Set the checkout minimun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkoutminMT" [(ngModel)]="checkoutmin" #checkoutminMT="ngModel" required>
+        <input class="form-control" type="time" name="checkoutmin" [(ngModel)]="checkout_min" #checkoutmin="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkout-max">Checkout Maximun Time</label>
         <span data-toggle="tooltip" title="Set the checkout maximun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkoutmaxMT" [(ngModel)]="checkoutmax" #checkoutmaxMT="ngModel" required>
+        <input class="form-control" type="time" name="checkoutmax" [(ngModel)]="checkout_max" #checkoutmax="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkout-min-friday">Checkout Minimun Friday Time</label>
         <span data-toggle="tooltip" title="Set the checkout minimun friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkoutminF" [(ngModel)]="checkoutminfriday" #checkoutminF="ngModel" required>
+        <input class="form-control" type="time" name="checkoutminfriday" [(ngModel)]="checkout_minfriday" #checkoutminfriday="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkout-max-friday">Checkout Maximun Friday Time</label>
         <span data-toggle="tooltip" title="Set the checkout minimun friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
-        <input class="form-control" type="time" name="checkoutmaxF" [(ngModel)]="checkoutmaxfriday" #checkoutmaxF="ngModel" required>
+        <input class="form-control" type="time" name="checkoutmaxfriday" [(ngModel)]="checkout_maxfriday" #checkoutmaxfriday="ngModel" required>
       </div>
       <div class="col-sm-4 col-sm-offset-4 margin">
         <button type="submit" class="btn btn-primary btn-block">Save</button>

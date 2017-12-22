@@ -9,37 +9,50 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
   styleUrls: ['./set-time-company.component.css']
 })
 export class SetTimeCompanyComponent implements OnInit {
-  checkinmin: string = "07:00";
-  checkinmax: string = "09:00";
-  checkoutmin: string = "14:00";
-  checkoutmax: string = "19:00";
-  checkoutminfriday: string = "13:00";
-  checkoutmaxfriday: string = "15:00";
+  checkin_min: string;
+  checkin_max: string;
+  checkout_min: string;
+  checkout_max: string;
+  checkout_minfriday: string;
+  checkout_maxfriday: string;
 
   constructor(private services: CheckInService, public toastr: ToastsManager, vcr: ViewContainerRef) { 
     this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
+    this.services.getCompanyTimes().subscribe((data) => {
+      console.log("LLamando: " + data.response.checkinmin);
+      this.checkin_min = data.response.checkinmin;
+      this.checkin_max = data.response.checkinmax;
+      this.checkout_min = data.response.checkoutmin;
+      this.checkout_max = data.response.checkoutmax;
+      this.checkout_minfriday = data.response.checkoutminfriday;
+      this.checkout_maxfriday = data.response.checkoutmaxfriday;
+    })
   }
 
   onFormSubmit(companyTimeTrackerForm: NgForm) {
     if(companyTimeTrackerForm.valid){
-      this.toastr.success('Success!');
       //Realizar llamada a la API para setear las variables.
-      // this.services.postCheckTimes(companyTimeTrackerForm.value).subscribe((data) => {
-      //   console.log(data.response);
-      // });
+      this.services.postCompanyTimes(companyTimeTrackerForm.value).subscribe((data) => {
+        if (data.response_code == 500){
+          this.toastr.error('Error!');
+        }else{
+          this.toastr.success('Success!');          
+        }
+        console.log(data.response_code);
+      });
     }else{
       this.toastr.error('Complete all required fields!');
     }
     console.log(companyTimeTrackerForm.value);
-    console.log('checkinmin:' + companyTimeTrackerForm.controls['checkinminMT'].value);
-    console.log('checkinmax:' + companyTimeTrackerForm.controls['checkinmaxMT'].value);
-    console.log('checkoutmin:' + companyTimeTrackerForm.controls['checkoutminMT'].value);
-    console.log('checkoutmax:' + companyTimeTrackerForm.controls['checkoutmaxMT'].value);
-    console.log('checkoutfriday:' + companyTimeTrackerForm.controls['checkoutminF'].value);
-    console.log('checkoutmaxfriday:' + companyTimeTrackerForm.controls['checkoutmaxF'].value);
+    console.log('checkinmin:' + companyTimeTrackerForm.controls['checkinmin'].value);
+    console.log('checkinmax:' + companyTimeTrackerForm.controls['checkinmax'].value);
+    console.log('checkoutmin:' + companyTimeTrackerForm.controls['checkoutmin'].value);
+    console.log('checkoutmax:' + companyTimeTrackerForm.controls['checkoutmax'].value);
+    console.log('checkoutfriday:' + companyTimeTrackerForm.controls['checkoutminfriday'].value);
+    console.log('checkoutmaxfriday:' + companyTimeTrackerForm.controls['checkoutmaxfriday'].value);
     console.log('Form Valid:' + companyTimeTrackerForm.valid);
     console.log('Form Submitted:' + companyTimeTrackerForm.submitted);
   }
