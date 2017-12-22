@@ -27,18 +27,29 @@ export class LoginProvider {
 
     public googleInit() {
       gapi.load('client:auth2', () => {
-        this.auth2 = gapi.auth2.init({
+        gapi.auth2.init({
           client_id: '678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com',
           cookiepolicy: 'single_host_origin',
           scope: 'profile email'
-        });
-        this.attachSignin(document.getElementById('googleBtn'));
+        }).then (()=>{
+            //console.log("Esto es el Then") ;
+            gapi.client.load('timetracker', "v1",
+            ()=>{
+                this.auth2 = gapi.auth2.getAuthInstance();
+                if(this.auth2.currentUser.get() != undefined){
+                  let UserProfile = this.auth2.currentUser.get().getBasicProfile();
+                  console.log("Este es el userprofile" + UserProfile.getName() );
+                  this.doSomething(UserProfile.getName(), UserProfile.getImageUrl());
+                }
+                this.attachSignin(document.getElementById('googleBtn'));  
+              }
+            , this.localRoute);
+         }); 
       });
     }
 
     public callback() {
-      console.log("gapi loaded");
-    }
+  }
 
     public attachSignin(element) {
       gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
@@ -46,13 +57,13 @@ export class LoginProvider {
         (googleUser) => {
 
           let profile = googleUser.getBasicProfile();
-          console.log('Token || ' + googleUser.getAuthResponse().id_token);
-          console.log('ID: ' + profile.getId());
-          console.log('Name: ' + profile.getName());
-          console.log('Image URL: ' + profile.getImageUrl());
-          console.log('Email: ' + profile.getEmail());
+          // console.log('Token || ' + googleUser.getAuthResponse().id_token);
+          // console.log('ID: ' + profile.getId());
+          // console.log('Name: ' + profile.getName());
+          // console.log('Image URL: ' + profile.getImageUrl());
+          // console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
-      this.sessionSt.store('email', profile.getEmail());
+      this.sessionSt.store('email',  profile.getEmail());
       this.sessionSt.store('name', profile.getName());
       this.sessionSt.store('image', profile.getImageUrl());
   	  this.doSomething(profile.getName(), profile.getImageUrl());
@@ -70,12 +81,13 @@ export class LoginProvider {
 
           }
           else {
+            this.subject.next(this.sessionSt.retrieve('name'));
+            this.subject2.next(this.sessionSt.retrieve('image'));
             console.log(JSON.stringify(response.result));
             this.zone.run(()=>{
               this.router.navigate(['/home']);
             });
-            this.subject.next(this.sessionSt.retrieve('name'));
-            this.subject2.next(this.sessionSt.retrieve('image'));
+
             //window.location.reload();
 
           }
