@@ -7,7 +7,10 @@ import { BsDropdownModule } from 'ng2-bs-dropdown';
 import { ToastModule} from 'ng2-toastr/ng2-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {Ng2Webstorage} from 'ngx-webstorage';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -19,17 +22,21 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { CheckComponent } from './check/check.component';
 import { HomeComponent } from './home/home.component';
-import { ReportComponent } from './report/report.component';
 import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
+import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
+import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
+import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
   { path: 'incidence', component: IncidenceComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'report', component: ReportComponent },
+  { path: 'weeklyReport', component: WeeklyReportComponent },
+  { path: 'monthlyReport', component: MonthlyReportComponent },
+  { path: 'settings', component: SetTimeCompanyComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -39,10 +46,12 @@ const appRoutes: Routes = [
     CheckComponent,
     LoginComponent,
     HomeComponent,
-    ReportComponent,
+    WeeklyReportComponent,
     LogoutComponent,
     IncidenceComponent,
-    PersonalIncidenceComponent
+    PersonalIncidenceComponent,
+    MonthlyReportComponent,
+    SetTimeCompanyComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,8 +65,10 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     ),
     ToastModule.forRoot(),
-    BrowserAnimationsModule
-
+    BrowserAnimationsModule,
+    NgxMyDatePickerModule.forRoot(),
+    ModalModule.forRoot(),
+    TooltipModule.forRoot()
   ],
   providers: [
     CheckInService,

@@ -13,13 +13,15 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar" [ngbCollapse]="isCollapsed">
           <ul class="nav navbar-nav">
-            <li routerLinkActive="active"><a href="#" [routerLink]="['report']">Reports</a></li>
-            <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']">Incidences</a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['weeklyReport']" (click)="isCollapsed = !isCollapsed">Weekly Report</a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['monthlyReport']" (click)="isCollapsed = !isCollapsed">Monthly Report</a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><img class="img_user" [routerLink]="['login']" src="{{imagen}}" alt="User">
             <span>{{nombre}}</span></li>
-            <li class="log-out"><app-logout></app-logout></li>
+            <li class="log-out" (click)="isCollapsed = !isCollapsed"><app-logout></app-logout></li>
           </ul>
         </div>
       </div>
@@ -28,6 +30,5 @@
 
 
 <div class="container animated fadeIn">
-
   <router-outlet></router-outlet>
 </div>

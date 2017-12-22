@@ -1,0 +1,63 @@
+.container{
+    margin: 30px 0 0 0;
+}
+.datePicker{
+    margin-bottom: 30px;
+}
+
+.weekends{
+    color: #ff3535e0;
+    font-weight: bold;
+}
+
+table{
+    text-align: center; 
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+
+
+thead tr th {
+    /* background-color: lightgray; */
+    text-align: center;
+}
+
+.no-data{
+    margin-top: 5em;
+}
+
+img{
+    max-width: 50%;
+}
+
+h2{
+    text-align: center;
+}
+
+/***** Media queries *****/
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (max-width: 767px) {}
+
+@media (max-width: 415px) {
+	
+	thead tr th {
+        font-size: 16px;
+    }
+    tbody tr td{
+        text-align: center;
+        font-size: 16px;
+        
+    }
+
+    img{
+        max-width: 80%;
+    }
+
+}

@@ -11,9 +11,7 @@
 }
 
 .panel-body {
-    padding: 0px !important;
-    background-color: lightgray;
-    z-index: -2;
+    background-color: rgba(255, 255, 255, 0.20);
 }
 
 .panel-heading{
@@ -32,6 +30,7 @@
 .panel-date{
     float: right;
     font-size: 0.8em;
+    margin-top: 0.2em;
 }
 
 .panel-left{
@@ -88,10 +87,11 @@
     border-bottom-right-radius: 3%!important;
 }
 
-@media screen and (max-width: 768px){ 
+@media screen and (max-width: 765px){ 
     .name_user{
         display: none;
     }
+
 }
 
 @media (min-width: 768px){
@@ -107,16 +107,23 @@
     }
 }
 
-@media (max-width: 414px){
-    
+@media (max-width: 518px){
+
     .panel-heading {
         font-size: 1em;
-        height: 4.5em;
     }
 
     .panel-welcome {
         margin-right: 0em;
     }
 
+    .main{
+        top: 40%;
+        position: fixed;
+    }
+
+    .row{
+        width: 100%;
+    }
 }
 

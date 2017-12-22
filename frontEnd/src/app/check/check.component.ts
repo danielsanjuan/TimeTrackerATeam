@@ -18,8 +18,19 @@ export class CheckComponent implements OnInit {
   E406:boolean=false;
   E500:boolean=false;
   checkInTime:string;
+  employees = [];
+  hours_today:string;
+  hours_week:string;
+  name:string = "";
+  fechaNow:any;
+  fechaCheckIn:any;
+  fechaCheckout:any;
+  week:number = 0;
+  interval:any;
+  timeControl:boolean = false;
 
   constructor( private services:CheckInService,
+               private sessionSt: SessionStorageService,
                private router: Router,
                public toastr: ToastsManager, vcr: ViewContainerRef,
                private localSt: LocalStorageService) {
@@ -27,6 +38,7 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.name = this.sessionSt.retrieve('name');
     this.services.checkWorkedDay().subscribe((data) => {
       console.log(data)
       if (data.response_date == "No has hecho checkin"){
@@ -37,6 +49,10 @@ export class CheckComponent implements OnInit {
         this.doClick = true;
       }
     });
+    // this.services.getWeeklyReport().subscribe((data) => {
+    //   this.employees = data.response_report;
+    // });
+    this.time();
   }
 
   timeCheckIn(){
@@ -49,22 +65,22 @@ export class CheckComponent implements OnInit {
         case "200":
             this.checkInTime = data.response_date;
             let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.success('Has hecho check-in a las '+timeOk, 'Success!');
+            this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
             break;
         case "202":
             this.checkInTime = data.response_date;
             let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.warning('Que son estas horas de llegar '+ timeLate, 'Alert!');
+            this.toastr.warning('You are too late '+ timeLate, 'Alert!');
             this.E202=true;
             break;
         case "406":
             this.E406=true;
-            this.toastr.error('No puedes trabajar ha esta hora', 'Oops!');
+            this.toastr.error('You can not work at this time', 'Oops!');
             this.doClick=true;
             break;
         case "500":
             this.E500=true;
-            this.toastr.error('No puedes 2 check-in el mismo dia', 'Oops!');
+            this.toastr.error('You can not do 2 check-in the same day', 'Oops!');
             this.doClick=true;
             break;
       }
@@ -86,21 +102,71 @@ export class CheckComponent implements OnInit {
         switch(data.response_code){
           case "200":
               this.checkOutTime = data.response_date;
-              this.toastr.success('Buen Trabajo!', 'Success!');
+              this.toastr.success('Good Job!', 'Success!');
               this.doClick=true;
               break;
           case "202":
               this.checkOutTime = data.response_date;
-              this.toastr.warning('Te vas muy pronto, NO?', 'Alert!');
+              this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
               this.doClick=true;
               this.E202=true;
               break;
           case "406":
               this.E406=true;
               this.doClick=true;
-              this.toastr.error('Deberias estar con tu familia', 'Oops!');
+              this.toastr.error('You should be with your family', 'Oops!');
               break;
         }
       });
-    }
+  }
+  
+  time(){
+    this.seeTime();
+    // if(this.employees != undefined){
+    //   this.workWeekTime();      
+    // }
+  }
+
+  seeTime(){
+    this.services.getCheckIn().subscribe((data)=>{
+      this.fechaCheckIn = new Date(data.response_date);
+      if(data.response_date == "No hay fecha de checkin"){
+        this.hours_today = "00:00";
+        this.hours_week = "00:00";
+      }else{
+        this.services.getDateNow().subscribe((data)=>{
+          this.fechaNow = new Date(data.response_date);
+          this.services.getCheckout().subscribe((data)=>{
+            this.fechaCheckout = new Date(data.response_date);
+            if(data.response_date == "No hay fecha de checkout"){
+              this.workDayTime(this.fechaCheckIn, this.fechaNow);
+            }else{
+              this.workDayTime(this.fechaCheckIn, this.fechaCheckout);
+            }
+          });
+        });        
+      }
+    });
+  }
+
+  workDayTime(dateCheck, dateNow){
+    let timetoday = (dateNow - dateCheck);
+    let time = new Date(timetoday);
+    this.hours_today = time.toTimeString().split(' ')[0];
+    this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
+    let timeOfWeek = ((dateNow - dateCheck));
+    let timeWeek = new Date(timeOfWeek+this.week);
+    this.hours_week = timeWeek.toTimeString().split(' ')[0];
+    this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+  }
+
+  // workWeekTime(){
+  //   for(let i=0; i<=this.employees.length; i++){
+  //     if(this.employees[i].name == this.name){
+  //       this.week = parseInt(this.employees[i].total);
+  //       this.week = this.week*3600000; 
+  //     }
+  //   }
+  // }
+
 }
