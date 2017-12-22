@@ -1,5 +1,5 @@
 <div class="row margin_thumbnail">
-  <div class="col-xs-7 col-xs-offset-4 col-sm-2 col-sm-offset-5 col-md-2 col-md-offset-5">
+  <div class="col-xs-4 col-xs-offset-4 col-sm-2 col-sm-offset-5 col-md-2 col-md-offset-5">
     <a>
         <img src="{{employees.image}}">
     </a>
@@ -40,23 +40,23 @@
         </button>
       </div>
     </div>
-    <div class="alert" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched">
+    <div class="alert alert-danger margin" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched || !rForm.controls['check_out'].valid && rForm.controls['check_out'].touched">
       Incorrect Values
     </div>
     <hr>
     <form [formGroup]="rForm" (ngSubmit)="setSolved(rForm.value)">
       <div class="row">
-        <div class="col-md-5 col-md-offset-1">
-          <label>Check In</label>
-          <input formControlName="check_in" type="datetime-local" value={{check_in}}>
+        <div class="form-group col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-0">
+          <label class="col-xs-12" for="checkin">Check In</label>
+          <input class="col-xs-12" formControlName="check_in" id="checkin" type="datetime-local" value={{check_in}}>
         </div>
-        <div class="col-md-5">
-          <label>Check Out</label>
-          <input formControlName="check_out" type="datetime-local" value={{check_out}}>
+        <div class="form-group col-xs-12 col-sm-5 col-md-6">
+          <label class="col-xs-12" for="checkout">Check Out</label>
+          <input class="col-xs-12" formControlName="check_out" id="checkout" type="datetime-local" value={{check_out}}>
         </div>
       </div>
       <div class="row padding-on-button">
-        <div class="col-md-1 col-md-offset-8 padding-on-div">
+        <div class="col-xs-3 col-xs-offset-7 col-sm-2 col-sm-offset-8 col-md-1 col-md-offset-8 padding-on-div">
           <button type="submit" class="btn btn-primary">Aceptar</button>
         </div>
       </div>

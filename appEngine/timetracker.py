@@ -413,19 +413,20 @@ class MainPage(remote.Service):
 
     @endpoints.method(FixCheckHoursMessage, FixHoursResponseMessage, path='changeCheckHours', http_method='POST', name='changeCheckHours')
     def changeCheckHours(self, request):
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email)
-        for day in query:
-            if day.key.id() == request.key:
-                newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
-                newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
-                day.checkin = newCheckin
-                day.checkout = newChekout
-                print day
-                day.put()
-                return FixHoursResponseMessage(response_code = 200)
-
-        return FixHoursResponseMessage(response_code = 404)
+        if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut):
+            query = Workday.query()
+            query = query.filter(Workday.employee.email == request.email)
+            for day in query:
+                if day.key.id() == request.key:
+                    newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
+                    newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
+                    day.checkin = newCheckin
+                    day.checkout = newChekout
+                    print day
+                    day.put()
+                    return FixHoursResponseMessage(response_code = 200)
+        else:
+            return FixHoursResponseMessage(response_code = 404)
 
 
 

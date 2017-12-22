@@ -1,3 +1,7 @@
+.margin{
+  margin-top: 10px;
+}
+
 img {
   width: 100%;
   border-radius: 50%;
@@ -25,11 +29,11 @@ thead tr th {
   padding-left: 10%;
 }
 
-@media (max-width: 412px){
-  img {
+@media (max-width: 460px){
+  /*img {
     width: 50%;
     border-radius: 50%;
-  }
+  }*/
   table {
     text-align: center;
   }
