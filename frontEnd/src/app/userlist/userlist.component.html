@@ -14,7 +14,6 @@
           <tr class="visible-xs">
             <!-- <th>#</th> -->
             <th>Nombre y Apellidos</th>
-            <th>Puesto</th>
             <th>Admin</th>
           </tr>
         </thead>
@@ -31,8 +30,7 @@
           <tr class ="visible-xs" *ngFor="let employee of employees; let i = index">
               <!-- <th scope="row">{{i}}</th> -->
               <td maxlength="4">{{employee.name}}</td>
-              <td>{{employee.role}}</td>
-              <td><span class="glyphicon glyphicon-piggy-bank" (click)="showUserInfo(employee.email)"></span></td>
+              <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td>
             </tr>
         </tbody>
       </table>

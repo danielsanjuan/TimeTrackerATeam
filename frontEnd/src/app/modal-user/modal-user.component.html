@@ -9,10 +9,10 @@
     <div class="text-center">
       <p>{{employees.name}}</p>
       <p>{{employees.email}}</p>
-      <span class="col-md-12">
+      <span class="col-md-12 rolebox">
         <p *ngIf="role == 1"><b>Human Resources</b></p>
         <p *ngIf="role == 0"><b>Employee</b></p>
-        <button type='button' (click)='changeRole()' class='btn btn-info'>Change Role</button>
+        <button type='button' (click)='changeRole()' class='btn btn-info role-button'>Change Role</button>
       </span>
     </div>
   </div>

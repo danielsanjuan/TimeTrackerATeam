@@ -21,11 +21,13 @@ td{
    width: 6%;
    margin: 0;
 }
-img{
-    max-width: 80%;
-    border-radius: 50%;
-}
 
+  
+  img {
+    border-radius: 50%;
+    width: 3em;
+    height: 40px;
+  }
 /***** Media queries *****/
 
 @media (min-width: 992px) and (max-width: 1199px) {}
