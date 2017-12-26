@@ -10,11 +10,11 @@ handlers:
 
 - url: /(.*\.(css|eot|gz|html|ico|js|map|png|svg|ttf|woff|woff2))
   static_files: dist/\1
-  upload: ./dist/(.*\.(css|eot|gz|html|ico|js|map|png|svg|ttf|woff|woff2))
+  upload: dist/(.*\.(css|eot|gz|html|ico|js|map|png|svg|ttf|woff|woff2))
 
 - url: /.*
-  static_files: ./dist/index.html
-  upload: ./dist/index.html
+  static_files: dist/index.html
+  upload: dist/index.html
   secure: always
 
 - url: /bootstrap
