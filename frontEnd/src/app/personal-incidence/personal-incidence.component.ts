@@ -25,6 +25,7 @@ export class PersonalIncidenceComponent implements OnInit {
   incidence: any;
   check_in: any;
   check_out: any;
+  error: number = 200;
 
   constructor(private zone: NgZone, private route: ActivatedRoute, private services: IncidenceService,
     private modalService: BsModalService, private router: Router, private fb: FormBuilder, public toastr: ToastsManager,
@@ -35,8 +36,6 @@ export class PersonalIncidenceComponent implements OnInit {
         check_out: ["nada", Validators.required]
       });
   }
-
-
 
   ngOnInit() {
     this.sub = this.route.params.subscribe((params) => {
@@ -84,6 +83,8 @@ export class PersonalIncidenceComponent implements OnInit {
               });
             }, 200);
           });
+        }else{
+          this.error = 404;
         }
       });
     }

@@ -40,7 +40,7 @@
         </button>
       </div>
     </div>
-    <div class="alert alert-danger margin" *ngIf="!rForm.controls['check_in'].valid && rForm.controls['check_in'].touched || !rForm.controls['check_out'].valid && rForm.controls['check_out'].touched">
+    <div class="alert alert-danger margin" *ngIf="error == 404 || !rForm.controls['check_in'].valid && rForm.controls['check_in'].touched || !rForm.controls['check_out'].valid && rForm.controls['check_out'].touched">
       Incorrect Values
     </div>
     <hr>
