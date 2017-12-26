@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row datePicker">
-    <div class="col-sm-4">
+    <div class="col-sm-6 col-md-4">
       <form>
         <label>Select a date to generate a monthly report</label>
         <div class="input-group">
@@ -18,6 +18,9 @@
           </span>
         </div>
       </form>
+    </div>
+    <div class="col-sm-6 col-md-4 col-md-offset-2">      
+      <h2>Month </h2>
     </div>
   </div>
   <ng-container *ngIf="employeesMonthly.length>0; else noReportMonthly">

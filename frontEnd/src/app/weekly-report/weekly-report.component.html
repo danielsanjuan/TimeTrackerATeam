@@ -19,6 +19,14 @@
         </div>
       </form>
     </div>
+    <div class="col-sm-6 col-md-4 col-md-offset-2">
+      <ng-container *ngIf="weekNumber==0; else elseTemplate">
+        <h2>Current Week</h2>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <h2>Week {{weekNumber}}</h2>
+      </ng-template>
+    </div>
   </div>
   <ng-container *ngIf="employees.length > 0; else noReportWeek">
     <div class="table-responsive">
