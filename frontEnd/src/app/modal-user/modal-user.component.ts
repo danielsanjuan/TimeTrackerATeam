@@ -14,7 +14,7 @@ export class ModalUserComponent implements OnInit {
   email: any;
   role: any;
   private sub: any;
-  employees = [];
+  employees: any = {};
 
   constructor(private route: ActivatedRoute, 
               private services: UserService,
