@@ -11,3 +11,4 @@ class JsonUserMessage(messages.Message):
     
 class UserListResponseMessage(messages.Message):
     response_list = messages.MessageField(JsonUserMessage, 1, repeated=True)
+    response_code = messages.IntegerField(2)

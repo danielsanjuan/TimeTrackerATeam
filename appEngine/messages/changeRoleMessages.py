@@ -11,3 +11,4 @@ class JsonChangedRoleEmployee(messages.Message):
 
 class ChangeRoleResponse(messages.Message):
     employee = messages.MessageField(JsonChangedRoleEmployee, 1)
+    response_code = messages.IntegerField(2)

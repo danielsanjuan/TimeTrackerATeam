@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../providers/user.provider';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 
 @Component({
@@ -15,7 +16,11 @@ export class ModalUserComponent implements OnInit {
   private sub: any;
   employees = [];
 
-  constructor(private route: ActivatedRoute, private services: UserService) { }
+  constructor(private route: ActivatedRoute, 
+              private services: UserService,
+              public toastr: ToastsManager, vcr: ViewContainerRef,) {
+    this.toastr.setRootViewContainerRef(vcr);
+  }
   
   ngOnInit() {
     this.sub = this.route.params.subscribe((params) => {
@@ -29,9 +34,12 @@ export class ModalUserComponent implements OnInit {
   }
   changeRole() {
     this.services.setRole(this.email).subscribe((data) => {
-      console.log(data.employee.role);
       this.role = data.employee.role;
-      
+      if (data.response_code == 200){
+        this.toastr.success('The role have been changed');
+      }else{
+        this.toastr.warning('The role has not changed, there must be 1 HRM');
+      }
     })
   }
 }
