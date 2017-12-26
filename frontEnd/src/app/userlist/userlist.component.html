@@ -32,7 +32,7 @@
               <!-- <th scope="row">{{i}}</th> -->
               <td maxlength="4">{{employee.name}}</td>
               <td>{{employee.role}}</td>
-              <td><span class="glyphicon glyphicon-piggy-bank"></span></td>
+              <td><span class="glyphicon glyphicon-piggy-bank" (click)="showUserInfo(employee.email)"></span></td>
             </tr>
         </tbody>
       </table>
@@ -44,7 +44,4 @@
     </div>
   </ng-template>
 </div>
-
-
- 
  

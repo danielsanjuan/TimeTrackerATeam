@@ -43,9 +43,16 @@ img {
     width: 8%;
     height: 23px;
   }
-  
+
   .margin_thumbnail {
     margin-top: 15px;
+  }
+
+  .img-edosoft{
+    width: 145%!important;
+    margin-top: 20%!important;
+    margin-left: -34%!important;
+    padding-top: 0!important;
   }
 }
 
@@ -55,4 +62,14 @@ img {
 
 .center_employee_data {
   margin-top: 10%;
+}
+
+.img-edosoft{
+  width: 50%;
+  padding-top: 15%;
+}
+
+h2{
+    text-align: center;
+    color: #898d8d;
 }

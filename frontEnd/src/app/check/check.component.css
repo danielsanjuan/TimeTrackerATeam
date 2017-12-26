@@ -2,6 +2,11 @@
     margin-top:2.5em;
 }
 
+.time{
+    margin-top:1em;
+    margin-bottom:-1.5em;
+}
+
 .check-in:enabled{
     opacity: 1; 
     cursor: allowed;
@@ -22,4 +27,51 @@
 .check-out:enabled{
     opacity: 1; 
     cursor: allowed;
+}
+
+.input-day{
+    width: 20%;
+    float: left;
+    margin-left: 5em;
+}
+
+.input-week{
+    width: 20%;
+    float: right;
+    margin-right: 5em;
+}
+
+.hours{
+    width: 5em;
+    text-align: center;
+    font-size: larger;
+}
+
+.input-group-addon{
+    background-color: #337ab7;
+    color: #fff;
+    font-weight: bold;
+}
+
+.hourTimeResponsive{
+    display: none;
+}
+
+@media screen and (max-width: 550px){ 
+    .hourTime{
+        display: none;
+    }
+
+    .hourTimeResponsive{
+        display: table-cell;
+    }
+
+    .input-day{
+        margin-left: 2em;
+    }
+    
+    .input-week{
+        margin-right: 2em;
+    }
+
 }

@@ -28,7 +28,6 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
-   
     this.subscription = this.services.getNameUser().subscribe(data => { 
       console.log(data);
       this.nombre = data; 
