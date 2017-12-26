@@ -8,61 +8,61 @@ import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 export class CheckInService {
   timeIn:string;
   subject: Subject<any> = new Subject<any>();
-  public localRoute = "http://localhost:8080/_ah/api";
-  public serverRoute = "https://timetrackerateam.appspot.com/_ah/api";
+  public localRoute = "http://localhost:8080/_ah/api/timetracker/v1/";
+  public serverRoute = "https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/";
 
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
   postCheckIn():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.serverRoute + "/timetracker/v1/check_in", body);
+    return this.http.post(this.serverRoute + "check_in", body);
   }
 
   postCheckOut():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.serverRoute + "/timetracker/v1/check_out", body);
+    return this.http.post(this.serverRoute + "check_out", body);
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCheckout():Observable<any>{
-    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckout?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "getCheckout?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReport");
+    return this.http.get<any>(this.serverRoute + "weeklyReport");
   }
 
   getWeeklyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReportWithDate?week=" + date);
+    return this.http.get<any>(this.serverRoute + "weeklyReportWithDate?week=" + date);
   }
 
   getDateNow(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/getDateNow");
+    return this.http.get<any>(this.serverRoute + "getDateNow");
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReport");
+    return this.http.get<any>(this.serverRoute + "/monthlyReport");
   }
 
   getMonthlyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReportDate?monthDate=" + date);
+    return this.http.get<any>(this.serverRoute + "monthlyReportDate?monthDate=" + date);
   }
 
   checkWorkedDay(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get<any>(this.serverRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCompanyTimes(): Observable<any>{
-    return this.http.get(this.serverRoute + "/timetracker/v1/getCompanyTimes");
+    return this.http.get(this.serverRoute + "getCompanyTimes");
   }
 
   postCompanyTimes(times):Observable<any>{
     console.log("times:" + times.checkinmin);
     let body = times;
-    return this.http.post(this.serverRoute + "/timetracker/v1/setCompanyTimes", body);
+    return this.http.post(this.serverRoute + "setCompanyTimes", body);
   }
 
 }

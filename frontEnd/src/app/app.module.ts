@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
+import { UserService } from './providers/user.provider';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -25,6 +26,8 @@ import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
+import { UserlistComponent } from './userlist/userlist.component';
+import { ModalUserComponent } from './modal-user/modal-user.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
@@ -34,6 +37,8 @@ const appRoutes: Routes = [
   { path: 'incidence', component: IncidenceComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
+  { path: 'userlist', component: UserlistComponent },
+  { path: 'modaluser/:email', component: ModalUserComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent },
   { path: 'monthlyReport', component: MonthlyReportComponent },
   { path: 'settings', component: SetTimeCompanyComponent },
@@ -48,8 +53,10 @@ const appRoutes: Routes = [
     HomeComponent,
     WeeklyReportComponent,
     LogoutComponent,
+    UserlistComponent,
     IncidenceComponent,
     PersonalIncidenceComponent,
+    ModalUserComponent,
     MonthlyReportComponent,
     SetTimeCompanyComponent,
   ],
@@ -72,7 +79,8 @@ const appRoutes: Routes = [
   providers: [
     CheckInService,
     LoginProvider,
-    IncidenceService
+    IncidenceService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

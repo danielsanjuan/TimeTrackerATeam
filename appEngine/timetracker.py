@@ -14,6 +14,8 @@ from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
+from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserMessage
+from messages.changeRoleMessages import ChangeRoleMessages, ChangeRoleResponse, JsonChangedRoleEmployee
 from messages.CompanyTimesMessages import CompanyTimesMessage, CompanyTimesResponseMessage, CompanyTimesSetResponseMessage
 from messages.changeCheckHoursMessages import ChangeCheckHoursMessage, JsonChangeCheckHoursMessage, FixCheckHoursMessage, ChangeCheckHoursResponseMessage, FixHoursResponseMessage
 
@@ -225,6 +227,14 @@ class MainPage(remote.Service):
         incidence.date = str(oneIncidence.incidenceDate)
         incidence.message = oneIncidence.message
         return incidence
+    
+    def getSingleUser(self, employee):
+        user = JsonUserMessage()
+        user.name = employee.name
+        user.email = employee.email
+        user.role = employee.role
+        user.image = employee.image
+        return user
 
     @endpoints.method(message_types.VoidMessage,CompanyTimesResponseMessage,
     path = 'getCompanyTimes', http_method = 'GET', name = 'getCompanyTimes')
@@ -435,6 +445,14 @@ class MainPage(remote.Service):
         date = datetime.now()
         return DateNowGetMessage(response_date=str(date))
 
+    @endpoints.method(UserListMessage, UserListResponseMessage, path='getUserList', http_method='GET', name='getUserList')
+    def getUserList(self, request):
+        userList = []
+        query = Employee.query()
+        for employee in query:
+            userList.append(self.getSingleUser(employee))
+        return UserListResponseMessage(response_list=userList)
+
     @endpoints.method(EmployeeMessage, EmployeeMessageResponse, path='getEmployee', http_method='GET', name='getEmployee')
     def getEmployee(self, request):
         query = Employee.query()
@@ -442,9 +460,34 @@ class MainPage(remote.Service):
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
-            image=query.image
+            image=query.image,
+            role=query.role
         )
         return EmployeeMessageResponse(employee=employee)
+    @endpoints.method(ChangeRoleMessages, ChangeRoleResponse, path='setRole', http_method='POST', name='setRole')
+        # change role value in datastore and update the value in modaluserview
+    def setRole(self, request):
+        query = Employee.query()
+        queryRole = query.filter(Employee.role == 1).fetch()
+        query = query.filter(Employee.email == request.email).get()
+        code = 200
+        if query.role == 0:
+            query.role = 1
+            query.put()
+        else:
+            if len(queryRole) > 1:
+                query.role = 0
+                query.put()
+            else:
+                code = 500
+        employee = JsonChangedRoleEmployee(
+            name=query.name,
+            email=query.email,
+            image=query.image,
+            role=query.role
+        ) 
+        return ChangeRoleResponse(employee=employee,response_code=code)
+
 
 
     @endpoints.method(SolveIncidence, SolveIncidenceResponse, path='solveIncidence', http_method='POST', name='solveIncidence')
@@ -604,6 +647,7 @@ class MainPage(remote.Service):
         incidence = Incidences(incidenceDate=datetime.strptime("2017-12-08 08:26:52.100", "%Y-%m-%d %H:%M:%S.%f"), check=False, solved=False, message="Checkin fuera de hora", employee=Employee(name="Sadella Everard", email="severard0@printfriendly.com", image="http://dummyimage.com/128x126.bmp/cc0000/ffffff", role=0, status=True)).put()
 
         return DateNowMessage()
+# [END guestbook]
 
 
 application = endpoints.api_server([MainPage], restricted=False)
