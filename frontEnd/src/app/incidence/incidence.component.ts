@@ -8,14 +8,17 @@ import { IncidenceService } from '../providers/incidence.provider';
 })
 export class IncidenceComponent implements OnInit {
 
+  employees: any = [];
+
   constructor(private router: Router, private service: IncidenceService) { }
 
-  employees = [];
 
   ngOnInit() {
     this.service.getIncidenceReport().subscribe((data) => {
       if (data != undefined){
         this.employees = data.users;
+      } else {
+        this.employees = [];
       }
     });
   }

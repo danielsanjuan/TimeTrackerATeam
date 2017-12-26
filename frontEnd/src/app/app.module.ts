@@ -17,7 +17,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
+<<<<<<< HEAD
 import { ProtectingRoutesGuard } from './protectingRoutes.guard';
+=======
+import { UserService } from './providers/user.provider';
+>>>>>>> ed0ee69a5882e66e289bbd76d925a73dc2dae933
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -27,6 +31,8 @@ import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
+import { UserlistComponent } from './userlist/userlist.component';
+import { ModalUserComponent } from './modal-user/modal-user.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
@@ -39,6 +45,8 @@ const appRoutes: Routes = [
   { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'modaluser/:email', component: ModalUserComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -50,8 +58,10 @@ const appRoutes: Routes = [
     HomeComponent,
     WeeklyReportComponent,
     LogoutComponent,
+    UserlistComponent,
     IncidenceComponent,
     PersonalIncidenceComponent,
+    ModalUserComponent,
     MonthlyReportComponent,
     SetTimeCompanyComponent,
   ],
@@ -77,7 +87,11 @@ const appRoutes: Routes = [
     CheckInService,
     LoginProvider,
     IncidenceService,
+<<<<<<< HEAD
     ProtectingRoutesGuard
+=======
+    UserService
+>>>>>>> ed0ee69a5882e66e289bbd76d925a73dc2dae933
   ],
   bootstrap: [AppComponent]
 })
