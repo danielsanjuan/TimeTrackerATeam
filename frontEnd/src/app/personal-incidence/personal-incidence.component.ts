@@ -51,7 +51,7 @@ export class PersonalIncidenceComponent implements OnInit {
     })
   }
 
-  openModal(incidence, template: TemplateRef<any>) {
+  openModal(incidence, template: TemplateRef<any>, event) {
     this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
       this.key = data.response_change_check.key;
       if (data.response_change_check.checkin != "None") {
@@ -67,6 +67,7 @@ export class PersonalIncidenceComponent implements OnInit {
       console.log("Valores actualizados");
     });
     this.incidence = incidence;
+    event.stopPropagation();
     this.modalRef = this.modalService.show(template);
   }
 
