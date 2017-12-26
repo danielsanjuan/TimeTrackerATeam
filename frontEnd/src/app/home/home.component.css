@@ -19,7 +19,7 @@
     color: #fff!important;
     font-size: 1.5em;
     border-bottom: 0px!important;
-    z-index: 0;
+    z-index: -5;
 }
 
 .panel-welcome{
@@ -31,14 +31,6 @@
     float: right;
     font-size: 0.8em;
     margin-top: 0.2em;
-}
-
-.panel-left{
-    background-color: rgba(85,85,85, 0.8);
-    width: 30%;
-    z-index: -1;
-    opacity: 0.8!important;
-
 }
 
 .btn-default {

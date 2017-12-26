@@ -17,17 +17,25 @@ export class ProtectingRoutesGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | boolean{
         this.email = this.sessionSt.retrieve('email');
+        console.log(this.email);
         this.services.getEmployee(this.email).subscribe((data) => {
             this.roleUser = data.employee.role;
-          });
-        if(this.roleUser == "1"){
-          console.log(this.roleUser);
-          return true;
-        } 
-        else{
-          console.log(this.roleUser);
-          this.router.navigate(['/home']);
-          return false;
-        }
+        });
+        setTimeout(() => {
+           if(this.roleUser == "0"){
+              this.router.navigate(['/home']);
+              return false;
+            }
+        }, 1);
+        return true;
+        // if(this.roleUser == "1"){
+        //   console.log(this.roleUser);
+        //   return true;
+        // } 
+        // else{
+        //   console.log(this.roleUser);
+        //   this.router.navigate(['/home']);
+        //   return false;
+        // }
   }
 }

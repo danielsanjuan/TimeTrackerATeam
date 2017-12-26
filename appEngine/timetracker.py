@@ -4,6 +4,7 @@ import urllib
 import endpoints
 import os
 import json
+import calendar
 from protorpc import messages
 
 from datetime import datetime, timedelta
@@ -76,13 +77,16 @@ class MainPage(remote.Service):
 
     def filter_checkin(self, date, email):
         query = Workday.query()
+        cont = 0
         if query is None:
             return False
         else:
             query = query.filter(Workday.employee.email == email).fetch()
             for workday in query:
                 if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
-                    return True
+                    cont = cont + 1
+                    if(cont > 2):
+                        return True
             return False
 
     def singleReport(self, currentEmployee, date):
@@ -98,30 +102,31 @@ class MainPage(remote.Service):
         report.friday = 0
         report.saturday = 0
         report.sunday = 0
+        report.email = currentEmployee.email
         monday = tuesday = wednesday = thursday = friday = saturday = sunday = 0
         
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == week and worked.checkout != None:
                 if worked.checkin.isocalendar()[2] == 1:
-                    monday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    monday = monday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.monday = monday/60
                 elif worked.checkin.isocalendar()[2] == 2:
-                    tuesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    tuesday = tuesday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.tuesday = tuesday/60
                 elif worked.checkin.isocalendar()[2] == 3:
-                    wednesday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    wednesday = wednesday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.wednesday = wednesday/60
                 elif worked.checkin.isocalendar()[2] == 4:
-                    thursday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    thursday = thursday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.thursday = thursday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    friday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    friday = friday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.friday = friday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    saturday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    saturday = saturday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.saturday = saturday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    sunday = int((worked.checkout - worked.checkin).total_seconds())/60
+                    sunday = sunday + int((worked.checkout - worked.checkin).total_seconds())/60
                     report.sunday = sunday/60
         report.total = monday + tuesday + wednesday + thursday + friday + saturday + sunday
         report.totalhm = '{:02d}:{:02d}'.format(*divmod(report.total, 60))
@@ -129,10 +134,11 @@ class MainPage(remote.Service):
         return report
 
     def singleMonthlyReport(self, currentEmployee, date):
-        reportMonth = JsonMonthlyMessage()
         currentmonth = date.month - 1
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        dayOfMoth = [0] * calendar.monthrange(date.year, currentmonth)[1]
+        reportMonth = JsonMonthlyMessage()
         reportMonth.hours_day = []
         reportMonth.name = currentEmployee.name
         reportMonth.month = int(currentmonth)
@@ -142,36 +148,39 @@ class MainPage(remote.Service):
         else: reportMonth.year = date.year
 
         for worked in query:
-            reportDay = JsonSingleDayMessage()
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
-                reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
-                reportDay.day = worked.checkin.day
+                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
+        
+        for i in range(0, len(dayOfMoth)-1):
+            reportDay = JsonSingleDayMessage()
+            if dayOfMoth[i] != 0:
+                reportDay.hour = dayOfMoth[i]
+                reportDay.day = i
                 reportMonth.hours_day.append(reportDay)
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
-
-
         return reportMonth
 
     def singleMonthlyReportWithDate(self, currentEmployee, date):
-        reportMonth = JsonMonthlyMessage()
-        currentmonth = date.month
-        print currentmonth
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
+        dayOfMoth = [0] * calendar.monthrange(date.year, date.month)[1]
+        reportMonth = JsonMonthlyMessage()
         reportMonth.hours_day = []
         reportMonth.name = currentEmployee.name
-        reportMonth.month = int(currentmonth)
+        reportMonth.month = int(date.month)
         reportMonth.jornadas = 0
         reportMonth.total = 0
-        if(currentmonth == 1): reportMonth.year = date.year - 1
-        else: reportMonth.year = date.year
 
         for worked in query:
+            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == date.month and worked.checkout != None:
+                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
+        
+        for i in range(0, len(dayOfMoth)-1):
             reportDay = JsonSingleDayMessage()
-            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
-                reportDay.hour = int((worked.checkout - worked.checkin).total_seconds())/3600
-                reportDay.day = worked.checkin.day
+            if dayOfMoth[i] != 0:
+                reportDay.hour = dayOfMoth[i]
+                reportDay.day = i
                 reportMonth.hours_day.append(reportDay)
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
@@ -202,7 +211,7 @@ class MainPage(remote.Service):
     def check_in(self, request):
         date = datetime.now()
         if self.filter_checkin(date, request.email):
-            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
+            return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite 3 checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             if date.hour >= 7 and date.hour < 9:
                 self.set_checkin(date, request.email)

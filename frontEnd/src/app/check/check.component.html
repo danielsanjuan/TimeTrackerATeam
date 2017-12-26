@@ -7,25 +7,25 @@
     <div class="input-group input-week">
         <span class="input-group-addon hourTime" id="sizing-addon">Week Time</span>
         <span class="input-group-addon glyphicon glyphicon-calendar hourTimeResponsive" id="sizing-addon"></span>
-        <input type="text" class="form-control hours" placeholder="Username" aria-describedby="sizing-addon2" [value]="hours_today" readonly>
+        <input type="text" class="form-control hours" placeholder="Username" aria-describedby="sizing-addon2" [value]="hours_week" readonly>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 check">
-        <div *ngIf="!doClick">
+        <div *ngIf="!doCheckIn">
             <button type="button" (click)="timeCheckIn()" class="btn btn-primary check-in btn-block btn-lg" disabled><b>CHECK IN</b></button>
         </div>
-        <div *ngIf="doClick">
+        <div *ngIf="doCheckIn">
             <button type="button" (click)="timeCheckIn()" class="btn btn-primary btn-block btn-lg check-in animated fadeIn" ><b>CHECK IN</b></button>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 check">
-      <div *ngIf="!doClick">
+      <div *ngIf="doCheckOut">
         <button type="button" (click)="timeCheckOut()" class="btn btn-primary btn-block btn-lg check-out animated fadeIn" ><b>CHECK OUT</b></button>    
       </div>
-      <div *ngIf="doClick">
+      <div *ngIf="!doCheckOut">
         <button type="button" (click)="timeCheckOut()" class="btn btn-primary btn-block btn-lg check-out" disabled><b>CHECK OUT</b></button>     
       </div>
     </div>

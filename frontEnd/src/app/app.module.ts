@@ -59,8 +59,7 @@ const appRoutes: Routes = [
     Ng2Webstorage,
     NgbModule.forRoot(),
     RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      appRoutes
     ),
     ToastModule.forRoot(),
     BrowserAnimationsModule,

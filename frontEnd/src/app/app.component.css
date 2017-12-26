@@ -1,6 +1,7 @@
 .navbar{
     margin-bottom: 0px!important;
     border-radius: 0px!important;
+    z-index: 0;
 }
 
 .navbar-brand {
@@ -48,6 +49,7 @@
     .log-out{
         border-left: 1px solid #444;
         margin-left: 15px;
+        margin-top: -2px;
     }
 
 }
