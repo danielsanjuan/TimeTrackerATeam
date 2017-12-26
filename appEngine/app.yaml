@@ -16,6 +16,9 @@ handlers:
   static_files: index.html
   upload: index.html
   secure: always
+
+- url: /bootstrap
+  static_dir: bootstrap
 # [END handlers]
 
 # [START libraries]
