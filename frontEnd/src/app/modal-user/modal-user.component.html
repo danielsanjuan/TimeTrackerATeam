@@ -10,11 +10,11 @@
       <p>{{employees.name}}</p>
       <p>{{employees.email}}</p>
       <span class="col-md-12">
-        <p *ngIf="role == 1">Role = Human Resources</p>
-        <p *ngIf="role == 0">Role = Employee</p>
-      <input type="button" (click)='changeRole()' value='Change Role'></span>
+        <p *ngIf="role == 1"><b>Human Resources</b></p>
+        <p *ngIf="role == 0"><b>Employee</b></p>
+        <button type='button' (click)='changeRole()' class='btn btn-info'>Change Role</button>
+      </span>
     </div>
-    
   </div>
    
   
