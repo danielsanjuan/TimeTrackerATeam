@@ -22,18 +22,16 @@ export class AppComponent implements OnInit{
   isCollapsed:boolean=true;
   
   constructor(private services:LoginProvider,  
-              private router: Router, 
+              public router: Router, 
               private sesionService: SessionStorageService){
               
   }
 
   ngOnInit() {
     this.subscription = this.services.getNameUser().subscribe(data => { 
-      console.log(data);
       this.nombre = data; 
     });
     this.subscription2 = this.services.getImgUser().subscribe(data => { 
-      console.log(data);
       this.imagen = data; 
     });
   }

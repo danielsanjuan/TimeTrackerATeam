@@ -40,7 +40,7 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     this.name = this.sessionSt.retrieve('name');
     this.services.checkWorkedDay().subscribe((data) => {
-      console.log(data)
+      // console.log(data)
       if (data.response_date == "No has hecho checkin"){
         this.doClick = true;
       }else if (data.response_date == "No has hecho checkout"){
@@ -58,9 +58,9 @@ export class CheckComponent implements OnInit {
   timeCheckIn(){
     this.doClick=false;
     this.services.postCheckIn().subscribe( (data)=>{
-      console.log(data.response_code);
-      console.log(data.response_date + "al principio");
-      console.log(data.response_status);
+      // console.log(data.response_code);
+      // console.log(data.response_date + "al principio");
+      // console.log(data.response_status);
       switch(data.response_code){
         case "200":
             this.checkInTime = data.response_date;
@@ -86,8 +86,8 @@ export class CheckComponent implements OnInit {
       }
     });
     this.services.getCheckIn().subscribe((data)=>{
-        console.log((data.response_date) + " getCheckIn");
-        console.log("in "+new Date(data.response_date));
+        // console.log((data.response_date) + " getCheckIn");
+        // console.log("in "+new Date(data.response_date));
     });
 
   }
@@ -96,9 +96,9 @@ export class CheckComponent implements OnInit {
   timeCheckOut(){
       this.doClick=false;
       this.services.postCheckOut().subscribe( (data)=>{
-        console.log(data.response_code);
-        console.log(data.response_date);
-        console.log(data.response_status);
+        // console.log(data.response_code);
+        // console.log(data.response_date);
+        // console.log(data.response_status);
         switch(data.response_code){
           case "200":
               this.checkOutTime = data.response_date;

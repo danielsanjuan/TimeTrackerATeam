@@ -5,7 +5,7 @@
         <label>Select a date to generate a monthly report</label>
         <div class="input-group">
 
-          <input class="form-control" style="float:none" placeholder="Select a date" ngx-mydatepicker name="mydate" [(ngModel)]="model"
+          <input class="form-control" style="float:none" placeholder="Select a date" ngx-mydatepicker name="mydate"
             [options]="myOptions" #dp="ngx-mydatepicker" (dateChanged)="onDateChanged($event)" />
 
           <span class="input-group-btn">

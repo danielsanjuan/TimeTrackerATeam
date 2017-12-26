@@ -19,7 +19,7 @@ export class PersonalIncidenceComponent implements OnInit {
   key: any;
   email: any;
   private sub: any;
-  employees = [];
+  employees: any = {};
   incidences = [];
   modalRef: BsModalRef;
   incidence: any;

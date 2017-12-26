@@ -22,7 +22,6 @@ export class SetTimeCompanyComponent implements OnInit {
 
   ngOnInit() {
     this.services.getCompanyTimes().subscribe((data) => {
-      console.log("LLamando: " + data.response.checkinmin);
       this.checkin_min = data.response.checkinmin;
       this.checkin_max = data.response.checkinmax;
       this.checkout_min = data.response.checkoutmin;

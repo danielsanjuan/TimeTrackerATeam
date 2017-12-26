@@ -21,7 +21,7 @@ export class IncidenceComponent implements OnInit {
   }
 
   showPersonalIncidence(email){
-    console.log(email);
+    // console.log(email);
     this.router.navigate(['/personalIncidence', email]);
   }
 

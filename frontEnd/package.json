@@ -27,7 +27,6 @@
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "moment": "^2.19.2",
-    "ng2-bs-dropdown": "^0.7.0",
     "ng2-toastr": "^4.1.2",
     "ngx-mydatepicker": "^2.3.4",
     "ngx-bootstrap": "^2.0.0-beta.11",

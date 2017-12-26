@@ -15,54 +15,54 @@ export class CheckInService {
 
   postCheckIn():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.localRoute + "/timetracker/v1/check_in", body);
+    return this.http.post(this.serverRoute + "/timetracker/v1/check_in", body);
   }
 
   postCheckOut():Observable<any>{
     let body = {"email": this.sessionSt.retrieve('email')}
-    return this.http.post(this.localRoute + "/timetracker/v1/check_out", body);
+    return this.http.post(this.serverRoute + "/timetracker/v1/check_out", body);
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.localRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCheckout():Observable<any>{
-    return this.http.get(this.localRoute + "/timetracker/v1/getCheckout?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCheckout?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport");
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReport");
   }
 
   getWeeklyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReportWithDate?week=" + date);
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/weeklyReportWithDate?week=" + date);
   }
 
   getDateNow(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/getDateNow");
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/getDateNow");
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/monthlyReport");
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReport");
   }
 
   getMonthlyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/monthlyReportDate?monthDate=" + date);
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/monthlyReportDate?monthDate=" + date);
   }
 
   checkWorkedDay(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get<any>(this.serverRoute + "/timetracker/v1/checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCompanyTimes(): Observable<any>{
-    return this.http.get(this.localRoute + "/timetracker/v1/getCompanyTimes");
+    return this.http.get(this.serverRoute + "/timetracker/v1/getCompanyTimes");
   }
 
   postCompanyTimes(times):Observable<any>{
     console.log("times:" + times.checkinmin);
     let body = times;
-    return this.http.post(this.localRoute + "/timetracker/v1/setCompanyTimes", body);
+    return this.http.post(this.serverRoute + "/timetracker/v1/setCompanyTimes", body);
   }
 
 }

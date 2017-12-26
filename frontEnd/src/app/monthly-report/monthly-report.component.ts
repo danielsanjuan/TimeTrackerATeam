@@ -39,7 +39,7 @@ export class MonthlyReportComponent implements OnInit {
 
 
   leapYear(year){
-    console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
+    // console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
@@ -53,13 +53,13 @@ export class MonthlyReportComponent implements OnInit {
       d.setDate(dia);
       day = d.getDay();
     }
-    console.log(dia);
+    // console.log(dia);
     return dia;
   }
 
   checkMonth(data){
       this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
-      console.log(data.response_report[0].month);
+      // console.log(data.response_report[0].month);
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
@@ -108,7 +108,7 @@ export class MonthlyReportComponent implements OnInit {
         this.employeesMonthly = [];
       }  
     });
-    console.log(event.formatted);
+    // console.log(event.formatted);
   }
 
   isWeekend(day){

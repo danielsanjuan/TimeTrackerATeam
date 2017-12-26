@@ -7,7 +7,6 @@ import { LoginProvider } from '../providers/login.provider';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  manolo:any;
 
   constructor(private loginServer: LoginProvider) { }
 
