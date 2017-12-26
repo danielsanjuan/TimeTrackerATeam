@@ -1,9 +1,4 @@
 indexes:
-- kind: Greeting
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
 - kind: Incidences
   properties:
   - name: employee.email
