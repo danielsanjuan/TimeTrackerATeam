@@ -11,6 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -68,7 +69,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     NgxMyDatePickerModule.forRoot(),
     ModalModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    ReactiveFormsModule,
   ],
   providers: [
     CheckInService,

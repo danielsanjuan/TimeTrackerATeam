@@ -33,8 +33,16 @@ export class IncidenceService {
   }
 
   solveIncidence(date):Observable<any>{
-    console.log("Fecha por aqui" + date);
     let body = { "incidenceDate": date};
     return this.http.post(this.localRoute + 'solveIncidence', body);
+  }
+
+  getCheckHoursIncidence(email, dateOriginal):Observable<any>{
+    return this.http.get(this.localRoute + 'getCheckHours?email=' + email + '&date=' + dateOriginal);
+  }
+
+  setCheckHoursIncidence(key, email, checkin, checkout):Observable<any>{
+    let body = { "key": key, "email": email, "dateUpdatedCheckIn": checkin, "dateUpdatedCheckOut": checkout};
+    return this.http.post(this.localRoute + 'changeCheckHours', body);
   }
 }
