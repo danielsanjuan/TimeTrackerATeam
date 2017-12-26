@@ -35,8 +35,8 @@ export class CheckInService {
     return this.http.get<any>(this.localRoute + "weeklyReport");
   }
 
-  getWeeklyReportWithDate(week): Observable<any>{
-    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReport" +week);
+  getWeeklyReportWithDate(date):Observable<any>{
+    return this.http.get<any>(this.localRoute + "/timetracker/v1/weeklyReportWithDate?week=" + date);
   }
 
   getDateNow(): Observable<any>{
@@ -50,10 +50,19 @@ export class CheckInService {
   getMonthlyReportWithDate(date):Observable<any>{
     return this.http.get<any>(this.localRoute + "/timetracker/v1/monthlyReportDate?monthDate=" + date);
   }
-  
+
   checkWorkedDay(): Observable<any>{
     return this.http.get<any>(this.localRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
+  getCompanyTimes(): Observable<any>{
+    return this.http.get(this.localRoute + "/timetracker/v1/getCompanyTimes");
+  }
+
+  postCompanyTimes(times):Observable<any>{
+    console.log("times:" + times.checkinmin);
+    let body = times;
+    return this.http.post(this.localRoute + "/timetracker/v1/setCompanyTimes", body);
+  }
 
 }

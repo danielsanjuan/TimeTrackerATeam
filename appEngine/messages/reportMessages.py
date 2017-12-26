@@ -1,7 +1,9 @@
 from protorpc import messages
 class ReportMessage(messages.Message):
     pass
-    
+class ReportDateMessage(messages.Message):
+    week = messages.StringField(1)
+        
 class JsonMessage(messages.Message):
     name = messages.StringField(1)
     monday = messages.IntegerField(2)
