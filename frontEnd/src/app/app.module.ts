@@ -11,6 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /*Provider*/
 import { LoginProvider } from './providers/login.provider';
@@ -28,6 +29,7 @@ import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
+import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -36,6 +38,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -50,6 +53,7 @@ const appRoutes: Routes = [
     IncidenceComponent,
     PersonalIncidenceComponent,
     MonthlyReportComponent,
+    SetTimeCompanyComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +70,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     NgxMyDatePickerModule.forRoot(),
     ModalModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    ReactiveFormsModule,
   ],
   providers: [
     CheckInService,
