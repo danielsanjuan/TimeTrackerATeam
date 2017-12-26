@@ -104,13 +104,16 @@ class MainPage(remote.Service):
         query.put()
 
     def filter_checkin(self, date, email):
+        count = 1
         query = Workday.query()
         if query is None:
             return False
         else:
-            query = query.filter(Workday.employee.email == email).fetch()
+            query = query.filter(Workday.employee.email == email)
             for workday in query:
-                if datetime(workday.checkin.year, workday.checkin.month, workday.checkin.day) == datetime(date.year, date.month, date.day):
+                if workday.checkin.date() == date.date() and count < 3:
+                    count = count + 1
+                else:
                     return True
             return False
 
