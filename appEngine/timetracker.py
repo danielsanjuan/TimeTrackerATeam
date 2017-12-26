@@ -157,7 +157,6 @@ class MainPage(remote.Service):
                     report.sunday = sunday/60
         report.total = monday + tuesday + wednesday + thursday + friday + saturday + sunday
         report.totalhm = '{:02d}:{:02d}'.format(*divmod(report.total, 60))
-        print "Este es el total", report.total
         return report
 
     def singleMonthlyReport(self, currentEmployee, date):
@@ -188,7 +187,6 @@ class MainPage(remote.Service):
     def singleMonthlyReportWithDate(self, currentEmployee, date):
         reportMonth = JsonMonthlyMessage()
         currentmonth = date.month
-        print currentmonth
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
         reportMonth.hours_day = []
@@ -208,7 +206,6 @@ class MainPage(remote.Service):
                 reportMonth.jornadas = reportMonth.jornadas + 1
                 reportMonth.total = reportMonth.total+reportDay.hour
         return reportMonth
-
 
     def set_incidences(self, message, date, email, check):
         query = Employee.query()
@@ -374,7 +371,6 @@ class MainPage(remote.Service):
         workedDays = []
         week = datetime(int(request.week[6:10]),int(request.week[3:5]),int(request.week[0:2]))
         query = Employee.query()
-        print datetime.today()
         if week < datetime.today():
             for currentEmployee in query:
                 workedDays.append(self.singleReport(currentEmployee, week))
@@ -414,7 +410,6 @@ class MainPage(remote.Service):
             incidences.append(self.incidencesList(oneIncidence))
         return IncidencesReportResponseMessage(incidences=incidences)
 
-
     @endpoints.method(IncidencesUsersMessage, IncidencesUserListResponseMessage, path='incidencesUsersList', http_method='GET', name='incidencesUsersList')
     def incidencesUsersList(self, request):
         users = []
@@ -434,7 +429,6 @@ class MainPage(remote.Service):
             if user not in allUsers:
                 allUsers.append(user)
         return IncidencesUserListResponseMessage(users=allUsers)
-
 
     @endpoints.method(DateNowMessage, DateNowGetMessage, path='getDateNow', http_method='GET', name='getDateNow')
     def getDateNow(self, request):
@@ -489,22 +483,34 @@ class MainPage(remote.Service):
     @endpoints.method(FixCheckHoursMessage, FixHoursResponseMessage, path='changeCheckHours', http_method='POST', name='changeCheckHours')
     def changeCheckHours(self, request):
         query = CompanyTimes.query().get()
-        if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut and
-        query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkinmax >= request.dateUpdatedCheckIn.split(' ')[1] and
-        query.checkoutmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
-            query = Workday.query()
-            query = query.filter(Workday.employee.email == request.email)
-            for day in query:
-                if day.key.id() == request.key:
-                    newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
-                    newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
-                    day.checkin = newCheckin
-                    day.checkout = newChekout
-                    print day
-                    day.put()
-                    return FixHoursResponseMessage(response_code = 200)
+        if request.dateUpdatedCheckOut is not None:
+            if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut and
+            query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkinmax >= request.dateUpdatedCheckIn.split(' ')[1] and
+            query.checkoutmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
+                query = Workday.query()
+                query = query.filter(Workday.employee.email == request.email)
+                for day in query:
+                    if day.key.id() == request.key:
+                        newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
+                        newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
+                        day.checkin = newCheckin
+                        day.checkout = newChekout
+                        day.put()
+                        return FixHoursResponseMessage(response_code = 200)
+            else:
+                return FixHoursResponseMessage(response_code = 404)
         else:
-            return FixHoursResponseMessage(response_code = 404)
+            if (query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkinmax >= request.dateUpdatedCheckIn.split(' ')[1]):
+                query = Workday.query()
+                query = query.filter(Workday.employee.email == request.email)
+                for day in query:
+                    if day.key.id() == request.key:
+                        newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
+                        day.checkin = newCheckin
+                        day.put()
+                        return FixHoursResponseMessage(response_code = 200)
+            else:
+                return FixHoursResponseMessage(response_code = 404)
 
 
 

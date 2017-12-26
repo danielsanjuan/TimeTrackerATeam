@@ -19,7 +19,7 @@ export class PersonalIncidenceComponent implements OnInit {
   key: any;
   email: any;
   private sub: any;
-  employees = [];
+  employees: any = {};
   incidences = [];
   modalRef: BsModalRef;
   incidence: any;
@@ -32,8 +32,8 @@ export class PersonalIncidenceComponent implements OnInit {
     vcr: ViewContainerRef,) {
       this.toastr.setRootViewContainerRef(vcr);
       this.rForm = this.fb.group({
-        check_in: ["nada", Validators.required],
-        check_out: ["nada", Validators.required]
+        check_in: ["", Validators.required],
+        check_out: [""]
       });
   }
 
@@ -54,10 +54,15 @@ export class PersonalIncidenceComponent implements OnInit {
   openModal(incidence, template: TemplateRef<any>) {
     this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
       this.key = data.response_change_check.key;
-      let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].split('.')[0];
-      this.check_in = dateStringIn;
-      let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
-      this.check_out = dateStringOut;
+      if (data.response_change_check.checkin != "None") {
+        let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].split('.')[0];
+        this.check_in = dateStringIn;
+      }
+      if (data.response_change_check.checkout != "None") {
+        console.log("Mostrando: " + data.response_change_check.checkout);
+        let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
+        this.check_out = dateStringOut;
+      }
       this.rForm.patchValue({check_in: this.check_in, check_out: this.check_out});
       console.log("Valores actualizados");
     });
@@ -66,27 +71,50 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   setSolved(formValues) {
-    console.log(formValues.check_in);
-    if(formValues.check_in && formValues.check_out){
-      this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", formValues.check_out.replace('T', ' ') + ".100").subscribe((data) => {
-        console.log(data.response_code);
-        if (data.response_code == 200){
-          this.toastr.success('Success!');
-          this.services.solveIncidence(this.incidence.date).subscribe((data) => {
-            setTimeout(() => {
-              this.zone.run(() => {
-                this.modalRef.hide();
-                this.modalRef = null;
-                this.services.getPersonalIncidences(this.email).subscribe((data) => {
-                  this.incidences = data.incidences;
+    if(formValues.check_in){
+      if (formValues.check_out){
+        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", formValues.check_out.replace('T', ' ') + ".100").subscribe((data) => {
+          console.log(data.response_code);
+          if (data.response_code == 200){
+            this.toastr.success('Success!');
+            this.services.solveIncidence(this.incidence.date).subscribe((data) => {
+              setTimeout(() => {
+                this.zone.run(() => {
+                  this.modalRef.hide();
+                  this.modalRef = null;
+                  this.services.getPersonalIncidences(this.email).subscribe((data) => {
+                    this.incidences = data.incidences;
+                  });
                 });
-              });
-            }, 200);
-          });
-        }else{
-          this.error = 404;
-        }
-      });
+              }, 200);
+            });
+          }else{
+            this.error = 404;
+          }
+        });
+      }else{
+        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", null).subscribe((data) => {
+          console.log(data.response_code);
+          if (data.response_code == 200){
+            this.toastr.success('Success!');
+            this.services.solveIncidence(this.incidence.date).subscribe((data) => {
+              setTimeout(() => {
+                this.zone.run(() => {
+                  this.modalRef.hide();
+                  this.modalRef = null;
+                  this.services.getPersonalIncidences(this.email).subscribe((data) => {
+                    this.incidences = data.incidences;
+                  });
+                });
+              }, 200);
+            });
+          }else{
+            this.error = 404;
+          }
+        });
+      }
+    }else{
+      this.error = 404;
     }
   }
 }
