@@ -114,9 +114,9 @@ class MainPage(remote.Service):
         else:
             query = query.filter(Workday.employee.email == email)
             for workday in query:
-                if workday.checkin.date() == date.date() and count < 3:
+                if workday.checkin.date() == date.date() and count <= 3:
                     count = count + 1
-                else:
+                if count > 3:
                     return True
             return False
 
@@ -180,7 +180,7 @@ class MainPage(remote.Service):
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
                 dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
-        
+
         for i in range(0, len(dayOfMoth)-1):
             reportDay = JsonSingleDayMessage()
             if dayOfMoth[i] != 0:
@@ -205,7 +205,7 @@ class MainPage(remote.Service):
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == date.month and worked.checkout != None:
                 dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
-        
+
         for i in range(0, len(dayOfMoth)-1):
             reportDay = JsonSingleDayMessage()
             if dayOfMoth[i] != 0:
