@@ -16,8 +16,8 @@ export class AppComponent implements OnInit{
 
   navbar:boolean = true;
   numberIncidences: number = 0;
-  imagen:any;
-  nombre:string="";
+  imagen:any ="";
+  nombre:string;
   subscription: Subscription;
   subscription2: Subscription;
   isCollapsed:boolean=true;

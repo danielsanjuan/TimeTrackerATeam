@@ -55,13 +55,9 @@ export class CheckComponent implements OnInit {
         this.doCheckOut = false;
       }
       this.services.getWeeklyReport().subscribe((data) => {
-        console.log("AAAAAAAAAAAAA "+data);
-        console.log("BBBBBBBBBBBBB "+data.response_list);
         this.employees = data.response_list;
-        console.log("CCCCCC "+this.employees[0].email);
         for(let i=0; i<this.employees.length; i++){
           if(this.employees[i].email == this.emailUser){
-            console.log("Correo del empleado: " + this.employees[i].email)
             this.week = parseInt(this.employees[i].total);
             this.week = this.week*60000; 
           }

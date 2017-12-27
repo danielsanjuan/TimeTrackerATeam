@@ -53,13 +53,11 @@ export class MonthlyReportComponent implements OnInit {
       d.setDate(dia);
       day = d.getDay();
     }
-    console.log(dia);
     return dia;
   }
 
   checkMonth(data){
       this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
-      console.log(data.response_report[0].month);
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
@@ -108,7 +106,6 @@ export class MonthlyReportComponent implements OnInit {
         this.employeesMonthly = [];
       }  
     });
-    console.log(event.formatted);
   }
 
   isWeekend(day){

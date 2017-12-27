@@ -20,7 +20,7 @@
             <li routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><img class="img_user" src="{{imagen}}" alt="User">
+            <li class="info-user" ><img class="img_user" src="{{imagen}}" alt="User">
             <span>{{nombre}}</span></li>
             <li class="log-out" (click)="isCollapsed = !isCollapsed"><app-logout></app-logout></li>
           </ul>

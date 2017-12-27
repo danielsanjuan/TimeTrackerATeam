@@ -17,11 +17,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
-<<<<<<< HEAD
 import { ProtectingRoutesGuard } from './protectingRoutes.guard';
-=======
 import { UserService } from './providers/user.provider';
->>>>>>> ed0ee69a5882e66e289bbd76d925a73dc2dae933
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -86,11 +83,8 @@ const appRoutes: Routes = [
     CheckInService,
     LoginProvider,
     IncidenceService,
-<<<<<<< HEAD
-    ProtectingRoutesGuard
-=======
+    ProtectingRoutesGuard,
     UserService
->>>>>>> ed0ee69a5882e66e289bbd76d925a73dc2dae933
   ],
   bootstrap: [AppComponent]
 })
