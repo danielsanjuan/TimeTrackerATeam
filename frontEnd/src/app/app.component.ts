@@ -26,7 +26,7 @@ export class AppComponent implements OnInit{
   admin:boolean;
 
   constructor(private services:LoginProvider,
-              private router: Router,
+              public router: Router,
               private serviceIncidence: IncidenceService,
               private sesionService: SessionStorageService){
 
