@@ -44,7 +44,7 @@ export class CheckInService {
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "/monthlyReport");
+    return this.http.get<any>(this.serverRoute + "monthlyReport");
   }
 
   getMonthlyReportWithDate(date):Observable<any>{
