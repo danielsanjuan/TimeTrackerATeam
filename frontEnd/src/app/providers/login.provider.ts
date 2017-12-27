@@ -1,9 +1,10 @@
-import { Injectable, NgZone} from "@angular/core";
+import { Injectable, NgZone, ViewContainerRef } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Rx";
 import { HttpClient } from "@angular/common/http";
 import { Router } from '@angular/router';
 import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 declare const gapi: any;
 
@@ -21,7 +22,7 @@ export class LoginProvider {
     constructor(private http: HttpClient,
                 private router:Router,
                 private zone:NgZone,
-                private sessionSt:SessionStorageService) {
+                private sessionSt:SessionStorageService, public toastr: ToastsManager, vcr: ViewContainerRef) {
 
     }
 
@@ -65,8 +66,7 @@ export class LoginProvider {
     login(name, imageUrl) {
       gapi.client.timetracker.login({email:"TODO", password: "password", name: name, image: imageUrl }).execute((response: any) => {
           if (response.error) {
-            console.log(response.error);
-
+            this.toastr.error('Invalid Account!');
           }
           else {
             // console.log(JSON.stringify(response.result));
