@@ -23,7 +23,8 @@
             <td class="imagecell"><img src="{{employee.image}}" alt="profile-image" class="profile-image"></td>
             <td>{{employee.name}}</td>
             <td>{{employee.email}}</td>
-            <td>{{employee.role}}</td>
+            <td *ngIf="employee.role == 1">HR</td>
+            <td *ngIf="employee.role == 0">Employe</td>
             <!-- (click)="showUserInfo(employee.email) (click)="showPersonalIncidence(employee.email)"-->
             <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td>
           </tr>
