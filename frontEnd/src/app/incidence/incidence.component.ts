@@ -20,7 +20,7 @@ export class IncidenceComponent implements OnInit {
       } else {
         this.employees = [];
       }
-    })
+    });
   }
 
   showPersonalIncidence(email){

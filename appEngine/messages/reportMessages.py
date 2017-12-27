@@ -15,6 +15,7 @@ class JsonMessage(messages.Message):
     sunday = messages.IntegerField(8)
     total = messages.IntegerField(9)
     totalhm = messages.StringField(10)
+    email = messages.StringField(11)
 
 class ReportResponseMessage(messages.Message):
     response_list = messages.MessageField(JsonMessage, 1, repeated=True)

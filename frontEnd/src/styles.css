@@ -2,3 +2,9 @@
 body{
     background-color: lightgray!important;
 }
+
+.toast-top-right {
+    top: 12px!important;
+    margin-top:50px!important;
+    right: 12px!important;
+}

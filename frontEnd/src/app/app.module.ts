@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginProvider } from './providers/login.provider';
 import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
+import { ProtectingRoutesGuard } from './protectingRoutes.guard';
 import { UserService } from './providers/user.provider';
 
 /*Componentes*/
@@ -34,14 +35,14 @@ import { SetTimeCompanyComponent } from './set-time-company/set-time-company.com
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
-  { path: 'incidence', component: IncidenceComponent },
+  { path: 'incidence', component: IncidenceComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'userlist', component: UserlistComponent },
+  { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'modaluser/:email', component: ModalUserComponent },
-  { path: 'weeklyReport', component: WeeklyReportComponent },
-  { path: 'monthlyReport', component: MonthlyReportComponent },
-  { path: 'settings', component: SetTimeCompanyComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -80,6 +81,7 @@ const appRoutes: Routes = [
     CheckInService,
     LoginProvider,
     IncidenceService,
+    ProtectingRoutesGuard,
     UserService
   ],
   bootstrap: [AppComponent]

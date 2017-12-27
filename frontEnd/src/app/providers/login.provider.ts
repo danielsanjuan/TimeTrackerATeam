@@ -43,8 +43,7 @@ export class LoginProvider {
     public attachSignin(element) {
       gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
       this.auth2.attachClickHandler(element, {},
-        (googleUser) => {
-
+        (googleUser) => {       
           let profile = googleUser.getBasicProfile();
           // console.log('Token || ' + googleUser.getAuthResponse().id_token);
           // console.log('ID: ' + profile.getId());

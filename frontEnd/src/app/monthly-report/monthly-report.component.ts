@@ -17,12 +17,12 @@ export class MonthlyReportComponent implements OnInit {
   employees = [];
   employeesMonthly = [];
   workerHours = [];
-  totalDays; 
+  totalDays;
   mes = [];
   myOptions: INgxMyDpOptions = {
     // other options...
     dateFormat: 'dd.mm.yyyy',
-    
+
   };
 
   constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
@@ -53,13 +53,11 @@ export class MonthlyReportComponent implements OnInit {
       d.setDate(dia);
       day = d.getDay();
     }
-    // console.log(dia);
     return dia;
   }
 
   checkMonth(data){
       this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
-      // console.log(data.response_report[0].month);
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
@@ -71,21 +69,21 @@ export class MonthlyReportComponent implements OnInit {
              this.totalDays=30;
           }
           else this.totalDays = 31;
-          
+
         }
-          
+
         for(let k=0; k<this.totalDays; k++) this.mes[k] = 0;
-        
+
 
         this.employeesMonthly = data.response_report;
         this.workerHours = data.response_report.hours_day;
         for(let i in this.employeesMonthly){
           for(let k=0; k<this.totalDays; k++) this.mes[k] = 0;
           if(this.employeesMonthly[i].hours_day != undefined){
-          
-            for(let j=0; j < this.employeesMonthly[i].hours_day.length; j++){ 
-            
-              this.mes[this.employeesMonthly[i].hours_day[j].day] = this.employeesMonthly[i].hours_day[j].hour; 
+
+            for(let j=0; j < this.employeesMonthly[i].hours_day.length; j++){
+
+              this.mes[this.employeesMonthly[i].hours_day[j].day] = this.employeesMonthly[i].hours_day[j].hour;
             }
 
           }
@@ -103,12 +101,11 @@ export class MonthlyReportComponent implements OnInit {
     this.services.getMonthlyReportWithDate(event.formatted).subscribe((data) => {
       if (data.response_report != undefined){
         this.checkMonth(data);
-      } 
+      }
       else{
         this.employeesMonthly = [];
-      }  
+      }
     });
-    // console.log(event.formatted);
   }
 
   isWeekend(day){

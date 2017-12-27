@@ -13,21 +13,24 @@ import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 })
 export class CheckComponent implements OnInit {
   checkOutTime: string = "" ;
-  doClick:boolean = true;
+  doCheckIn:boolean = true;
+  doCheckOut:boolean = false;
   E202:boolean=false;
   E406:boolean=false;
   E500:boolean=false;
+  timer:any;
   checkInTime:string;
   employees = [];
-  hours_today:string;
-  hours_week:string;
-  name:string = "";
+  hours_today:string = "00:00";
+  hours_week:string = "00:00";
+  emailUser:string = "";
   fechaNow:any;
   fechaCheckIn:any;
   fechaCheckout:any;
   week:number = 0;
   interval:any;
   timeControl:boolean = false;
+  contador:number = 0;
 
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
@@ -38,93 +41,103 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.name = this.sessionSt.retrieve('name');
+    this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
       // console.log(data)
       if (data.response_date == "No has hecho checkin"){
-        this.doClick = true;
+        this.doCheckIn = true;
+        this.doCheckOut = false;
       }else if (data.response_date == "No has hecho checkout"){
-        this.doClick = false;
+        this.doCheckIn = false;
+        this.doCheckOut = true;
       }else{
-        this.doClick = true;
+        this.doCheckIn = true;
+        this.doCheckOut = false;
       }
+      this.services.getWeeklyReport().subscribe((data) => {
+        this.employees = data.response_list;
+        for(let i=0; i<this.employees.length; i++){
+          if(this.employees[i].email == this.emailUser){
+            this.week = parseInt(this.employees[i].total);
+            this.week = this.week*60000;
+          }
+        }
+      });
+      this.time();
     });
-    // this.services.getWeeklyReport().subscribe((data) => {
-    //   this.employees = data.response_report;
-    // });
-    this.time();
+
   }
 
   timeCheckIn(){
-    this.doClick=false;
-    this.services.postCheckIn().subscribe( (data)=>{
-      // console.log(data.response_code);
-      // console.log(data.response_date + "al principio");
-      // console.log(data.response_status);
-      switch(data.response_code){
-        case "200":
-            this.checkInTime = data.response_date;
-            let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
-            break;
-        case "202":
-            this.checkInTime = data.response_date;
-            let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.warning('You are too late '+ timeLate, 'Alert!');
-            this.E202=true;
-            break;
-        case "406":
-            this.E406=true;
-            this.toastr.error('You can not work at this time', 'Oops!');
-            this.doClick=true;
-            break;
-        case "500":
-            this.E500=true;
-            this.toastr.error('You can not do 2 check-in the same day', 'Oops!');
-            this.doClick=true;
-            break;
-      }
-    });
-    this.services.getCheckIn().subscribe((data)=>{
-        // console.log((data.response_date) + " getCheckIn");
-        // console.log("in "+new Date(data.response_date));
-    });
-
-  }
-
-
-  timeCheckOut(){
-      this.doClick=false;
-      this.services.postCheckOut().subscribe( (data)=>{
-        // console.log(data.response_code);
-        // console.log(data.response_date);
-        // console.log(data.response_status);
+    console.log(this.contador);
+    if(this.contador < 3){
+      this.doCheckIn = false;
+      this.doCheckOut = true;
+      this.services.postCheckIn().subscribe( (data)=>{
         switch(data.response_code){
           case "200":
-              this.checkOutTime = data.response_date;
-              this.toastr.success('Good Job!', 'Success!');
-              this.doClick=true;
+              this.checkInTime = data.response_date;
+              let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+              this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
               break;
           case "202":
-              this.checkOutTime = data.response_date;
-              this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
-              this.doClick=true;
+              this.checkInTime = data.response_date;
+              let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+              this.toastr.warning('You are too late '+ timeLate, 'Alert!');
               this.E202=true;
               break;
           case "406":
               this.E406=true;
-              this.doClick=true;
+              this.toastr.error('You can not work at this time', 'Oops!');
+              this.doCheckIn = false;
+              this.doCheckOut = false;
+              break;
+          case "500":
+              this.E500=true;
+              this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
+              this.doCheckIn = false;
+              this.doCheckOut = false;
+              break;
+        }
+      });
+      this.services.getCheckIn().subscribe((data)=>{
+          console.log((data.response_date) + " getCheckIn");
+          console.log("in "+new Date(data.response_date));
+      });
+      this.contador++;
+    }
+  }
+
+
+  timeCheckOut(){
+      this.doCheckIn = true;
+      this.doCheckOut = false;
+      this.services.postCheckOut().subscribe( (data)=>{
+        switch(data.response_code){
+          case "200":
+              this.checkOutTime = data.response_date;
+              this.toastr.success('Good Job!', 'Success!');
+              break;
+          case "202":
+              this.checkOutTime = data.response_date;
+              this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
+              this.E202=true;
+              break;
+          case "406":
+              this.E406=true;
               this.toastr.error('You should be with your family', 'Oops!');
               break;
         }
       });
+      if(this.contador>2){
+        this.doCheckIn = false;
+        this.doCheckOut = false;
+      }
+      //clearInterval(this.timer);
   }
-  
+
   time(){
     this.seeTime();
-    // if(this.employees != undefined){
-    //   this.workWeekTime();      
-    // }
   }
 
   seeTime(){
@@ -144,7 +157,7 @@ export class CheckComponent implements OnInit {
               this.workDayTime(this.fechaCheckIn, this.fechaCheckout);
             }
           });
-        });        
+        });
       }
     });
   }
@@ -158,15 +171,41 @@ export class CheckComponent implements OnInit {
     let timeWeek = new Date(timeOfWeek+this.week);
     this.hours_week = timeWeek.toTimeString().split(' ')[0];
     this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
+    //this.timer = setInterval(() => this.clock(), 1000);
   }
 
-  // workWeekTime(){
-  //   for(let i=0; i<=this.employees.length; i++){
-  //     if(this.employees[i].name == this.name){
-  //       this.week = parseInt(this.employees[i].total);
-  //       this.week = this.week*3600000; 
-  //     }
-  //   }
-  // }
+  clock(){
+    console.log("FUNCIONA")
+    let min = parseInt(this.hours_today.split(':')[1]);
+    let hour = parseInt(this.hours_today.split(':')[0]);
+    let contMinute = 1;
+    let contHour = 1;
+    if(min < 10 && hour>10){
+      min += contMinute;
+      this.hours_today = hour+":0"+min;
+    }if(min < 10 && hour<10){
+      min += contMinute;
+      this.hours_today = "0"+hour+":0"+min;
+    }
+    if(min >= 10 && hour>10){
+      min += contMinute;
+      this.hours_today = hour+":"+min;
+    }if(min >= 10 && hour<10){
+      min += contMinute;
+      this.hours_today = "0"+hour+":"+min;
+    }if(min > 59 && hour>10){
+      min = 0;
+      hour += contHour;
+      this.hours_today = hour+":0"+min;
+      contHour++;
+    }if(min > 59 && hour<10){
+      min = 0;
+      hour += contHour;
+      this.hours_today = "0"+hour+":0"+min;
+      contHour++;
+    }
+    contMinute++;
+
+  }
 
 }
