@@ -227,7 +227,7 @@ class MainPage(remote.Service):
         incidence.date = str(oneIncidence.incidenceDate)
         incidence.message = oneIncidence.message
         return incidence
-    
+
     def getSingleUser(self, employee):
         user = JsonUserMessage()
         user.name = employee.name
@@ -268,16 +268,18 @@ class MainPage(remote.Service):
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
         date = datetime.now()
+        hm = str(date.time())[0:5]
+        companyTimes = CompanyTimes.query().get()
         if self.filter_checkin(date, request.email):
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite un checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
-            if date.hour >= 7 and date.hour < 9:
+            if str(date.time()) >= companyTimes.checkinmin and str(date.time()) < companyTimes.checkinmax:
                 self.set_checkin(date, request.email)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-            elif date.hour == 9 and date.minute == 00:
+            elif hm == companyTimes.checkinmax:
                 self.set_checkin(date, request.email)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-            elif date.hour < 7 or date.hour > 19:
+            elif str(date.time()) < companyTimes.checkinmin or str(date.time()) > companyTimes.checkoutmax:
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
@@ -290,13 +292,15 @@ class MainPage(remote.Service):
     path = 'check_out', http_method = 'POST', name = 'check_out')
     def check_out(self, request):
         date = datetime.now()
-        if date.hour >= 14 and date.hour < 19:
+        hm = str(date.time())[0:5]
+        companyTimes = CompanyTimes.query().get()
+        if str(date.time()) >= companyTimes.checkoutmin and str(date.time()) < companyTimes.checkoutmax:
             self.set_checkout(date, request.email)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        elif date.hour == 19 and date.minute == 00:
+        elif hm == companyTimes.checkoutmax:
             self.set_checkout(date, request.email)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
-        elif date.hour < 7 or date.hour > 19:
+        elif str(date.time()) < companyTimes.checkinmin or str(date.time()) > companyTimes.checkoutmax:
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
@@ -485,7 +489,7 @@ class MainPage(remote.Service):
             email=query.email,
             image=query.image,
             role=query.role
-        ) 
+        )
         return ChangeRoleResponse(employee=employee,response_code=code)
 
 
