@@ -2,6 +2,10 @@
   margin-top: 10px;
 }
 
+.modal-body{
+  margin-top: 50px;
+}
+
 img {
   width: 100%;
   border-radius: 50%;

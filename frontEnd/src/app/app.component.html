@@ -15,7 +15,7 @@
           <ul class="nav navbar-nav" *ngIf="admin">
             <li routerLinkActive="active"><a href="#" [routerLink]="['weeklyReport']" (click)="isCollapsed = !isCollapsed">Weekly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['monthlyReport']" (click)="isCollapsed = !isCollapsed">Monthly Report</a></li>
-            <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences <span class="badge">{{numberIncidences}}</span></a></li>
+            <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['userlist']" (click)="isCollapsed = !isCollapsed">Admin</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
           </ul>

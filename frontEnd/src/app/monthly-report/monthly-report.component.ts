@@ -19,6 +19,7 @@ export class MonthlyReportComponent implements OnInit {
   workerHours = [];
   totalDays;
   mes = [];
+  currentMonth;
   myOptions: INgxMyDpOptions = {
     // other options...
     dateFormat: 'dd.mm.yyyy',
@@ -58,6 +59,7 @@ export class MonthlyReportComponent implements OnInit {
 
   checkMonth(data){
       this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
+      this.currentMonth = data.response_report[0].month;
       if (data.response_report != undefined){
         this.leapYear(28);
         if(data.response_report[0].month == 2){
