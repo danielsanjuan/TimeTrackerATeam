@@ -25,17 +25,9 @@ handlers:
 libraries:
 - name: endpoints
   version: "1.0"
-- name: bootstrap
+- name: jinja2
   version: latest
-- name: ng2-toastr
-  version: latest
-- name: ngx-mydatepicker
-  version: latest
-- name: ngx-bootstrap
-  version: latest
-- name: ngx-webstorage
-  version: latest
-- name: zone.js
+- name: webapp2
   version: latest
 
 # [END libraries]
