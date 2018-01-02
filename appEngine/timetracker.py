@@ -261,11 +261,15 @@ class MainPage(remote.Service):
     def setCompanyTimes(self, request):
         if (request.checkinmin >= request.checkinmax or request.checkinmin >= request.checkoutmin or
         request.checkinmin >= request.checkoutmax or request.checkinmin >= request.checkoutminfriday or
-        request.checkinmin >= request.checkoutmaxfriday or request.checkinmax >= request.checkoutmin or
-        request.checkinmax >= request.checkoutmax or request.checkinmax >= request.checkoutminfriday or
-        request.checkinmax >= request.checkoutmaxfriday  or request.checkoutmin >= request.checkoutmax or
-        request.checkoutminfriday >= request. checkoutmaxfriday):
+        request.checkinmin >= request.checkoutmaxfriday): 
             return CompanyTimesSetResponseMessage(response_code = 500)
+        if(request.checkinmax >= request.checkoutmin or request.checkinmax >= request.checkoutmax or request.checkinmax >= request.checkoutminfriday or
+        request.checkinmax >= request.checkoutmaxfriday):
+            return CompanyTimesSetResponseMessage(response_code = 501)
+        if(request.checkoutmin >= request.checkoutmax): 
+            return CompanyTimesSetResponseMessage(response_code = 502)
+        if(request.checkoutminfriday >= request. checkoutmaxfriday):
+            return CompanyTimesSetResponseMessage(response_code = 503)
         else:
             self.set_companyTimes(request.checkinmin, request.checkinmax, request.checkoutmin,
             request.checkoutmax, request.checkoutminfriday, request.checkoutmaxfriday)
