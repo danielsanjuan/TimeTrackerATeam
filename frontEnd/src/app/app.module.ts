@@ -18,6 +18,7 @@ import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
 import { ProtectingRoutesGuard } from './protectingRoutes.guard';
 import { UserService } from './providers/user.provider';
+import { CustomToastOption } from './customToastOption';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -32,6 +33,7 @@ import { ModalUserComponent } from './modal-user/modal-user.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
+import { ToastOptions } from 'ng2-toastr/src/toast-options';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -82,7 +84,8 @@ const appRoutes: Routes = [
     LoginProvider,
     IncidenceService,
     ProtectingRoutesGuard,
-    UserService
+    UserService,
+    {provide: ToastOptions, useClass: CustomToastOption}
   ],
   bootstrap: [AppComponent]
 })
