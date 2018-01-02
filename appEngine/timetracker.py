@@ -290,7 +290,7 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
-                message = " ha llegado fuera de los limites horarios"
+                message = " has done a check-in after limit hour."
                 check = False
                 self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -311,7 +311,7 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
-            message = " ha realizado un checkout antes de la hora minima"
+            message = " has done a check-in before limit hour."
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))

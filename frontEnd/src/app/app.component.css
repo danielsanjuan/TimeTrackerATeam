@@ -35,7 +35,11 @@
     margin-right: 0.5em;
 }
 
-@media screen and (max-width: 768px){ 
+.modal-content{
+  margin-top: 60px;
+}
+
+@media screen and (max-width: 768px){
     .navbar-right[_ngcontent-c0] {
         float: left;
         margin-left: 7.5px;
@@ -73,5 +77,3 @@
     }
 
 }
-
-
