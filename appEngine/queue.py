@@ -12,7 +12,7 @@ class Workday(ndb.Model):
 @endpoints.api(name='queue', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
         scopes=[endpoints.EMAIL_SCOPE])
-class QueuePage(webapp2.RequestHandler):
+class QueuePage(remote.Service):
 
     def autoCheckOut(self):
         query = Workday.query()
@@ -22,4 +22,4 @@ class QueuePage(webapp2.RequestHandler):
             day.put()
         return 200
 
-application = endpoints.api_server([MainPage], restricted=False)
+application = endpoints.api_server([QueuePage], restricted=False)
