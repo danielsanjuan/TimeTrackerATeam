@@ -29,8 +29,7 @@ export class CheckComponent implements OnInit {
   fechaCheckout:any;
   week:number = 0;
   interval:any;
-  timeControl:boolean = false;
-  contador:number = 0;
+  timeCheckout:boolean;
 
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
@@ -43,7 +42,6 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
-      console.log(data)
       if (data.response_date == "No has hecho checkin"){
         this.doCheckIn = true;
         this.doCheckOut = false;
@@ -63,14 +61,14 @@ export class CheckComponent implements OnInit {
           }
         }
       });
-      this.time();
+      if(this.doCheckOut){
+        this.seeTime();
+      }
     });
     
   }
 
   timeCheckIn(){
-    console.log(this.contador);
-    if(this.contador < 3){
       this.doCheckIn = false;
       this.doCheckOut = true;
       this.services.postCheckIn().subscribe( (data)=>{
@@ -79,11 +77,19 @@ export class CheckComponent implements OnInit {
               this.checkInTime = data.response_date;
               let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
+              this.timeCheckout = false;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
               break;
           case "202":
               this.checkInTime = data.response_date;
               let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.warning('You are too late '+ timeLate, 'Alert!');
+              this.timeCheckout = false;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
               this.E202=true;
               break;
           case "406":
@@ -100,14 +106,7 @@ export class CheckComponent implements OnInit {
               break;
         }
       });
-      this.services.getCheckIn().subscribe((data)=>{
-          console.log((data.response_date) + " getCheckIn");
-          console.log("in "+new Date(data.response_date));
-      });
-      this.contador++;
-    }
   }
-
 
   timeCheckOut(){
       this.doCheckIn = true;
@@ -117,11 +116,19 @@ export class CheckComponent implements OnInit {
           case "200":
               this.checkOutTime = data.response_date;
               this.toastr.success('Good Job!', 'Success!');
+              this.timeCheckout = true;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
               break;
           case "202":
               this.checkOutTime = data.response_date;
               this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
               this.E202=true;
+              this.timeCheckout = true;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
               break;
           case "406":
               this.E406=true;
@@ -129,19 +136,11 @@ export class CheckComponent implements OnInit {
               break;
         }
       });
-      if(this.contador>2){
-        this.doCheckIn = false;
-        this.doCheckOut = false;
-      }
-      //clearInterval(this.timer);
-  }
-  
-  time(){
-    this.seeTime();
-  }
+    }
 
   seeTime(){
     this.services.getCheckIn().subscribe((data)=>{
+      let mileSeconds;
       this.fechaCheckIn = new Date(data.response_date);
       if(data.response_date == "No hay fecha de checkin"){
         this.hours_today = "00:00";
@@ -151,61 +150,38 @@ export class CheckComponent implements OnInit {
           this.fechaNow = new Date(data.response_date);
           this.services.getCheckout().subscribe((data)=>{
             this.fechaCheckout = new Date(data.response_date);
-            if(data.response_date == "No hay fecha de checkout"){
-              this.workDayTime(this.fechaCheckIn, this.fechaNow);
+            mileSeconds = this.fechaCheckout -this.fechaCheckIn;
+            if(data.response_date != "No hay fecha de checkout" || mileSeconds > 0 ){
+              this.workDayTime(this.fechaCheckout - this.fechaCheckIn);
             }else{
-              this.workDayTime(this.fechaCheckIn, this.fechaCheckout);
+              this.workDayTime(this.fechaNow - this.fechaCheckIn);
             }
-          });
+          }); 
         });        
       }
     });
   }
-
-  workDayTime(dateCheck, dateNow){
-    let timetoday = (dateNow - dateCheck);
-    let time = new Date(timetoday);
-    this.hours_today = time.toTimeString().split(' ')[0];
-    this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
-    let timeOfWeek = ((dateNow - dateCheck)); 
-    let timeWeek = new Date(timeOfWeek+this.week);
-    this.hours_week = timeWeek.toTimeString().split(' ')[0];
-    this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
-    //this.timer = setInterval(() => this.clock(), 1000);
-  }
-
-  clock(){
-    console.log("FUNCIONA")
-    let min = parseInt(this.hours_today.split(':')[1]);
-    let hour = parseInt(this.hours_today.split(':')[0]);
-    let contMinute = 1;
-    let contHour = 1;
-    if(min < 10 && hour>10){
-      min += contMinute;
-      this.hours_today = hour+":0"+min;
-    }if(min < 10 && hour<10){
-      min += contMinute;
-      this.hours_today = "0"+hour+":0"+min;
+  
+  workDayTime(mileSeconds){
+    let fecha = new Date(mileSeconds);
+    let mileSecondsWeek = mileSeconds + this.week;
+    let fechaW = new Date(mileSecondsWeek);
+    if(this.timeCheckout){
+      clearInterval(this.timer);    
+    }else{
+      this.timer = setInterval(() => {
+        let horaT = (fecha.getHours()<=9)?"0"+fecha.getHours():fecha.getHours();
+        let minuto = (fecha.getMinutes()<=9)?"0"+fecha.getMinutes():fecha.getMinutes();
+        let secondsIncrease = fecha.getSeconds();
+        fecha.setSeconds(secondsIncrease+1);
+        this.hours_today = horaT+":"+minuto;
+        let horaWT = (fechaW.getHours()<=9)?"0"+fechaW.getHours():fechaW.getHours();
+        let minutoW = (fechaW.getMinutes()<=9)?"0"+fechaW.getMinutes():fechaW.getMinutes();
+        let secondsIncreaseW = fechaW.getSeconds();
+        fechaW.setSeconds(secondsIncreaseW+1);
+        this.hours_week = horaWT+":"+minutoW;
+      }, 1000);
     }
-    if(min >= 10 && hour>10){
-      min += contMinute;
-      this.hours_today = hour+":"+min;
-    }if(min >= 10 && hour<10){
-      min += contMinute;
-      this.hours_today = "0"+hour+":"+min;
-    }if(min > 59 && hour>10){
-      min = 0;
-      hour += contHour;
-      this.hours_today = hour+":0"+min;
-      contHour++;
-    }if(min > 59 && hour<10){
-      min = 0;
-      hour += contHour;
-      this.hours_today = "0"+hour+":0"+min;
-      contHour++;
-    }
-    contMinute++;
-    
   }
 
 }

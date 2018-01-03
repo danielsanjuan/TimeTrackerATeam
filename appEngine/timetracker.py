@@ -330,14 +330,14 @@ class MainPage(remote.Service):
 
     @endpoints.method(CheckInMessage, CheckResponse, path='checkWorkedDay', http_method='GET', name='checkWorkedDay')
     def checkWorkedDay(self, request):
+        onDate = datetime.now()
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email).fetch()
         for day in query:
             if day.checkin != None:
                 if day.checkout != None:
-                    if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                        if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                            return CheckResponse(response_date=str(day.checkin))
+                    if day.checkin.date() == onDate.date() and day.checkout.date() == onDate.date():
+                        return CheckResponse(response_date=str(day.checkin) +" "+ str(day.checkout))
                 else:
                     return CheckResponse(response_date="No has hecho checkout")
         return CheckResponse(response_date="No has hecho checkin")
