@@ -1,7 +1,7 @@
 cron:
 - description: daily automatic checkout
-  url: /_ah/spi/timetracker/v1/autoCheckOut
-  schedule: every monday, tuesday, wednesday, thursday 10:26
+  url: /_ah/api/timetracker/v1/autoCheckOut
+  schedule: every monday, tuesday, wednesday, thursday 10:50
 - description: friday automatic checkout
-  url: /_ah/spi/timetracker/v1/autoCheckOut
+  url: /_ah/api/timetracker/v1/autoCheckOut
   schedule: every friday 15:00
