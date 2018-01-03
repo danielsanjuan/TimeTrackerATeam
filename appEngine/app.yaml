@@ -4,23 +4,30 @@ threadsafe: true
 
 # [START handlers]
 handlers:
-- url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
+- url: /_ah/spi/.*
+  script: timetracker.application
+  secure: always
+
+- url: /(.*\.(css|eot|gz|html|ico|js|map|png|svg|ttf|woff|woff2))
+  static_files: dist/\1
+  upload: dist/(.*\.(css|eot|gz|html|ico|js|map|png|svg|ttf|woff|woff2))
+
+- url: /.*
+  static_files: dist/index.html
+  upload: dist/index.html
+  secure: always
 
 - url: /bootstrap
   static_dir: bootstrap
-
-- url: /_ah/spi/.*
-  script: timetracker.application
 # [END handlers]
 
 # [START libraries]
 libraries:
 - name: endpoints
   version: "1.0"
-- name: webapp2
-  version: latest
 - name: jinja2
   version: latest
+- name: webapp2
+  version: latest
+
 # [END libraries]

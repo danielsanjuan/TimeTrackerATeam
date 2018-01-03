@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { BsDropdownModule } from 'ng2-bs-dropdown';
 import { ToastModule} from 'ng2-toastr/ng2-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {Ng2Webstorage} from 'ngx-webstorage';
@@ -19,6 +18,8 @@ import { CheckInService } from './providers/check-in.service';
 import { IncidenceService } from './providers/incidence.provider';
 import { ProtectingRoutesGuard } from './protectingRoutes.guard';
 import { UserService } from './providers/user.provider';
+import { CustomToastOption } from './customToastOption';
+import { ToastOptions } from 'ng2-toastr/src/toast-options';
 
 /*Componentes*/
 import { AppComponent } from './app.component';
@@ -65,7 +66,6 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    BsDropdownModule,
     HttpClientModule,
     Ng2Webstorage,
     NgbModule.forRoot(),
@@ -84,7 +84,8 @@ const appRoutes: Routes = [
     LoginProvider,
     IncidenceService,
     ProtectingRoutesGuard,
-    UserService
+    UserService,
+    {provide: ToastOptions, useClass: CustomToastOption}
   ],
   bootstrap: [AppComponent]
 })

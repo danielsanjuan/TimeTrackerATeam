@@ -24,27 +24,27 @@ export class AppComponent implements OnInit{
   email:string;
   roleUser:string;
   admin:boolean;
-  
-  constructor(private services:LoginProvider,  
-              private router: Router,
-              private serviceIncidence: IncidenceService, 
+
+  constructor(private services:LoginProvider,
+              public router: Router,
+              private serviceIncidence: IncidenceService,
               private sesionService: SessionStorageService){
-      
+
   }
 
   ngOnInit() {
-    this.subscription = this.services.getNameUser().subscribe(data => { 
-      this.nombre = data; 
+    this.subscription = this.services.getNameUser().subscribe(data => {
+      this.nombre = data;
     });
-    this.subscription2 = this.services.getImgUser().subscribe(data => { 
-      this.imagen = data; 
-      
+    this.subscription2 = this.services.getImgUser().subscribe(data => {
+      this.imagen = data;
+
       this.email = this.sesionService.retrieve('email');
       this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
         this.roleUser = data.employee.role;
         if(this.roleUser == "1"){
           this.admin=true;
-        } 
+        }
         else{
           this.admin=false;
         }
@@ -55,5 +55,5 @@ export class AppComponent implements OnInit{
   ngAfterViewInit(){
     this.services.setSubjests();
   }
-  
+
 }

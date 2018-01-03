@@ -59,12 +59,10 @@ export class PersonalIncidenceComponent implements OnInit {
         this.check_in = dateStringIn;
       }
       if (data.response_change_check.checkout != "None") {
-        console.log("Mostrando: " + data.response_change_check.checkout);
         let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
         this.check_out = dateStringOut;
       }
       this.rForm.patchValue({check_in: this.check_in, check_out: this.check_out});
-      console.log("Valores actualizados");
     });
     this.incidence = incidence;
     this.modalRef = this.modalService.show(template);

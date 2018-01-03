@@ -10,22 +10,22 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
   styleUrls: ['./modal-user.component.css']
 })
 export class ModalUserComponent implements OnInit {
-  
+
   email: any;
   role: any;
   private sub: any;
-  employees = [];
+  employees: any = {};
 
-  constructor(private route: ActivatedRoute, 
+  constructor(private route: ActivatedRoute,
               private services: UserService,
               public toastr: ToastsManager, vcr: ViewContainerRef,) {
     this.toastr.setRootViewContainerRef(vcr);
   }
-  
+
   ngOnInit() {
     this.sub = this.route.params.subscribe((params) => {
       this.email = params['email'];
-      
+
     });
     this.services.getEmployee(this.email).subscribe((data) => {
       this.employees = data.employee;
@@ -43,7 +43,3 @@ export class ModalUserComponent implements OnInit {
     })
   }
 }
-
-
-
-

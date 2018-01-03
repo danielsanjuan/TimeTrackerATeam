@@ -43,7 +43,7 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
-      console.log(data)
+      // console.log(data)
       if (data.response_date == "No has hecho checkin"){
         this.doCheckIn = true;
         this.doCheckOut = false;
@@ -59,13 +59,13 @@ export class CheckComponent implements OnInit {
         for(let i=0; i<this.employees.length; i++){
           if(this.employees[i].email == this.emailUser){
             this.week = parseInt(this.employees[i].total);
-            this.week = this.week*60000; 
+            this.week = this.week*60000;
           }
         }
       });
       this.time();
     });
-    
+
   }
 
   timeCheckIn(){
@@ -135,7 +135,7 @@ export class CheckComponent implements OnInit {
       }
       //clearInterval(this.timer);
   }
-  
+
   time(){
     this.seeTime();
   }
@@ -157,7 +157,7 @@ export class CheckComponent implements OnInit {
               this.workDayTime(this.fechaCheckIn, this.fechaCheckout);
             }
           });
-        });        
+        });
       }
     });
   }
@@ -167,7 +167,7 @@ export class CheckComponent implements OnInit {
     let time = new Date(timetoday);
     this.hours_today = time.toTimeString().split(' ')[0];
     this.hours_today = this.hours_today.split(':')[0]+":"+this.hours_today.split(':')[1];
-    let timeOfWeek = ((dateNow - dateCheck)); 
+    let timeOfWeek = ((dateNow - dateCheck));
     let timeWeek = new Date(timeOfWeek+this.week);
     this.hours_week = timeWeek.toTimeString().split(' ')[0];
     this.hours_week = this.hours_week.split(':')[0]+":"+this.hours_week.split(':')[1];
@@ -205,7 +205,7 @@ export class CheckComponent implements OnInit {
       contHour++;
     }
     contMinute++;
-    
+
   }
 
 }

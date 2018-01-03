@@ -41,20 +41,20 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
+      gapi.client.load('timetracker', "v1",this.callback, this.serverRoute)
       this.auth2.attachClickHandler(element, {},
-        (googleUser) => {       
+        (googleUser) => {
           let profile = googleUser.getBasicProfile();
-          console.log('Token || ' + googleUser.getAuthResponse().id_token);
-          console.log('ID: ' + profile.getId());
-          console.log('Name: ' + profile.getName());
-          console.log('Image URL: ' + profile.getImageUrl());
-          console.log('Email: ' + profile.getEmail());
+          // console.log('Token || ' + googleUser.getAuthResponse().id_token);
+          // console.log('ID: ' + profile.getId());
+          // console.log('Name: ' + profile.getName());
+          // console.log('Image URL: ' + profile.getImageUrl());
+          // console.log('Email: ' + profile.getEmail());
           //YOUR CODE HERE
       this.sessionSt.store('email', profile.getEmail());
       this.sessionSt.store('name', profile.getName());
       this.sessionSt.store('image', profile.getImageUrl());
-  	  this.doSomething(profile.getName(), profile.getImageUrl());
+  	  this.login(profile.getName(), profile.getImageUrl());
         }, (error) => {
           // alert(JSON.stringify(error, undefined, 2));
         });
@@ -62,14 +62,14 @@ export class LoginProvider {
 
 
 
-    doSomething(name, imageUrl) {
+    login(name, imageUrl) {
       gapi.client.timetracker.login({email:"TODO", password: "password", name: name, image: imageUrl }).execute((response: any) => {
           if (response.error) {
             console.log(response.error);
 
           }
           else {
-            console.log(JSON.stringify(response.result));
+            // console.log(JSON.stringify(response.result));
             this.zone.run(()=>{
               this.router.navigate(['/home']);
             });
