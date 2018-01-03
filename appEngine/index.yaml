@@ -7,3 +7,8 @@ indexes:
   properties:
   - name: employee.email
   - name: solved
+- kind: Workday
+  properties:
+  - name: employee.email
+  - name: checkin
+    direction: desc
