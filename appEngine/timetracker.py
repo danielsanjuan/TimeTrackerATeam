@@ -164,18 +164,22 @@ class MainPage(remote.Service):
         return report
 
     def singleMonthlyReport(self, currentEmployee, date):
-        currentmonth = date.month - 1
+        if date.month == 1:
+            currentmonth = 12
+            currentyear = date.year-1
+        else:
+            currentmonth = date.month - 1
+            currentyear = date.year
         query = Workday.query()
         query = query.filter(Workday.employee.email == currentEmployee.email).fetch()
-        dayOfMoth = [0] * calendar.monthrange(date.year, currentmonth)[1]
+        dayOfMoth = [0] * calendar.monthrange(currentyear, currentmonth)[1]
         reportMonth = JsonMonthlyMessage()
         reportMonth.hours_day = []
         reportMonth.name = currentEmployee.name
         reportMonth.month = int(currentmonth)
         reportMonth.jornadas = 0
         reportMonth.total = 0
-        if(currentmonth == 1): reportMonth.year = date.year - 1
-        else: reportMonth.year = date.year
+        reportMonth.year = int(currentyear)
 
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
@@ -201,6 +205,7 @@ class MainPage(remote.Service):
         reportMonth.month = int(date.month)
         reportMonth.jornadas = 0
         reportMonth.total = 0
+        reportMonth.year = int(date.year)
 
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == date.month and worked.checkout != None:
@@ -412,14 +417,13 @@ class MainPage(remote.Service):
     def reportMonthlyWithDate(self, request):
         workedDays = []
         date = datetime(int(request.monthDate[6:10]),int(request.monthDate[3:5]), int(request.monthDate[0:2]))
-        today = datetime.today()
-        query = Employee.query()
-        if date.year <= today.year and date.month <= today.month :
+        if date < today:
+            query = Employee.query()
             for currentEmployee in query:
                 workedDays.append(self.singleMonthlyReportWithDate(currentEmployee, date))
             return ReportMonthlyResponseMessage(response_report=workedDays)
-        else:
-            return ReportMonthlyResponseMessage(response_report=[])
+        return ReportMonthlyResponseMessage(response_report=[])
+
 
     @endpoints.method(IncidencesReportMessage, IncidencesReportResponseMessage, path='incidencesReport', http_method='GET', name='incidencesReport')
     def incidencesReport(self, request):

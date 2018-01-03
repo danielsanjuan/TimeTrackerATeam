@@ -20,7 +20,7 @@
       </form>
     </div>
     <div class="col-sm-6 col-md-4 col-md-offset-2">      
-      <h2> Month {{currentMonth}} </h2>
+      <h2> Month {{currentMonth}} of {{currentyear}} </h2>
     </div>
   </div>
   <ng-container *ngIf="employeesMonthly.length>0; else noReportMonthly">
@@ -28,14 +28,14 @@
       <table class="table table-striped">
         <thead>
           <tr class="hidden-xs">
-            <th>Empleado</th>
+            <th>Employee    </th>
             <th>Total</th>
             <th *ngFor="let horasM of employeesMonthly[0].hours_day; let i = index">{{i+1}}</th>
           </tr>
           <tr class="visible-xs">
-            <th>Empleado</th>
-            <th>Total horas</th>
-            <th>Jornadas</th>
+            <th>Employee</th>
+            <th>Total hours</th>
+            <th>Day</th>
           </tr>
         </thead>
         <tbody>
