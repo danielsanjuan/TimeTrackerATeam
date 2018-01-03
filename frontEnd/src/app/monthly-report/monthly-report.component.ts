@@ -4,6 +4,7 @@ import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
 import { resetFakeAsyncZone } from '@angular/core/testing';
 import { IMyDateModel, INgxMyDpOptions } from 'ngx-mydatepicker';
+import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-monthly-report',
@@ -20,6 +21,7 @@ export class MonthlyReportComponent implements OnInit {
   totalDays;
   mes = [];
   currentMonth;
+  currentyear;
   myOptions: INgxMyDpOptions = {
     // other options...
     dateFormat: 'dd.mm.yyyy',
@@ -40,28 +42,62 @@ export class MonthlyReportComponent implements OnInit {
 
 
   leapYear(year){
-    // console.log(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
 
   firstSaturday(year, month){
     var dia = 1;
-    var d= new Date(year, month, dia, 0, 0, 0);
+    console.log("en firstsaturday año y mes" + year + "  "+ month)
+    var d= new Date(year+"-"+month+"-"+dia);
     var day = d.getDay();
     while(day != 6) {
-      dia++;
       d.setDate(dia);
       day = d.getDay();
+      dia++;
     }
     return dia;
   }
 
+  setTextCurrentMonth(month){
+    if (month == 1) this.currentMonth = "January";
+    else
+      if (month == 2) this.currentMonth = "February";
+      else
+      if (month == 3) this.currentMonth = "March";
+      else
+      if (month == 4) this.currentMonth = "April";
+      else
+      if (month == 5) this.currentMonth = "May";    
+      else
+      if (month == 6) this.currentMonth = "June";
+      else
+      if (month == 7) this.currentMonth = "July";
+      else
+      if (month == 8) this.currentMonth = "August";
+      else
+      if (month == 9) this.currentMonth = "September";
+      else
+      if (month == 10) this.currentMonth = "October";
+      else
+      if (month == 11) this.currentMonth = "November";
+      else
+      if (month == 12) this.currentMonth = "December";
+
+    return this.currentMonth;
+  }
+
   checkMonth(data){
-      this.firstSat = this.firstSaturday(2017, data.response_report[0].month);
-      this.currentMonth = data.response_report[0].month;
+    
+    this.currentMonth = "";
+    this.currentyear = "";
+    console.log (data)
       if (data.response_report != undefined){
-        this.leapYear(28);
+        this.currentyear = data.response_report[0].year;
+        this.firstSat = this.firstSaturday(data.response_report[0].year, data.response_report[0].month);
+        this.currentMonth = this.setTextCurrentMonth(data.response_report[0].month);
+
+
         if(data.response_report[0].month == 2){
           if(this.leapYear(data.response_report[0].year)) this.totalDays = 29;
           else this.totalDays=28;
@@ -94,6 +130,7 @@ export class MonthlyReportComponent implements OnInit {
         }
       }
       else{
+        console.log("mes vacío");
         this.employeesMonthly = [];
       }
   }
@@ -102,6 +139,7 @@ export class MonthlyReportComponent implements OnInit {
     //realizar llamada al metodo del servicio
     this.services.getMonthlyReportWithDate(event.formatted).subscribe((data) => {
       if (data.response_report != undefined){
+        console.log("mes day picker   " + data.response_report[0].month + "    año de date picker" + data.response_report[0].year);
         this.checkMonth(data);
       }
       else{
