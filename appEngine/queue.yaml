@@ -1,9 +1,0 @@
-runtime: python27
-api_version: 1
-threadsafe: true
-service: queue
-
-handlers:
-- url: /_ah/spi/.*
-  script: queue.application
-  secure: always
