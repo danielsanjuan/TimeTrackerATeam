@@ -470,8 +470,10 @@ class MainPage(remote.Service):
 
     @endpoints.method(EmployeeMessage, EmployeeMessageResponse, path='getEmployee', http_method='GET', name='getEmployee')
     def getEmployee(self, request):
+        print request.email
         query = Employee.query()
         query = query.filter(Employee.email == request.email).get()
+        print query
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
