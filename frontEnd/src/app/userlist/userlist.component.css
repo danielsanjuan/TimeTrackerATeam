@@ -21,13 +21,16 @@ td{
    width: 6%;
    margin: 0;
 }
-
   
-  img {
-    border-radius: 50%;
-    width: 3em;
-    height: 40px;
-  }
+img {
+border-radius: 50%;
+width: 3em;
+height: 40px;
+}
+
+modal-container{
+    margin-top: 5em;
+}
 /***** Media queries *****/
 
 @media (min-width: 992px) and (max-width: 1199px) {}

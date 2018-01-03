@@ -1,20 +1,13 @@
+
 <div class="row margin_thumbnail">
-    <div class="col-xs-offset-3 col-xs-6 col-sm-offset-4 col-sm-4 col-md-offset-4 col-md-4 col-lg-offset-5 col-lg-2">
-      <a>
-          <img src="{{employees.image}}">
-      </a>
-    </div>
+  <div class="row">
+    <img src="{{employees.image}}">
   </div>
-  <div>
-    <div class="text-center">
-      <p>{{employees.name}}</p>
-      <p>{{employees.email}}</p>
-      <span class="col-md-12 rolebox">
-        <p *ngIf="role == 1"><b>Human Resources</b></p>
-        <p *ngIf="role == 0"><b>Employee</b></p>
-        <button type='button' (click)='changeRole()' class='btn btn-info role-button'>Change Role</button>
-      </span>
-    </div>
+  <div class="row text-center">
+    <p>{{employees.name}}</p>
+    <p>{{employees.email}}</p>
+    <p *ngIf="employees.role == 1"><b>Human Resources</b></p>
+    <p *ngIf="employees.role == 0"><b>Employee</b></p>
+    <button type='button' (click)='changeRole()' class='btn btn-info role-button col-xs-offset-4 col-xs-4 col-sm-offset-4 col-sm-4 col-md-offset-5 col-md-2 col-lg-offset-5 col-lg-2'>Change Role</button>
   </div>
-   
-  
+</div>

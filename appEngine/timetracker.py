@@ -266,11 +266,15 @@ class MainPage(remote.Service):
     def setCompanyTimes(self, request):
         if (request.checkinmin >= request.checkinmax or request.checkinmin >= request.checkoutmin or
         request.checkinmin >= request.checkoutmax or request.checkinmin >= request.checkoutminfriday or
-        request.checkinmin >= request.checkoutmaxfriday or request.checkinmax >= request.checkoutmin or
-        request.checkinmax >= request.checkoutmax or request.checkinmax >= request.checkoutminfriday or
-        request.checkinmax >= request.checkoutmaxfriday  or request.checkoutmin >= request.checkoutmax or
-        request.checkoutminfriday >= request. checkoutmaxfriday):
+        request.checkinmin >= request.checkoutmaxfriday):
             return CompanyTimesSetResponseMessage(response_code = 500)
+        if(request.checkinmax >= request.checkoutmin or request.checkinmax >= request.checkoutmax or request.checkinmax >= request.checkoutminfriday or
+        request.checkinmax >= request.checkoutmaxfriday):
+            return CompanyTimesSetResponseMessage(response_code = 501)
+        if(request.checkoutmin >= request.checkoutmax):
+            return CompanyTimesSetResponseMessage(response_code = 502)
+        if(request.checkoutminfriday >= request. checkoutmaxfriday):
+            return CompanyTimesSetResponseMessage(response_code = 503)
         else:
             self.set_companyTimes(request.checkinmin, request.checkinmax, request.checkoutmin,
             request.checkoutmax, request.checkoutminfriday, request.checkoutmaxfriday)
@@ -295,7 +299,7 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email)
-                message = " ha llegado fuera de los limites horarios"
+                message = " has done a check-in after limit hour."
                 check = False
                 self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -316,7 +320,7 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email)
-            message = " ha realizado un checkout antes de la hora minima"
+            message = " has done a check-in before limit hour."
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -339,16 +343,16 @@ class MainPage(remote.Service):
 
     @endpoints.method(CheckInMessage, CheckResponse, path='checkWorkedDay', http_method='GET', name='checkWorkedDay')
     def checkWorkedDay(self, request):
+        date = datetime.now()
         query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email).fetch()
-        for day in query:
-            if day.checkin != None:
-                if day.checkout != None:
-                    if day.checkin.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkin.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkin.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                        if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
-                            return CheckResponse(response_date=str(day.checkin))
-                else:
-                    return CheckResponse(response_date="No has hecho checkout")
+        query = query.filter(Workday.employee.email == request.email)
+        day = query.order(-Workday.checkin).get()
+        if day.checkin != None:
+            if day.checkout != None:
+                if (day.checkin.date() == date.date() and day.checkout.date() == date.date()):
+                    return CheckResponse(response_date=str(day.checkin))
+            else:
+                return CheckResponse(response_date="No has hecho checkout")
         return CheckResponse(response_date="No has hecho checkin")
 
     @endpoints.method(CheckInMessage, CheckResponse, path='getCheckin', http_method='GET', name='getCheckin')
@@ -470,8 +474,10 @@ class MainPage(remote.Service):
 
     @endpoints.method(EmployeeMessage, EmployeeMessageResponse, path='getEmployee', http_method='GET', name='getEmployee')
     def getEmployee(self, request):
+        print request.email
         query = Employee.query()
         query = query.filter(Employee.email == request.email).get()
+        print query
         employee = JsonEmployee(
             name=query.name,
             email=query.email,

@@ -25,8 +25,9 @@ handlers:
 libraries:
 - name: endpoints
   version: "1.0"
-- name: webapp2
-  version: latest
 - name: jinja2
   version: latest
+- name: webapp2
+  version: latest
+
 # [END libraries]
