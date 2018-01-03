@@ -6,6 +6,7 @@
           <tr class="hidden-xs">
             <th>#</th>
             <th></th>
+            <th>Name</th>
             <th>Email</th>
             <th>Role</th>
             <th>Admin</th>
@@ -24,13 +25,14 @@
             <td>{{employee.email}}</td>
             <td *ngIf="employee.role == 1"><b>Human Resources</b></td>
             <td *ngIf="employee.role == 0"><b>Employee</b></td>
-            <!-- (click)="showUserInfo(employee.email) (click)="showPersonalIncidence(employee.email)"-->
-            <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td>
+            <!-- <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td> -->
+            <td><span class="glyphicon glyphicon-edit" (click)="openModal(employee)"></span></td>
           </tr>
           <tr class ="visible-xs" *ngFor="let employee of employees; let i = index">
               <!-- <th scope="row">{{i}}</th> -->
               <td maxlength="4">{{employee.name}}</td>
-              <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td>
+              <!-- <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email, template)"></span></td> -->
+              <td><span class="glyphicon glyphicon-edit" (click)="openModal(employee)"></span></td>
             </tr>
         </tbody>
       </table>

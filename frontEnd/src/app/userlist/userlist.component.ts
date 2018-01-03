@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef} from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { UserService } from '../providers/user.provider';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { ModalUserComponent } from '../modal-user/modal-user.component';
 
 @Component({
   selector: 'app-userlist',
@@ -10,8 +13,9 @@ import { UserService } from '../providers/user.provider';
 })
 export class UserlistComponent implements OnInit {
   employees = [];
-
-  constructor(private router: Router, private sessionSt: SessionStorageService, private services: UserService) {
+  modalRef: BsModalRef;
+  constructor(private router: Router, private sessionSt: SessionStorageService, 
+    private services: UserService, private modalService: BsModalService) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
@@ -19,16 +23,18 @@ export class UserlistComponent implements OnInit {
 
   ngOnInit() {
     this.services.getUserList().subscribe((data) => {
-      console.log("entrando en la user list")
-      console.log(data);
       this.employees = data.response_list;
     });
   }
   
 
-  showUserInfo(email){
-    console.log(email)
-    this.router.navigate(['/modaluser', email]); 
-    }
+  // showUserInfo(email, template: TemplateRef<any>){
+  //   // this.router.navigate(['/modaluser', email]);
+  //   this.modalRef = this.modalService.show(template);
+  //   }
   
+  openModal(email) {
+    this.modalRef = this.modalService.show(ModalUserComponent);
+    this.modalRef.content.employees = email;
+  }
 }
