@@ -48,13 +48,14 @@ export class MonthlyReportComponent implements OnInit {
 
   firstSaturday(year, month){
     var dia = 1;
-    console.log("en firstsaturday año y mes" + year + "  "+ month)
     var d= new Date(year+"-"+month+"-"+dia);
     var day = d.getDay();
     while(day != 6) {
+      
+      dia++;      
       d.setDate(dia);
       day = d.getDay();
-      dia++;
+
     }
     return dia;
   }
@@ -91,13 +92,15 @@ export class MonthlyReportComponent implements OnInit {
     
     this.currentMonth = "";
     this.currentyear = "";
-    console.log (data)
+    this.totalDays = 0;
+
       if (data.response_report != undefined){
         this.currentyear = data.response_report[0].year;
         this.firstSat = this.firstSaturday(data.response_report[0].year, data.response_report[0].month);
+
         this.currentMonth = this.setTextCurrentMonth(data.response_report[0].month);
 
-
+        this.totalDays = 0;
         if(data.response_report[0].month == 2){
           if(this.leapYear(data.response_report[0].year)) this.totalDays = 29;
           else this.totalDays=28;
@@ -107,9 +110,7 @@ export class MonthlyReportComponent implements OnInit {
              this.totalDays=30;
           }
           else this.totalDays = 31;
-
         }
-
         for(let k=0; k<this.totalDays; k++) this.mes[k] = 0;
 
 
@@ -130,7 +131,7 @@ export class MonthlyReportComponent implements OnInit {
         }
       }
       else{
-        console.log("mes vacío");
+        this.totalDays = 0;
         this.employeesMonthly = [];
       }
   }
@@ -139,7 +140,6 @@ export class MonthlyReportComponent implements OnInit {
     //realizar llamada al metodo del servicio
     this.services.getMonthlyReportWithDate(event.formatted).subscribe((data) => {
       if (data.response_report != undefined){
-        console.log("mes day picker   " + data.response_report[0].month + "    año de date picker" + data.response_report[0].year);
         this.checkMonth(data);
       }
       else{
@@ -149,6 +149,7 @@ export class MonthlyReportComponent implements OnInit {
   }
 
   isWeekend(day){
+    if (day == 1 && this.firstSat == 7) return true;
     return ((day-this.firstSat)%7 == 0|| (day-this.firstSat)%7 == 1);
   }
 }

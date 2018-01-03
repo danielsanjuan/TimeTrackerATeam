@@ -421,6 +421,7 @@ class MainPage(remote.Service):
     def reportMonthlyWithDate(self, request):
         workedDays = []
         date = datetime(int(request.monthDate[6:10]),int(request.monthDate[3:5]), int(request.monthDate[0:2]))
+        today = datetime.today()     
         if date < today:
             query = Employee.query()
             for currentEmployee in query:
