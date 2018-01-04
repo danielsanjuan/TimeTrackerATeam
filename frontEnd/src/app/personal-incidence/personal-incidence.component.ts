@@ -72,7 +72,6 @@ export class PersonalIncidenceComponent implements OnInit {
     if(formValues.check_in){
       if (formValues.check_out){
         this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", formValues.check_out.replace('T', ' ') + ".100").subscribe((data) => {
-          console.log(data.response_code);
           if (data.response_code == 200){
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {
@@ -92,7 +91,6 @@ export class PersonalIncidenceComponent implements OnInit {
         });
       }else{
         this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", null).subscribe((data) => {
-          console.log(data.response_code);
           if (data.response_code == 200){
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {

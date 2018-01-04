@@ -60,7 +60,6 @@ export class CheckInService {
   }
 
   postCompanyTimes(times):Observable<any>{
-    console.log("times:" + times.checkinmin);
     let body = times;
     return this.http.post(this.localRoute + "setCompanyTimes", body);
   }

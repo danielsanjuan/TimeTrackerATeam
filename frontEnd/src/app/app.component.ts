@@ -16,7 +16,7 @@ export class AppComponent implements OnInit{
 
   navbar:boolean = true;
   numberIncidences: number = 0;
-  imagen:any;
+  imagen:any = "";
   nombre:string;
   subscription: Subscription;
   subscription2: Subscription;
@@ -24,36 +24,40 @@ export class AppComponent implements OnInit{
   email:string;
   roleUser:string;
   admin:boolean;
+  hrm:boolean;
 
   constructor(private services:LoginProvider,
               public router: Router,
               private serviceIncidence: IncidenceService,
               private sesionService: SessionStorageService){
-  
+
   }
 
   ngOnInit() {
-    
-      this.subscription = this.services.getNameUser().subscribe(data => {
-        setTimeout(() => {  
-          this.nombre = data;
-        });
+    this.subscription = this.services.getNameUser().subscribe(data => {
+      this.nombre = data;
+    });
+    this.subscription2 = this.services.getImgUser().subscribe(data => {
+      this.imagen = data;
+
+      this.email = this.sesionService.retrieve('email');
+      this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
+        this.roleUser = data.employee.role;
+        this.sesionService.store('role', this.roleUser);
+        console.log("Estes es el rol: " + this.roleUser);
+        if(this.roleUser == "1"){
+          this.hrm = true;
+          this.admin = false;
+        }else if(this.roleUser == "2"){
+          this.admin = true;
+          this.hrm = true;
+        }
+        else{
+          this.admin = false;
+          this.hrm = false;
+        }
       });
-      this.subscription2 = this.services.getImgUser().subscribe(data => {
-        setTimeout(() => {
-          this.imagen = data;
-        });
-        this.email = this.sesionService.retrieve('email');
-        this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
-          this.roleUser = data.employee.role;
-          if(this.roleUser == "1"){
-            this.admin=true;
-          }
-          else{
-            this.admin=false;
-          }
-        });
-      });
+    });
   }
 
   ngAfterViewInit(){

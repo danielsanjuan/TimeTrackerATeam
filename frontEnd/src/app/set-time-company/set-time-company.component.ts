@@ -17,7 +17,7 @@ export class SetTimeCompanyComponent implements OnInit  {
   checkout_minfriday: string;
   checkout_maxfriday: string;
 
-  constructor(private services: CheckInService, public toastr: ToastsManager, vcr: ViewContainerRef) { 
+  constructor(private services: CheckInService, public toastr: ToastsManager, vcr: ViewContainerRef) {
     this.toastr.setRootViewContainerRef(vcr);
   }
 
@@ -49,22 +49,12 @@ export class SetTimeCompanyComponent implements OnInit  {
           this.toastr.error('Checkout Minimun Friday Time invalid', 'Error!');
         }
         if(data.response_code == 200){
-          this.toastr.success('The input data is correct','Success!');          
+          this.toastr.success('The input data is correct','Success!');
         }
-        console.log(data.response_code);
       });
     }else{
       this.toastr.error('Complete all required fields!');
     }
-    console.log(companyTimeTrackerForm.value);
-    console.log('checkinmin:' + companyTimeTrackerForm.controls['checkinmin'].value);
-    console.log('checkinmax:' + companyTimeTrackerForm.controls['checkinmax'].value);
-    console.log('checkoutmin:' + companyTimeTrackerForm.controls['checkoutmin'].value);
-    console.log('checkoutmax:' + companyTimeTrackerForm.controls['checkoutmax'].value);
-    console.log('checkoutfriday:' + companyTimeTrackerForm.controls['checkoutminfriday'].value);
-    console.log('checkoutmaxfriday:' + companyTimeTrackerForm.controls['checkoutmaxfriday'].value);
-    console.log('Form Valid:' + companyTimeTrackerForm.valid);
-    console.log('Form Submitted:' + companyTimeTrackerForm.submitted);
   }
 
 }

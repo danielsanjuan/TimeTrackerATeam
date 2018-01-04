@@ -23,6 +23,7 @@
             <td class="imagecell"><img src="{{employee.image}}" alt="profile-image" class="profile-image"></td>
             <td>{{employee.name}}</td>
             <td>{{employee.email}}</td>
+            <td *ngIf="employee.role == 2"><b>Administrator</b></td>
             <td *ngIf="employee.role == 1"><b>Human Resources</b></td>
             <td *ngIf="employee.role == 0"><b>Employee</b></td>
             <!-- <td><span class="glyphicon glyphicon-edit" (click)="showUserInfo(employee.email)"></span></td> -->

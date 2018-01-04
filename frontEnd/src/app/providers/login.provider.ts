@@ -69,7 +69,6 @@ export class LoginProvider {
 
           }
           else {
-            // console.log(JSON.stringify(response.result));
             this.zone.run(()=>{
               this.router.navigate(['/home']);
             });

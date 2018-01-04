@@ -2,6 +2,7 @@ from protorpc import messages
 
 class ChangeRoleMessages(messages.Message):
     email = messages.StringField(1)
+    role = messages.IntegerField(2)
 
 class JsonChangedRoleEmployee(messages.Message):
     name = messages.StringField(1)
@@ -11,4 +12,3 @@ class JsonChangedRoleEmployee(messages.Message):
 
 class ChangeRoleResponse(messages.Message):
     employee = messages.MessageField(JsonChangedRoleEmployee, 1)
-    response_code = messages.IntegerField(2)

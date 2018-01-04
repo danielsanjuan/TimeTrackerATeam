@@ -11,8 +11,21 @@ img {
 }
 
 .role-button{
+  margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
+
 modal-container{
   margin-top:5em!important;
+}
+
+.input-group-addon{
+  background-color: white;
+}
+
+@media (max-width: 460px){
+  .role-selector{
+    width: 60%;
+    margin: 0 auto;
+  }
 }
