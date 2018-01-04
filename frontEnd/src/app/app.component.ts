@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
   nombre:string;
   subscription: Subscription;
   subscription2: Subscription;
-  isCollapsed:boolean=true;
+  isCollapsed:boolean = true;
   email:string;
   roleUser:string;
   admin:boolean;
@@ -28,8 +28,8 @@ export class AppComponent implements OnInit{
   constructor(private services:LoginProvider,
               public router: Router,
               private serviceIncidence: IncidenceService,
-              private sesionService: SessionStorageService){
-
+              private sesionService: SessionStorageService){    
+    document.addEventListener('click', () => { this.isCollapsed = true; });
   }
 
   ngOnInit() {
@@ -54,6 +54,11 @@ export class AppComponent implements OnInit{
 
   ngAfterViewInit(){
     this.services.setSubjests();
+  }
+
+  buttonNavbar(){
+    this.isCollapsed = !this.isCollapsed;
+    event.stopPropagation();
   }
 
 }
