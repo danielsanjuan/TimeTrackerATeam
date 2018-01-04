@@ -16,7 +16,7 @@ export class AppComponent implements OnInit{
 
   navbar:boolean = true;
   numberIncidences: number = 0;
-  imagen:any ="";
+  imagen:any = "";
   nombre:string;
   subscription: Subscription;
   subscription2: Subscription;
@@ -24,6 +24,7 @@ export class AppComponent implements OnInit{
   email:string;
   roleUser:string;
   admin:boolean;
+  hrm:boolean;
 
   constructor(private services:LoginProvider,
               public router: Router,
@@ -42,11 +43,18 @@ export class AppComponent implements OnInit{
       this.email = this.sesionService.retrieve('email');
       this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
         this.roleUser = data.employee.role;
+        this.sesionService.store('role', this.roleUser);
+        console.log("Estes es el rol: " + this.roleUser);
         if(this.roleUser == "1"){
-          this.admin=true;
+          this.hrm = true;
+          this.admin = false;
+        }else if(this.roleUser == "2"){
+          this.admin = true;
+          this.hrm = true;
         }
         else{
-          this.admin=false;
+          this.admin = false;
+          this.hrm = false;
         }
       });
     });

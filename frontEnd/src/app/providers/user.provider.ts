@@ -22,8 +22,8 @@ export class UserService {
     return this.http.get(this.localRoute + 'getEmployee?email=' + email);
   }
 
-  setRole(email):Observable<any>{
-    let body = { "email": email};
+  setRole(email, role):Observable<any>{
+    let body = { "email": email, "role": role};
     return this.http.post(this.localRoute + 'setRole', body);
   }
 }

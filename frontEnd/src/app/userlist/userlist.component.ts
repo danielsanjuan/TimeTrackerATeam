@@ -14,7 +14,7 @@ import { ModalUserComponent } from '../modal-user/modal-user.component';
 export class UserlistComponent implements OnInit {
   employees = [];
   modalRef: BsModalRef;
-  constructor(private router: Router, private sessionSt: SessionStorageService, 
+  constructor(private router: Router, private sessionSt: SessionStorageService,
     private services: UserService, private modalService: BsModalService) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
@@ -26,15 +26,17 @@ export class UserlistComponent implements OnInit {
       this.employees = data.response_list;
     });
   }
-  
+
 
   // showUserInfo(email, template: TemplateRef<any>){
   //   // this.router.navigate(['/modaluser', email]);
   //   this.modalRef = this.modalService.show(template);
   //   }
-  
-  openModal(email) {
+
+  openModal(employee) {
     this.modalRef = this.modalService.show(ModalUserComponent);
-    this.modalRef.content.employees = email;
+    this.modalRef.content.employees = employee;
+    this.modalRef.content.mySelf = this.sessionSt.retrieve('email');
+    this.modalRef.content.selectedRole = employee.role;
   }
 }
