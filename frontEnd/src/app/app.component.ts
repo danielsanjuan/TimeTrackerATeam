@@ -33,13 +33,16 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.subscription = this.services.getNameUser().subscribe(data => {  
-        this.nombre = data;
+    
+      this.subscription = this.services.getNameUser().subscribe(data => {
+        setTimeout(() => {  
+          this.nombre = data;
+        });
       });
       this.subscription2 = this.services.getImgUser().subscribe(data => {
-        this.imagen = data;
-        
+        setTimeout(() => {
+          this.imagen = data;
+        });
         this.email = this.sesionService.retrieve('email');
         this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
           this.roleUser = data.employee.role;
@@ -51,7 +54,6 @@ export class AppComponent implements OnInit{
           }
         });
       });
-    });
   }
 
   ngAfterViewInit(){
