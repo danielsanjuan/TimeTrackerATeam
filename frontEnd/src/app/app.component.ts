@@ -16,7 +16,7 @@ export class AppComponent implements OnInit{
 
   navbar:boolean = true;
   numberIncidences: number = 0;
-  imagen:any ="";
+  imagen:any;
   nombre:string;
   subscription: Subscription;
   subscription2: Subscription;
@@ -29,25 +29,27 @@ export class AppComponent implements OnInit{
               public router: Router,
               private serviceIncidence: IncidenceService,
               private sesionService: SessionStorageService){
-
+  
   }
 
   ngOnInit() {
-    this.subscription = this.services.getNameUser().subscribe(data => {
-      this.nombre = data;
-    });
-    this.subscription2 = this.services.getImgUser().subscribe(data => {
-      this.imagen = data;
-
-      this.email = this.sesionService.retrieve('email');
-      this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
-        this.roleUser = data.employee.role;
-        if(this.roleUser == "1"){
-          this.admin=true;
-        }
-        else{
-          this.admin=false;
-        }
+    setTimeout(() => {
+      this.subscription = this.services.getNameUser().subscribe(data => {  
+        this.nombre = data;
+      });
+      this.subscription2 = this.services.getImgUser().subscribe(data => {
+        this.imagen = data;
+        
+        this.email = this.sesionService.retrieve('email');
+        this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
+          this.roleUser = data.employee.role;
+          if(this.roleUser == "1"){
+            this.admin=true;
+          }
+          else{
+            this.admin=false;
+          }
+        });
       });
     });
   }
