@@ -19,7 +19,7 @@
         </div>
       </form>
     </div>
-    <div class="col-sm-6 col-md-4 col-md-offset-2">      
+    <div class="col-sm-6 col-md-4 col-md-offset-2">
       <h2> Month {{currentMonth}} of {{currentyear}} </h2>
     </div>
   </div>
@@ -30,7 +30,7 @@
           <tr class="hidden-xs">
             <th>Employee    </th>
             <th>Total</th>
-            <th *ngFor="let horasM of employeesMonthly[0].hours_day; let i = index">{{i+1}}</th>
+            <ng-container *ngFor="let horasM of employeesMonthly[0].hours_day; let i = index"><ng-container  *ngIf="totalDays>=i+1"><th>{{i+1}}</th></ng-container></ng-container>
           </tr>
           <tr class="visible-xs">
             <th>Employee</th>
@@ -42,7 +42,7 @@
           <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
             <td>{{worker.name}} </td>
             <td>{{worker.total}} </td>
-            <td *ngFor="let horasM of employeesMonthly[i].hours_day; let j = index" [ngClass]="{'weekends': isWeekend(j+1)}">{{horasM}}</td>
+            <ng-container *ngFor="let horasM of employeesMonthly[i].hours_day; let j = index"><ng-container *ngIf="totalDays>=j+1"><td  [ngClass]="{'weekends': isWeekend(j+1)}" > {{horasM}}</td></ng-container></ng-container>
           </tr>
         </tbody>
         <tbody>

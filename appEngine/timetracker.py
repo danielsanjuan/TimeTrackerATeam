@@ -421,6 +421,7 @@ class MainPage(remote.Service):
     def reportMonthlyWithDate(self, request):
         workedDays = []
         date = datetime(int(request.monthDate[6:10]),int(request.monthDate[3:5]), int(request.monthDate[0:2]))
+        today = datetime.today()
         if date < today:
             query = Employee.query()
             for currentEmployee in query:
@@ -489,25 +490,35 @@ class MainPage(remote.Service):
         # change role value in datastore and update the value in modaluserview
     def setRole(self, request):
         query = Employee.query()
-        queryRole = query.filter(Employee.role == 1).fetch()
         query = query.filter(Employee.email == request.email).get()
-        code = 200
-        if query.role == 0:
-            query.role = 1
-            query.put()
-        else:
-            if len(queryRole) > 1:
-                query.role = 0
-                query.put()
-            else:
-                code = 500
+        query.role = request.role
+        query.put()
         employee = JsonChangedRoleEmployee(
             name=query.name,
             email=query.email,
             image=query.image,
             role=query.role
         )
-        return ChangeRoleResponse(employee=employee,response_code=code)
+        return ChangeRoleResponse(employee=employee)
+
+        # queryRole = query.filter(Employee.role == 1).fetch()
+        # query = query.filter(Employee.email == request.email).get()
+        # code = 200
+        # if query.role == 0:
+        #     query.role = 1
+        #     query.put()
+        # else:
+        #     if len(queryRole) > 1:
+        #         query.role = 0
+        #         query.put()
+        #     else:
+        #         code = 500
+        # employee = JsonChangedRoleEmployee(
+        #     name=query.name,
+        #     email=query.email,
+        #     image=query.image,
+        #     role=query.role
+        # )
 
 
 

@@ -28,4 +28,4 @@ before_script:
 script:
 - echo "Script"
 after_success:
-- gcloud -q app deploy appEngine/app.yaml appEngine/index.yaml
+- gcloud -q app deploy appEngine/app.yaml appEngine/index.yaml appEngine/cron.yaml

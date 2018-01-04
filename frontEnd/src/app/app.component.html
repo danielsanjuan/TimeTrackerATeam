@@ -12,12 +12,12 @@
           </a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar" [ngbCollapse]="isCollapsed">
-          <ul class="nav navbar-nav" *ngIf="admin">
+          <ul class="nav navbar-nav" *ngIf="hrm">
             <li routerLinkActive="active"><a href="#" [routerLink]="['weeklyReport']" (click)="isCollapsed = !isCollapsed">Weekly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['monthlyReport']" (click)="isCollapsed = !isCollapsed">Monthly Report</a></li>
             <li routerLinkActive="active"><a href="#" [routerLink]="['incidence']" (click)="isCollapsed = !isCollapsed">Incidences</a></li>
-            <li routerLinkActive="active"><a href="#" [routerLink]="['userlist']" (click)="isCollapsed = !isCollapsed">Admin</a></li>
-            <li routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
+            <li *ngIf="admin" routerLinkActive="active"><a href="#" [routerLink]="['userlist']" (click)="isCollapsed = !isCollapsed">Admin</a></li>
+            <li *ngIf="admin" routerLinkActive="active"><a href="#" [routerLink]="['settings']" (click)="isCollapsed = !isCollapsed">Settings</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="info-user" ><img class="img_user" src="{{imagen}}" alt="User">

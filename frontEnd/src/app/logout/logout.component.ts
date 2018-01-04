@@ -16,9 +16,7 @@ export class LogoutComponent implements OnInit {
   }
 
   logout(){
-    console.log(this.sessionSt.retrieve('email'));
     this.sessionSt.clear();
-    console.log(this.sessionSt.retrieve('email'));
     this.router.navigate(['/login']);
   }
 

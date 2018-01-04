@@ -1,4 +1,3 @@
-
 <div class="row margin_thumbnail">
   <div class="row">
     <img src="{{employees.image}}">
@@ -6,8 +5,21 @@
   <div class="row text-center">
     <p>{{employees.name}}</p>
     <p>{{employees.email}}</p>
-    <p *ngIf="employees.role == 1"><b>Human Resources</b></p>
-    <p *ngIf="employees.role == 0"><b>Employee</b></p>
-    <button type='button' (click)='changeRole()' class='btn btn-info role-button col-xs-offset-4 col-xs-4 col-sm-offset-4 col-sm-4 col-md-offset-5 col-md-2 col-lg-offset-5 col-lg-2'>Change Role</button>
+    <div *ngIf="mySelf != employees.email" class="input-group row role-selector">
+      <span class="input-group-addon">
+          <input [(ngModel)]="selectedRole" type="radio" value="0" name="role">
+          <label>Employee</label>
+        </span>
+      <span class="input-group-addon">
+          <input [(ngModel)]="selectedRole" type="radio" value="1" name="role">
+          <label>HRM</label>
+        </span>
+      <span class="input-group-addon">
+          <input [(ngModel)]="selectedRole" type="radio" value="2" name="role">
+          <label>Admin</label>
+        </span>
+    </div>
+    <p *ngIf="employees.role == 2 && mySelf == employees.email"><b>Administrator</b></p>
+    <button *ngIf="mySelf != employees.email" type='button' (click)='changeRole()' class='btn btn-info role-button col-xs-offset-4 col-xs-4 col-sm-offset-4 col-sm-4 col-md-offset-5 col-md-2 col-lg-offset-5 col-lg-2'>Change Role</button>
   </div>
 </div>
