@@ -35,6 +35,7 @@ export class MonthlyReportComponent implements OnInit {
   }
 
   ngOnInit() {
+    //Cuando arranquemos tendremos el reporte semanal del mes anterior
     this.services.getMontlyReport().subscribe((data) => {
       this.checkMonth(data);
     });
@@ -42,11 +43,14 @@ export class MonthlyReportComponent implements OnInit {
 
 
   leapYear(year){
+    //Devuelve si un año es bisiesto o no.
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
 
   firstSaturday(year, month){
+    //Función que pasada un año y un mes devuelve el primer sábado de dicho mes
+    //se usará para el coloreado de los fines de semana
     var dia = 1;
     var d= new Date(year+"-"+month+"-"+dia);
     var day = d.getDay();
@@ -59,31 +63,33 @@ export class MonthlyReportComponent implements OnInit {
     }
     return dia;
   }
-
+  
   setTextCurrentMonth(month){
+    //Devuelve el texto del mes en el que nos encontramos
+    
     if (month == 1) this.currentMonth = "January";
     else
-      if (month == 2) this.currentMonth = "February";
-      else
-      if (month == 3) this.currentMonth = "March";
-      else
-      if (month == 4) this.currentMonth = "April";
-      else
-      if (month == 5) this.currentMonth = "May";    
-      else
-      if (month == 6) this.currentMonth = "June";
-      else
-      if (month == 7) this.currentMonth = "July";
-      else
-      if (month == 8) this.currentMonth = "August";
-      else
-      if (month == 9) this.currentMonth = "September";
-      else
-      if (month == 10) this.currentMonth = "October";
-      else
-      if (month == 11) this.currentMonth = "November";
-      else
-      if (month == 12) this.currentMonth = "December";
+    if (month == 2) this.currentMonth = "February";
+    else
+    if (month == 3) this.currentMonth = "March";
+    else
+    if (month == 4) this.currentMonth = "April";
+    else
+    if (month == 5) this.currentMonth = "May";    
+    else
+    if (month == 6) this.currentMonth = "June";
+    else
+    if (month == 7) this.currentMonth = "July";
+    else
+    if (month == 8) this.currentMonth = "August";
+    else
+    if (month == 9) this.currentMonth = "September";
+    else
+    if (month == 10) this.currentMonth = "October";
+    else
+    if (month == 11) this.currentMonth = "November";
+    else
+    if (month == 12) this.currentMonth = "December";
 
     return this.currentMonth;
   }

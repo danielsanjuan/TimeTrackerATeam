@@ -33,6 +33,9 @@ export class CheckComponent implements OnInit {
   mileSeconds:number = 0;
   readyCheckOut:boolean = false;
 
+  hoursMock:string = '09:00';
+  hoursMockWeek:string = '23:00';
+
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
                private router: Router,
@@ -65,6 +68,7 @@ export class CheckComponent implements OnInit {
       });
       if(this.doCheckOut){
         this.seeTime();
+        this.AlertTime();
       }
     });
 
@@ -206,5 +210,34 @@ export class CheckComponent implements OnInit {
       } 
     }
   }
+
+AlertTime(){
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+  
+  if(this.whatDayIsIt(yyyy, mm, dd) == 3){
+    if(this.hoursMock < "10:01") this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
+  }
+  else if (this.whatDayIsIt(yyyy, mm, dd) == 2){
+    if(this.hoursMockWeek > "22:59" && this.hoursMockWeek < "24:01") this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
+  }
+
+}
+
+whatDayIsIt(year, month, day){
+
+  var d= new Date(year+"-"+month+"-"+day);
+  var actualDay = d.getDay();
+  if (actualDay % 3 == 0) {
+    return 3
+  }
+  else if (actualDay % 4 == 0){
+    return 2;
+  }
+
+  return 0;
+  } 
 
 }
