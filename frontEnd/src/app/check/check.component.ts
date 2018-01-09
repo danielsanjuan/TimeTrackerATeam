@@ -68,96 +68,97 @@ export class CheckComponent implements OnInit {
       });
       if(this.doCheckOut){
         this.seeTime();
-        this.AlertTime();
       }
     });
 
   }
 
   timeCheckIn(){
-      this.doCheckIn = false;
-      this.doCheckOut = true;
-      this.services.postCheckIn().subscribe( (data)=>{
-        switch(data.response_code){
-          case "200":
-              this.checkInTime = data.response_date;
-              let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-              this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
-              this.timeCheckout = false;
-              setTimeout(() => {
-                this.seeTime();
-              }, 100);
-              break;
-          case "202":
-              this.checkInTime = data.response_date;
-              let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-              this.toastr.warning('You are too late '+ timeLate, 'Alert!');
-              this.timeCheckout = false;
-              setTimeout(() => {
-                this.seeTime();
-              }, 100);
-              this.E202=true;
-              break;
-          case "406":
-              this.E406=true;
-              this.toastr.error('You can not work at this time', 'Oops!');
-              this.doCheckIn = false;
-              this.doCheckOut = false;
-              break;
-          case "500":
-              this.E500=true;
-              this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
-              this.doCheckIn = false;
-              this.doCheckOut = false;
-              break;
-        }
-      });
+    this.alertTimeNear();    
+    this.doCheckIn = false;
+    this.doCheckOut = true;
+    this.services.postCheckIn().subscribe( (data)=>{
+      switch(data.response_code){
+        case "200":
+            this.checkInTime = data.response_date;
+            let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
+            this.timeCheckout = false;
+            setTimeout(() => {
+              this.seeTime();
+            }, 100);
+            break;
+        case "202":
+            this.checkInTime = data.response_date;
+            let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+            this.toastr.warning('You are too late '+ timeLate, 'Alert!');
+            this.timeCheckout = false;
+            setTimeout(() => {
+              this.seeTime();
+            }, 100);
+            this.E202=true;
+            break;
+        case "406":
+            this.E406=true;
+            this.toastr.error('You can not work at this time', 'Oops!');
+            this.doCheckIn = false;
+            this.doCheckOut = false;
+            break;
+        case "500":
+            this.E500=true;
+            this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
+            this.doCheckIn = false;
+            this.doCheckOut = false;
+            break;
+      }
+    });
   }
 
   timeCheckOut(){
-      let timeNow
-      this.services.getDateNow().subscribe((data)=>{
-        timeNow = new Date(data.response_date);
-        let waitTime = timeNow - this.fechaCheckIn;
-            if (waitTime > 10000){
-              this.readyCheckOut = true;
-            } 
-      });
-      setTimeout(() => {
-        if(!this.readyCheckOut){
-          this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
-        }else{
-          this.doCheckIn = true;
-          this.doCheckOut = false;
-          this.services.postCheckOut().subscribe( (data)=>{
-            switch(data.response_code){
-              case "200":
-                  this.checkOutTime = data.response_date;
-                  this.toastr.success('Good Job!', 'Success!');
-                  this.timeCheckout = true;
-                  setTimeout(() => {
-                    this.seeTime();
-                  }, 100);
-                  break;
-              case "202":
-                  this.checkOutTime = data.response_date;
-                  this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
-                  this.E202=true;
-                  this.timeCheckout = true;
-                  setTimeout(() => {
-                    this.seeTime();
-                  }, 100);
-                  break;
-              case "406":
-                  this.E406=true;
-                  this.toastr.error('You should be with your family', 'Oops!');
-                  break;
-            }
-          });
-          this.readyCheckOut = false;
-        }
-      }, 100);
-    }
+    this.alertTimeFar();
+    let timeNow
+    this.services.getDateNow().subscribe((data)=>{
+      timeNow = new Date(data.response_date);
+      let waitTime = timeNow - this.fechaCheckIn;
+          if (waitTime > 10000){
+            this.readyCheckOut = true;
+          } 
+    });
+    setTimeout(() => {
+      if(!this.readyCheckOut){
+        this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
+      }else{
+        this.doCheckIn = true;
+        this.doCheckOut = false;
+        this.services.postCheckOut().subscribe( (data)=>{
+          switch(data.response_code){
+            case "200":
+                this.checkOutTime = data.response_date;
+                this.toastr.success('Good Job!', 'Success!');
+                this.timeCheckout = true;
+                setTimeout(() => {
+                  this.seeTime();
+                }, 100);
+                break;
+            case "202":
+                this.checkOutTime = data.response_date;
+                this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
+                this.E202=true;
+                this.timeCheckout = true;
+                setTimeout(() => {
+                  this.seeTime();
+                }, 100);
+                break;
+            case "406":
+                this.E406=true;
+                this.toastr.error('You should be with your family', 'Oops!');
+                break;
+          }
+        });
+        this.readyCheckOut = false;
+      }
+    }, 100);
+  }
 
   seeTime(){
     let mileSeg;
@@ -211,38 +212,58 @@ export class CheckComponent implements OnInit {
     }
   }
 
-AlertTime(){
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; //January is 0!
-  var yyyy = today.getFullYear();
-  var maxTotalHours = 10.5;
-  var maxFridayTotalHours = 7.5;
-  console.log(1);
-  if(3 == 3){
-    var totalHours = this.hoursMock.split(":");
-    var totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60); 
-    console.log(totalWeekHours);
-    if((totalWeekHours + ((3-1)*maxTotalHours)+maxFridayTotalHours) < 40) this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
-  }
-  else if (this.whatDayIsIt(yyyy, mm, dd) == 2){
-    if(this.hoursMockWeek > "22:59" && this.hoursMockWeek < "24:01") this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
-  }
-
-}
-
-whatDayIsIt(year, month, day){
-
-  var d= new Date(year+"-"+month+"-"+day);
-  var actualDay = d.getDay();
-  if (actualDay % 3 == 0) {
-    return 3
-  }
-  else if (actualDay % 4 == 0){
-    return 2;
+  alertTimeFar(){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+    let day = this.whatDayIsIt(yyyy, mm, dd);
+    let maxTotalHours = 10.5;
+    let maxFridayTotalHours = 7.5;
+    let totalHours = this.hoursMock.split(":");
+    let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
+  
+    if(day > 0 && day < 4){
+      console.log("horas posibles trabjadas:" + (totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours));
+      if((totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours) < 40){
+        this.toastr.warning('You are far from reaching your weekly hours', 'Be careful!');
+      }
+    }
   }
 
-  return 0;
-  } 
+  alertTimeNear(){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+    let day = this.whatDayIsIt(yyyy, mm, dd);
+    let maxTotalHours = 10.5;
+    let maxFridayTotalHours = 7.5;
+    let totalHours = this.hoursMock.split(":");
+    let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
+  
+    if(day > 0 && day < 3){
+      if((totalWeekHours + ((day)*maxTotalHours)+maxFridayTotalHours) > 40){
+        this.toastr.warning('You are close to reaching your weekly hours', 'Schedule your work time!');
+      }
+    }
+  }
+  
 
-}
+
+
+  whatDayIsIt(year, month, day){
+    let d= new Date(year+"-"+month+"-"+day);
+    let actualDay = d.getDay();
+    if (actualDay % 2 == 0) {
+      return 3;
+    }
+    if (actualDay % 3 == 0) {
+      return 2;
+    }
+    else if (actualDay % 4 == 0){
+      return 1;
+    }
+    return 0;
+    } 
+  }
