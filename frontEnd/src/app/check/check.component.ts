@@ -216,9 +216,14 @@ AlertTime(){
   var dd = today.getDate();
   var mm = today.getMonth()+1; //January is 0!
   var yyyy = today.getFullYear();
-  
-  if(this.whatDayIsIt(yyyy, mm, dd) == 3){
-    if(this.hoursMock < "10:01") this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
+  var maxTotalHours = 10.5;
+  var maxFridayTotalHours = 7.5;
+  console.log(1);
+  if(3 == 3){
+    var totalHours = this.hoursMock.split(":");
+    var totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60); 
+    console.log(totalWeekHours);
+    if((totalWeekHours + ((3-1)*maxTotalHours)+maxFridayTotalHours) < 40) this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
   }
   else if (this.whatDayIsIt(yyyy, mm, dd) == 2){
     if(this.hoursMockWeek > "22:59" && this.hoursMockWeek < "24:01") this.toastr.warning('You are far from from reaching your weekly hours', 'Alert!');
