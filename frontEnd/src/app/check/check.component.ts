@@ -30,6 +30,8 @@ export class CheckComponent implements OnInit {
   week:number = 0;
   interval:any;
   timeCheckout:boolean;
+  mileSeconds:number = 0;
+  readyCheckOut:boolean = false;
 
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
@@ -109,38 +111,53 @@ export class CheckComponent implements OnInit {
   }
 
   timeCheckOut(){
-      this.doCheckIn = true;
-      this.doCheckOut = false;
-      this.services.postCheckOut().subscribe( (data)=>{
-        switch(data.response_code){
-          case "200":
-              this.checkOutTime = data.response_date;
-              this.toastr.success('Good Job!', 'Success!');
-              this.timeCheckout = true;
-              setTimeout(() => {
-                this.seeTime();
-              }, 100);
-              break;
-          case "202":
-              this.checkOutTime = data.response_date;
-              this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
-              this.E202=true;
-              this.timeCheckout = true;
-              setTimeout(() => {
-                this.seeTime();
-              }, 100);
-              break;
-          case "406":
-              this.E406=true;
-              this.toastr.error('You should be with your family', 'Oops!');
-              break;
-        }
+      let timeNow
+      this.services.getDateNow().subscribe((data)=>{
+        timeNow = new Date(data.response_date);
+        let waitTime = timeNow - this.fechaCheckIn;
+            if (waitTime > 10000){
+              this.readyCheckOut = true;
+            } 
       });
+      setTimeout(() => {
+        if(!this.readyCheckOut){
+          this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
+        }else{
+          this.doCheckIn = true;
+          this.doCheckOut = false;
+          this.services.postCheckOut().subscribe( (data)=>{
+            switch(data.response_code){
+              case "200":
+                  this.checkOutTime = data.response_date;
+                  this.toastr.success('Good Job!', 'Success!');
+                  this.timeCheckout = true;
+                  setTimeout(() => {
+                    this.seeTime();
+                  }, 100);
+                  break;
+              case "202":
+                  this.checkOutTime = data.response_date;
+                  this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
+                  this.E202=true;
+                  this.timeCheckout = true;
+                  setTimeout(() => {
+                    this.seeTime();
+                  }, 100);
+                  break;
+              case "406":
+                  this.E406=true;
+                  this.toastr.error('You should be with your family', 'Oops!');
+                  break;
+            }
+          });
+          this.readyCheckOut = false;
+        }
+      }, 100);
     }
 
   seeTime(){
+    let mileSeg;
     this.services.getCheckIn().subscribe((data)=>{
-      let mileSeconds;
       this.fechaCheckIn = new Date(data.response_date);
       if(data.response_date == "No hay fecha de checkin"){
         this.hours_today = "00:00";
@@ -150,10 +167,12 @@ export class CheckComponent implements OnInit {
           this.fechaNow = new Date(data.response_date);
           this.services.getCheckout().subscribe((data)=>{
             this.fechaCheckout = new Date(data.response_date);
-            mileSeconds = this.fechaCheckout -this.fechaCheckIn;
-            if(data.response_date != "No hay fecha de checkout" || mileSeconds > 0 ){
-              this.workDayTime(this.fechaCheckout - this.fechaCheckIn);
+            mileSeg = this.fechaCheckout -this.fechaCheckIn;
+            if(data.response_date != "No hay fecha de checkout" || mileSeg > 0 ){
+              this.mileSeconds = (this.fechaCheckout -this.fechaCheckIn);
+              this.workDayTime(this.mileSeconds);
             }else{
+              this.mileSeconds = (this.fechaNow - this.fechaCheckIn);
               this.workDayTime(this.fechaNow - this.fechaCheckIn);
             }
           }); 
@@ -162,10 +181,10 @@ export class CheckComponent implements OnInit {
     });
   }
   
-  workDayTime(mileSeconds){
-    let fecha = new Date(mileSeconds);
-    let mileSecondsWeek = mileSeconds + this.week;
-    let fechaW = new Date(mileSecondsWeek);
+  workDayTime(data){
+    let fecha = new Date(data);
+    let dataWeek = data + this.week;
+    let fechaW = new Date(dataWeek);
     if(this.timeCheckout){
       clearInterval(this.timer);    
     }else{
@@ -174,13 +193,17 @@ export class CheckComponent implements OnInit {
         let minuto = (fecha.getMinutes()<=9)?"0"+fecha.getMinutes():fecha.getMinutes();
         let secondsIncrease = fecha.getSeconds();
         fecha.setSeconds(secondsIncrease+1);
-        this.hours_today = horaT+":"+minuto;
+        this.hours_today = horaT+":"+minuto+":"+secondsIncrease;
         let horaWT = (fechaW.getHours()<=9)?"0"+fechaW.getHours():fechaW.getHours();
         let minutoW = (fechaW.getMinutes()<=9)?"0"+fechaW.getMinutes():fechaW.getMinutes();
         let secondsIncreaseW = fechaW.getSeconds();
         fechaW.setSeconds(secondsIncreaseW+1);
         this.hours_week = horaWT+":"+minutoW;
       }, 1000);
+      let waitTime = this.fechaNow - this.fechaCheckIn;
+      if (waitTime > 10000){
+        this.readyCheckOut = true;
+      } 
     }
   }
 
