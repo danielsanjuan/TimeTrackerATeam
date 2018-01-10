@@ -8,7 +8,7 @@ import calendar
 from protorpc import messages
 from datetime import datetime, timedelta, time
 
-from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckResponse
+from messages.checkInMessages import CheckInMessage, CheckInResponseMessage, CheckOutMessage, CheckOutResponseMessage, CheckResponse, GetTimeWorkedTodayReponse
 from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportDateMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
@@ -350,10 +350,17 @@ class MainPage(remote.Service):
         if day.checkin != None:
             if day.checkout != None:
                 if (day.checkin.date() == date.date() and day.checkout.date() == date.date()):
-                    return CheckResponse(response_date=str(day.checkin))
+                    return CheckResponse(response_date=str(day.checkin)) 
             else:
                 return CheckResponse(response_date="No has hecho checkout")
         return CheckResponse(response_date="No has hecho checkin")
+    
+    @endpoints.method(CheckInMessage, CheckResponse, path='getLastCheckIn', http_method='GET', name='getLastCheckIn')
+    def getLastCheckIn(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email)
+        query = query.filter(Workday.checkout == None).get()
+        return CheckResponse(response_date=str(query.checkin))
 
     @endpoints.method(CheckInMessage, CheckResponse, path='getCheckin', http_method='GET', name='getCheckin')
     def getCheckin(self, request):
@@ -374,6 +381,19 @@ class MainPage(remote.Service):
                 if day.checkout.isocalendar()[2] == datetime.now().isocalendar()[2] and day.checkout.isocalendar()[1] == datetime.now().isocalendar()[1] and day.checkout.isocalendar()[0] == datetime.now().isocalendar()[0]:
                     return CheckResponse(response_date=str(day.checkout))
         return CheckResponse(response_date="No hay fecha de checkout")
+    
+    @endpoints.method(CheckOutMessage, GetTimeWorkedTodayReponse, path='getWorkedHoursToday', http_method='GET', name='getWorkedHoursToday')
+    def getWorkedHoursToday(self, request):
+        query = Workday.query()
+        query = query.filter(Workday.employee.email == request.email).fetch()
+        day = datetime.today()
+        hoursWorkedToday = 0
+        for worked in query:
+            if worked.checkin.date() == day.date() and worked.checkout != None:
+                hoursWorkedToday = hoursWorkedToday + int((worked.checkout - worked.checkin).total_seconds())*1000
+            if worked.checkin.date() == day.date() and worked.checkout == None:
+                hoursWorkedToday = hoursWorkedToday + int((datetime.now() - worked.checkin).total_seconds())*1000
+        return GetTimeWorkedTodayReponse(response_date=int(hoursWorkedToday))
 
     @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
     def setCheckIncidence(self, request):

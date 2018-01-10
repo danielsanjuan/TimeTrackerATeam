@@ -31,12 +31,20 @@ export class CheckInService {
     return this.http.get(this.localRoute + "getCheckout?email=" + this.sessionSt.retrieve('email'));
   }
 
+  getLastCheckIn():Observable<any>{
+    return this.http.get(this.localRoute + "getLastCheckIn?email=" + this.sessionSt.retrieve('email'));
+  }
+
   getWeeklyReport(): Observable<any>{
     return this.http.get<any>(this.localRoute + "weeklyReport");
   }
 
   getWeeklyReportWithDate(date):Observable<any>{
     return this.http.get<any>(this.localRoute + "weeklyReportWithDate?week=" + date);
+  }
+
+  getWorkedHoursToday(): Observable<any>{
+    return this.http.get<any>(this.localRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
   }
 
   getDateNow(): Observable<any>{
@@ -63,5 +71,6 @@ export class CheckInService {
     let body = times;
     return this.http.post(this.localRoute + "setCompanyTimes", body);
   }
+  
 
 }
