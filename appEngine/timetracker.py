@@ -495,10 +495,8 @@ class MainPage(remote.Service):
 
     @endpoints.method(EmployeeMessage, EmployeeMessageResponse, path='getEmployee', http_method='GET', name='getEmployee')
     def getEmployee(self, request):
-        print request.email
         query = Employee.query()
         query = query.filter(Employee.email == request.email).get()
-        print query
         employee = JsonEmployee(
             name=query.name,
             email=query.email,
@@ -521,27 +519,6 @@ class MainPage(remote.Service):
         )
         return ChangeRoleResponse(employee=employee)
 
-        # queryRole = query.filter(Employee.role == 1).fetch()
-        # query = query.filter(Employee.email == request.email).get()
-        # code = 200
-        # if query.role == 0:
-        #     query.role = 1
-        #     query.put()
-        # else:
-        #     if len(queryRole) > 1:
-        #         query.role = 0
-        #         query.put()
-        #     else:
-        #         code = 500
-        # employee = JsonChangedRoleEmployee(
-        #     name=query.name,
-        #     email=query.email,
-        #     image=query.image,
-        #     role=query.role
-        # )
-
-
-
     @endpoints.method(SolveIncidence, SolveIncidenceResponse, path='solveIncidence', http_method='POST', name='solveIncidence')
     def solveIncidence(self, request):
         query = Incidences.query()
@@ -552,12 +529,13 @@ class MainPage(remote.Service):
 
     @endpoints.method(message_types.VoidMessage, message_types.VoidMessage, path='autoCheckOut', http_method='GET', name='autoCheckOut')
     def autoCheckOut(self, request):
+        date = datetime.now()
         query = Workday.query()
         query = query.filter(Workday.checkout == None).fetch()
         for userWithoutCheckOut in query:
-            userWithoutCheckOut.checkout = datetime.now()
+            userWithoutCheckOut.checkout = date
             userWithoutCheckOut.put()
-            self.set_incidences("The user didn't check out, this is the automatic check out", datetime.now(), userWithoutCheckOut.employee.email, False)
+            self.set_incidences("The user didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
 
         return message_types.VoidMessage()
 

@@ -29,7 +29,7 @@ export class AppComponent implements OnInit{
   constructor(private services:LoginProvider,
               public router: Router,
               private serviceIncidence: IncidenceService,
-              private sesionService: SessionStorageService){    
+              private sesionService: SessionStorageService){
     document.addEventListener('click', () => { this.isCollapsed = true; });
   }
 
@@ -44,7 +44,6 @@ export class AppComponent implements OnInit{
       this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
         this.roleUser = data.employee.role;
         this.sesionService.store('role', this.roleUser);
-        console.log("Estes es el rol: " + this.roleUser);
         if(this.roleUser == "1"){
           this.hrm = true;
           this.admin = false;

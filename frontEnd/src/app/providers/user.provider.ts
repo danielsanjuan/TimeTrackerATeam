@@ -15,15 +15,15 @@ export class UserService {
 
 }
   getUserList(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "getUserList")
+    return this.http.get<any>(this.serverRoute + "getUserList")
   }
 
   getEmployee(email):Observable<any>{
-    return this.http.get(this.localRoute + 'getEmployee?email=' + email);
+    return this.http.get(this.serverRoute + 'getEmployee?email=' + email);
   }
 
   setRole(email, role):Observable<any>{
     let body = { "email": email, "role": role};
-    return this.http.post(this.localRoute + 'setRole', body);
+    return this.http.post(this.serverRoute + 'setRole', body);
   }
 }
