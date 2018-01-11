@@ -5,6 +5,7 @@ import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-check',
@@ -32,6 +33,7 @@ export class CheckComponent implements OnInit {
   timeCheckout:boolean;
   mileSeconds:number = 0;
   readyCheckOut:boolean = false;
+  IP:string = "";
 
   hoursMock:string = '09:00';
   hoursMockWeek:string = '23:00';
@@ -40,7 +42,8 @@ export class CheckComponent implements OnInit {
                private sessionSt: SessionStorageService,
                private router: Router,
                public toastr: ToastsManager, vcr: ViewContainerRef,
-               private localSt: LocalStorageService) {
+               private localSt: LocalStorageService,
+               private _http: HttpClient) {
        this.toastr.setRootViewContainerRef(vcr);
   }
 
@@ -73,8 +76,10 @@ export class CheckComponent implements OnInit {
 
   }
 
+
   timeCheckIn(){
-    this.alertTimeNear();    
+    this.alertTimeNear();
+    this.getIp();   
     this.doCheckIn = false;
     this.doCheckOut = true;
     this.services.postCheckIn().subscribe( (data)=>{
@@ -112,6 +117,16 @@ export class CheckComponent implements OnInit {
             break;
       }
     });
+  }
+
+  getIp(){
+    this._http.get("http://ipinfo.io/").subscribe(data => { 
+      let ip : any = data;
+      console.log(typeof(ip.ip))
+      this.IP = ip.ip;
+      
+    });  //data.json().ip
+      
   }
 
   timeCheckOut(){
