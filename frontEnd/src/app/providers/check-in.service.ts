@@ -32,7 +32,7 @@ export class CheckInService {
   }
 
   getLastCheckIn():Observable<any>{
-    return this.http.get(this.localRoute + "getLastCheckIn?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.serverRoute + "getLastCheckIn?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
@@ -44,7 +44,7 @@ export class CheckInService {
   }
 
   getWorkedHoursToday(): Observable<any>{
-    return this.http.get<any>(this.localRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get<any>(this.serverRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
   }
 
   getDateNow(): Observable<any>{
