@@ -48,6 +48,8 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    var ip = window.location.origin;
+    console.log(ip);
     this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
       if (data.response_date == "No has hecho checkin"){
