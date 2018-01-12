@@ -81,52 +81,54 @@ export class CheckComponent implements OnInit {
 
   timeCheckIn(){
     this.alertTimeNear();
-    this.getIp();   
+    this.getIp();
     this.doCheckIn = false;
     this.doCheckOut = true;
-    this.services.postCheckIn().subscribe( (data)=>{
-      switch(data.response_code){
-        case "200":
-            this.checkInTime = data.response_date;
-            let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
-            this.timeCheckout = false;
-            setTimeout(() => {
-              this.seeTime();
-            }, 100);
-            break;
-        case "202":
-            this.checkInTime = data.response_date;
-            let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
-            this.toastr.warning('You are too late '+ timeLate, 'Alert!');
-            this.timeCheckout = false;
-            setTimeout(() => {
-              this.seeTime();
-            }, 100);
-            this.E202=true;
-            break;
-        case "406":
-            this.E406=true;
-            this.toastr.error('You can not work at this time', 'Oops!');
-            this.doCheckIn = false;
-            this.doCheckOut = false;
-            break;
-        case "500":
-            this.E500=true;
-            this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
-            this.doCheckIn = false;
-            this.doCheckOut = false;
-            break;
-      }
-    });
+    setTimeout(() => {
+      this.services.postCheckIn(this.IP).subscribe( (data)=>{
+        switch(data.response_code){
+          case "200":
+              this.checkInTime = data.response_date;
+              let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+              this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
+              this.timeCheckout = false;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
+              break;
+          case "202":
+              this.checkInTime = data.response_date;
+              let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
+              this.toastr.warning('You are too late '+ timeLate, 'Alert!');
+              this.timeCheckout = false;
+              setTimeout(() => {
+                this.seeTime();
+              }, 100);
+              this.E202=true;
+              break;
+          case "406":
+              this.E406=true;
+              this.toastr.error('You can not work at this time', 'Oops!');
+              this.doCheckIn = false;
+              this.doCheckOut = false;
+              break;
+          case "500":
+              this.E500=true;
+              this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
+              this.doCheckIn = false;
+              this.doCheckOut = false;
+              break;
+        }
+      });
+    }, 300);
   }
 
   getIp(){
-    this._http.get("http://ipinfo.io/").subscribe(data => { 
+    this._http.get("http://ipinfo.io/").subscribe(data => {
       let ip : any = data;
       this.IP = ip.ip;
-    }); 
-      
+      console.log("Ip antes de hacer el post: " + this.IP);
+    });
   }
 
   timeCheckOut(){
@@ -137,15 +139,16 @@ export class CheckComponent implements OnInit {
       let waitTime = timeNow - this.fechaCheckIn;
           if (waitTime > 10000){
             this.readyCheckOut = true;
-          } 
+          }
     });
+    this.getIp();
     setTimeout(() => {
       if(!this.readyCheckOut){
         this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
       }else{
         this.doCheckIn = true;
         this.doCheckOut = false;
-        this.services.postCheckOut().subscribe( (data)=>{
+        this.services.postCheckOut(this.IP).subscribe( (data)=>{
           switch(data.response_code){
             case "200":
                 this.checkOutTime = data.response_date;
@@ -172,7 +175,7 @@ export class CheckComponent implements OnInit {
         });
         this.readyCheckOut = false;
       }
-    }, 100);
+    }, 300);
   }
 
   seeTime(){
@@ -195,18 +198,18 @@ export class CheckComponent implements OnInit {
               this.mileSeconds = (this.fechaNow - this.fechaCheckIn);
               this.workDayTime(this.fechaNow - this.fechaCheckIn);
             }
-          }); 
-        });        
+          });
+        });
       }
     });
   }
-  
+
   workDayTime(data){
     let fecha = new Date(data);
     let dataWeek = data + this.week;
     let fechaW = new Date(dataWeek);
     if(this.timeCheckout){
-      clearInterval(this.timer);    
+      clearInterval(this.timer);
     }else{
       this.timer = setInterval(() => {
         let horaT = (fecha.getHours()<=9)?"0"+fecha.getHours():fecha.getHours();
@@ -223,7 +226,7 @@ export class CheckComponent implements OnInit {
       let waitTime = this.fechaNow - this.fechaCheckIn;
       if (waitTime > 10000){
         this.readyCheckOut = true;
-      } 
+      }
     }
   }
 
@@ -237,7 +240,7 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-  
+
     if(day > 0 && day < 4){
       console.log("horas posibles trabjadas:" + (totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours));
       if((totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours) < 40){
@@ -256,14 +259,14 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-  
+
     if(day > 0 && day < 3){
       if((totalWeekHours + ((day)*maxTotalHours)+maxFridayTotalHours) > 40){
         this.toastr.warning('You are close to reaching your weekly hours', 'Schedule your work time!');
       }
     }
   }
-  
+
 
 
 
@@ -280,5 +283,5 @@ export class CheckComponent implements OnInit {
       return 1;
     }
     return 0;
-    } 
+    }
   }
