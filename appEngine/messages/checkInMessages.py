@@ -18,3 +18,6 @@ class CheckOutResponseMessage(messages.Message):
 
 class CheckResponse(messages.Message):
     response_date = messages.StringField(1)
+
+class GetTimeWorkedTodayReponse(messages.Message):
+    response_date = messages.IntegerField(1)

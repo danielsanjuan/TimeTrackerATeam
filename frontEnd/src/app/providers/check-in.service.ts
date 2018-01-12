@@ -63,5 +63,7 @@ export class CheckInService {
     let body = times;
     return this.http.post(this.localRoute + "setCompanyTimes", body);
   }
-
+  getWorkedHoursToday():Observable<any>{
+    return this.http.get(this.localRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
+  }
 }
