@@ -49,6 +49,7 @@ const appRoutes: Routes = [
   { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'modaluser/:email', component: ModalUserComponent },
+  { path: 'userIP/:email', component: UserIpComponent },  
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
