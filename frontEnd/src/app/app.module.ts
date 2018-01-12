@@ -34,6 +34,8 @@ import { ModalUserComponent } from './modal-user/modal-user.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
+import { UserIpComponent } from './user-ip/user-ip.component';
+import { AccessComponent } from './access/access.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -42,6 +44,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'access', component: AccessComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'modaluser/:email', component: ModalUserComponent },
@@ -62,6 +65,8 @@ const appRoutes: Routes = [
     ModalUserComponent,
     MonthlyReportComponent,
     SetTimeCompanyComponent,
+    UserIpComponent,
+    AccessComponent,
   ],
   imports: [
     BrowserModule,
