@@ -124,10 +124,8 @@ export class CheckComponent implements OnInit {
   getIp(){
     this._http.get("http://ipinfo.io/").subscribe(data => { 
       let ip : any = data;
-      console.log(typeof(ip.ip))
       this.IP = ip.ip;
-      
-    });  //data.json().ip
+    }); 
       
   }
 
