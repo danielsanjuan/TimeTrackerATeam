@@ -5,6 +5,7 @@ import { CheckInService } from '../providers/check-in.service';
 import { Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-check',
@@ -34,17 +35,24 @@ export class CheckComponent implements OnInit {
   timeCheckout:boolean;
   mileSeconds:number = 0;
   readyCheckOut:boolean = false;
+  IP:string = "";
+
+  hoursMock:string = '09:00';
+  hoursMockWeek:string = '23:00';
   timeMileSecond:number = 0;
 
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
                private router: Router,
                public toastr: ToastsManager, vcr: ViewContainerRef,
-               private localSt: LocalStorageService) {
+               private localSt: LocalStorageService,
+               private _http: HttpClient) {
        this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
+    var ip = window.location.origin;
+    console.log(ip);
     this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
       if (data.response_date == "No has hecho checkin"){
@@ -77,10 +85,14 @@ export class CheckComponent implements OnInit {
     });
   }
 
+
   timeCheckIn(){
-      this.doCheckIn = false;
-      this.doCheckOut = true;
-      this.services.postCheckIn().subscribe( (data)=>{
+    this.alertTimeNear();
+    this.getIp();
+    this.doCheckIn = false;
+    this.doCheckOut = true;
+    setTimeout(() => {
+      this.services.postCheckIn(this.IP).subscribe( (data)=>{
         switch(data.response_code){
           case "200":
               this.checkInTime = data.response_date;
@@ -115,18 +127,27 @@ export class CheckComponent implements OnInit {
               break;
         }
       });
+    }, 300);
+  }
+
+  getIp(){
+    this._http.get("http://ipinfo.io/").subscribe(data => {
+      let ip : any = data;
+      this.IP = ip.ip;
+    });
   }
 
   timeCheckOut(){
+    this.getIp();
     this.services.getLastCheckIn().subscribe((data)=>{
-      this.fechaCheckIn = new Date(data.response_date);    
+      this.fechaCheckIn = new Date(data.response_date);
       this.services.getDateNow().subscribe((data)=>{
         this.fechaNow = new Date(data.response_date);
-        let waitTime = this.fechaNow - this.fechaCheckIn;          
+        let waitTime = this.fechaNow - this.fechaCheckIn;
             if (waitTime > 300000){
               this.doCheckIn = true;
               this.doCheckOut = false;
-              this.services.postCheckOut().subscribe( (data)=>{
+              this.services.postCheckOut(this.IP).subscribe( (data)=>{
                 switch(data.response_code){
                   case "200":
                       this.checkOutTime = data.response_date;
@@ -154,7 +175,7 @@ export class CheckComponent implements OnInit {
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
-            } 
+            }
       });
     });
   }
@@ -163,11 +184,11 @@ export class CheckComponent implements OnInit {
     this.workDayTimeToday(this.hoursWorked);
     this.workDayTimeWeek(this.hoursWorked);
   }
-  
+
   workDayTimeToday(data){
     let fecha = new Date(parseInt(data));
     if(this.timeCheckout){
-      clearInterval(this.timer); 
+      clearInterval(this.timer);
     }else{
       this.timer = setInterval(() => {
         this.hours_today = this.hourFormat(fecha);
@@ -175,16 +196,68 @@ export class CheckComponent implements OnInit {
       let waitTime = this.fechaNow - this.fechaCheckIn;
       if (waitTime > 300000){
         this.readyCheckOut = true;
-      } 
+      }
     }
   }
+
+  alertTimeFar(){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+    let day = this.whatDayIsIt(yyyy, mm, dd);
+    let maxTotalHours = 10.5;
+    let maxFridayTotalHours = 7.5;
+    let totalHours = this.hoursMock.split(":");
+    let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
+
+    if(day > 0 && day < 4){
+      console.log("horas posibles trabjadas:" + (totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours));
+      if((totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours) < 40){
+        this.toastr.warning('You are far from reaching your weekly hours', 'Be careful!');
+      }
+    }
+  }
+
+  alertTimeNear(){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+    let day = this.whatDayIsIt(yyyy, mm, dd);
+    let maxTotalHours = 10.5;
+    let maxFridayTotalHours = 7.5;
+    let totalHours = this.hoursMock.split(":");
+    let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
+
+    if(day > 0 && day < 3){
+      if((totalWeekHours + ((day)*maxTotalHours)+maxFridayTotalHours) > 40){
+        this.toastr.warning('You are close to reaching your weekly hours', 'Schedule your work time!');
+      }
+    }
+  }
+
+  whatDayIsIt(year, month, day){
+    let d= new Date(year+"-"+month+"-"+day);
+    let actualDay = d.getDay();
+    if (actualDay % 2 == 0) {
+      return 3;
+    }
+    if (actualDay % 3 == 0) {
+      return 2;
+    }
+    else if (actualDay % 4 == 0){
+      return 1;
+    }
+    return 0;
+    }
 
   workDayTimeWeek(data){
     let dataWeek = parseInt(data) + this.week;
     let fechaW = new Date(dataWeek);
     if(this.timeCheckout){
       clearInterval(this.timer2);
-      this.hoursWorked = this.timeMileSecond - this.week;  
+      this.hoursWorked = this.timeMileSecond - this.week;
     }else{
       this.timer2 = setInterval(() => {
         this.hours_week = this.hourFormat(fechaW);
@@ -203,6 +276,4 @@ export class CheckComponent implements OnInit {
     this.timeMileSecond = parseInt(fecha.setMilliseconds(milesegundos));
     return horaT+":"+minuto;
   }
-
-
 }
