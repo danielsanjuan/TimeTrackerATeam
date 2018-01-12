@@ -44,6 +44,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'userIp', component: UserIpComponent },
   { path: 'access', component: AccessComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },

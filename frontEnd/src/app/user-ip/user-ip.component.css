@@ -1,0 +1,88 @@
+.container{
+    margin: 30px 0 0 0;
+}
+
+table{
+    text-align: center;
+    margin-top: 2em;
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+thead tr th {
+    text-align: center;
+}
+
+.input-group{
+    margin-top: 1em;
+}
+
+.dates{
+    background-color: #c1c1c1;
+    color: #000;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 1em;
+}
+
+.info-user{
+    float: left;
+    display: -webkit-inline-box;
+    margin-top: 1em;
+}
+
+.name-email{
+    text-align: center;
+    margin-left: 2em;
+}
+
+.name{
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.button-back{
+    height: 50px;
+    margin: 1% 0%;
+}
+
+.back-button{
+    background-color: #101010;
+    color:#fff;
+}
+
+img{
+    max-width: 100%;
+    border-radius: 50%;
+}
+
+h2{
+    text-align: center;
+}
+
+/***** Media queries *****/
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (max-width: 767px) {}
+
+@media (max-width: 415px) {
+	
+	thead tr th {
+        font-size: 16px;
+    }
+    tbody tr td{
+        text-align: center;
+        font-size: 16px;
+        
+    }
+
+    img{
+        max-width: 80%;
+    }
+
+}
