@@ -253,8 +253,8 @@ class MainPage(remote.Service):
         user.image = employee.image
         return user
 
-    @endpoints.method(IpMessage, UserIPResponse, path = 'getIpList', http_method = 'GET', name = 'getIpList')
-    def getIpList(self, request):
+    @endpoints.method(IpMessage, UserIPResponse, path = 'getDailyIpReport', http_method = 'GET', name = 'getDailyIpReport')
+    def getDailyIpReport(self, request):
         jsonUserIPMessage = JsonUserIPMessage()
         jsonUserMessage  = JsonUserMessage()
         employees = Employee.query()
@@ -281,15 +281,15 @@ class MainPage(remote.Service):
 
             pos = 0
             for workday in query:
-                if str(workday.checkin.date()) == request.date and pos == 0:
+                if workday.checkin.date() == datetime.strptime(request.date, "%d-%m-%Y").date() and pos == 0:
                     jsonUserIPMessage.response_list_ip.ip1 = str(workday.ipAddressIn)
                     pos = pos + 1
                     jsonUserIPMessage.response_list_ip.ip2 = str(workday.ipAddressOut)
-                elif str(workday.checkin.date()) == request.date and pos == 1:
+                elif workday.checkin.date() == datetime.strptime(request.date, "%d-%m-%Y").date() and pos == 1:
                     jsonUserIPMessage.response_list_ip.ip3 = str(workday.ipAddressIn)
                     pos = pos + 1
                     jsonUserIPMessage.response_list_ip.ip4 = str(workday.ipAddressOut)
-                elif str(workday.checkin.date()) == request.date and pos == 2:
+                elif workday.checkin.date() == datetime.strptime(request.date, "%d-%m-%Y").date() and pos == 2:
                     jsonUserIPMessage.response_list_ip.ip5 = str(workday.ipAddressIn)
                     pos = pos + 1
                     jsonUserIPMessage.response_list_ip.ip6 = str(workday.ipAddressOut)
