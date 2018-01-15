@@ -155,6 +155,7 @@ export class CheckComponent implements OnInit {
             if (waitTime > 300000){
               this.doCheckIn = true;
               this.doCheckOut = false;
+              setTimeout(() => {
               this.services.postCheckOut(this.IP).subscribe( (data)=>{
                 switch(data.response_code){
                   case "200":
@@ -180,6 +181,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
+            }, 300);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
