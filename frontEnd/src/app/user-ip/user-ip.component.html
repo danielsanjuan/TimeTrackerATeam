@@ -1,28 +1,30 @@
-<div class="col-sm-12 col-md-12 button-back">
-    <button (click)="backToAccess()" type='button' class='btn btn-default back-button'><i class="glyphicon glyphicon-arrow-left"></i> Back</button>
-</div>
+
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-md-4 dates">
+    <div class="col-sm-12 col-md-12 button-back">
+        <button (click)="backToAccess()" type='button' class='btn btn-default back-button'><i class="glyphicon glyphicon-arrow-left"></i> Back</button>
+        <span class="nameResponsive">{{nameUser}}</span>
+    </div>
+    <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4 col-xl-4 dates">
       <form [formGroup]="rForm" (ngSubmit)="setSolved(rForm.value)">
         <div class="row">
-          <div class="form-group col-xs-12 col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-0">
+          <div class="form-group col-xs-12 col-sm-6 col-md-6 col-md-offset-0">
             <label class="col-xs-12" for="checkin">Start Date</label>
             <input class="col-xs-12 form-control" formControlName="check_in" id="checkin" type="datetime-local" value={{check_in}} step="1">
           </div>
-          <div class="form-group col-xs-12 col-sm-5 col-md-6">
+          <div class="form-group col-xs-12 col-sm-6 col-md-6">
             <label class="col-xs-12" for="checkout">End Date</label>
             <input class="col-xs-12 form-control" formControlName="check_out" id="checkout" type="datetime-local" value={{check_out}} step="1">
           </div>
         </div>
         <div class="row padding-on-button">
-          <div class="col-xs-3 col-sm-2 col-md-1 padding-on-div">
+          <div class="col-xs-12 col-sm-12 col-md-1 padding-on-div">
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </div>
       </form>
     </div>
-    <div class="col-sm-6 col-md-5 col-md-offset-1 info-user">
+    <div class="col-sm-7 col-md-5 col-md-offset-1 info-user">
       <img src="{{imageUser}}">
       <div class="name-email">
         <p class="name">{{nameUser}}</p>
