@@ -41,21 +41,23 @@ export class AppComponent implements OnInit{
       this.imagen = data;
 
       this.email = this.sesionService.retrieve('email');
-      this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
-        this.roleUser = data.employee.role;
-        this.sesionService.store('role', this.roleUser);
-        if(this.roleUser == "1"){
-          this.hrm = true;
-          this.admin = false;
-        }else if(this.roleUser == "2"){
-          this.admin = true;
-          this.hrm = true;
-        }
-        else{
-          this.admin = false;
-          this.hrm = false;
-        }
-      });
+      if (this.email != null){
+        this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
+          this.roleUser = data.employee.role;
+          this.sesionService.store('role', this.roleUser);
+          if(this.roleUser == "1"){
+            this.hrm = true;
+            this.admin = false;
+          }else if(this.roleUser == "2"){
+            this.admin = true;
+            this.hrm = true;
+          }
+          else{
+            this.admin = false;
+            this.hrm = false;
+          }
+        });
+      }
     });
   }
 

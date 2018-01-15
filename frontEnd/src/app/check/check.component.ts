@@ -135,7 +135,7 @@ export class CheckComponent implements OnInit {
   }
 
   getIp(){
-    this._http.get("http://ipinfo.io/").subscribe((data) => {
+    this._http.get("https://ipinfo.io/").subscribe((data) => {
       let ip : any = data;
       if (ip.ip != null){
         this.IP = ip.ip;

@@ -187,7 +187,7 @@ class MainPage(remote.Service):
         reportMonth.year = int(currentyear)
 
         for worked in query:
-            if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == currentmonth and worked.checkout != None:
+            if worked.checkin.isocalendar()[0] == currentyear and worked.checkin.month == currentmonth and worked.checkout != None:
                 dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
 
         for i in range(0, len(dayOfMoth)-1):
