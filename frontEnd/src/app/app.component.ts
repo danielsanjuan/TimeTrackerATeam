@@ -68,4 +68,9 @@ export class AppComponent implements OnInit{
     event.stopPropagation();
   }
 
+  logout(){
+    this.sesionService.clear();
+    this.router.navigate(['/login']);
+  }
+
 }

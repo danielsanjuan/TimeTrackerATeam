@@ -62,10 +62,14 @@ export class CheckComponent implements OnInit {
         this.hours_today = this.hourFormat(new Date(this.hoursWorked));
         this.services.getWeeklyReport().subscribe((data) => {
           this.employees = data.response_list;
-          for(let i=0; i<this.employees.length; i++){
-            if(this.employees[i].email == this.emailUser){
-              this.week = parseInt(this.employees[i].total);
-              this.week = this.week*60000;
+          if(this.employees == undefined){
+            this.week = 0;
+          }else{
+            for(let i=0; i<this.employees.length; i++){
+              if(this.employees[i].email == this.emailUser){
+                this.week = parseInt(this.employees[i].total);
+                this.week = this.week*60000;
+              }
             }
           }
           this.hours_week = this.hourFormat(new Date(this.hoursWorked+this.week));
