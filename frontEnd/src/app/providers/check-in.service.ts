@@ -75,7 +75,7 @@ export class CheckInService {
   }
 
   getDailyIpReport(day):Observable<any>{
-    return this.http.get(this.localRoute + "getDailyIpReport?date=" + day);
+    return this.http.get(this.serverRoute + "getDailyIpReport?date=" + day);
   }
 
 

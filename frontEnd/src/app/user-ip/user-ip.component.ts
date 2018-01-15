@@ -23,7 +23,7 @@ export class UserIpComponent implements OnInit {
   dateIn:string;
   dateOut:string;
 
-  private ip_address = [];
+  ip_address = [];
 
   constructor(private router: Router,
               private sessionSt: SessionStorageService,

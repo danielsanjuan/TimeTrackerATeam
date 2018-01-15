@@ -28,11 +28,11 @@ export class UserService {
   }
 
   getPersonalIP(email):Observable<any>{
-    return this.http.get(this.localRoute + 'getPersonalIPList?email=' + email)
+    return this.http.get(this.serverRoute + 'getPersonalIPList?email=' + email)
   }
 
   getIpFilteredByDate(email, dateIn, dateOut):Observable<any>{
-    return this.http.get(this.localRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
+    return this.http.get(this.serverRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
   }
 
 }
