@@ -47,6 +47,8 @@ class Workday(ndb.Model):
     checkin = ndb.DateTimeProperty(indexed=True)
     checkout = ndb.DateTimeProperty(indexed=True)
     employee = ndb.StructuredProperty(Employee, indexed=True)
+    ipAddressIn = ndb.StringProperty(indexed=True)
+    ipAddressOut = ndb.StringProperty(indexed=True)
 
 class Incidences(ndb.Model):
     message = ndb.StringProperty(indexed=True)
@@ -90,20 +92,22 @@ class MainPage(remote.Service):
             query.checkoutmaxfriday = checkoutmaxF
             query.put()
 
-    def set_checkin(self, date, email):
+    def set_checkin(self, date, email, ip):
         query = Employee.query()
         query = query.filter(Employee.email == email).get()
         workday = Workday (
             checkin=date,
-            employee=Employee (name=query.name,email=query.email,role=query.role)
+            employee=Employee (name=query.name,email=query.email,role=query.role),
+            ipAddressIn=ip
         )
         workday.put()
 
-    def set_checkout(self, date, email):
+    def set_checkout(self, date, email, ip):
         query = Workday.query()
         query = query.filter(Workday.employee.email == email)
         query = query.filter(Workday.checkout == None).get()
         query.checkout = date
+        query.ipAddressOut = ip
         query.put()
 
     def filter_checkin(self, date, email):
@@ -283,6 +287,7 @@ class MainPage(remote.Service):
     @endpoints.method(CheckInMessage, CheckInResponseMessage,
     path = 'check_in', http_method = 'POST', name = 'check_in')
     def check_in(self, request):
+        print "Esta es la ip: ", request.ip
         date = datetime.now()
         hm = str(date.time())[0:5]
         companyTimes = CompanyTimes.query().get()
@@ -290,15 +295,15 @@ class MainPage(remote.Service):
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite 3 checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             if str(date.time()) >= companyTimes.checkinmin and str(date.time()) < companyTimes.checkinmax:
-                self.set_checkin(date, request.email)
+                self.set_checkin(date, request.email, request.ip)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif hm == companyTimes.checkinmax:
-                self.set_checkin(date, request.email)
+                self.set_checkin(date, request.email, request.ip)
                 return CheckInResponseMessage(response_code = 200, response_status = "Check in correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
             elif str(date.time()) < companyTimes.checkinmin or str(date.time()) > companyTimes.checkoutmax:
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
-                self.set_checkin(date, request.email)
+                self.set_checkin(date, request.email, request.ip)
                 message = " has done a check-in after limit hour."
                 check = False
                 self.set_incidences(message, date, request.email, check)
@@ -311,15 +316,15 @@ class MainPage(remote.Service):
         hm = str(date.time())[0:5]
         companyTimes = CompanyTimes.query().get()
         if str(date.time()) >= companyTimes.checkoutmin and str(date.time()) < companyTimes.checkoutmax:
-            self.set_checkout(date, request.email)
+            self.set_checkout(date, request.email, request.ip)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif hm == companyTimes.checkoutmax:
-            self.set_checkout(date, request.email)
+            self.set_checkout(date, request.email, request.ip)
             return CheckOutResponseMessage(response_code = 200, response_status = "Check out correcto", response_date = date.strftime("%y%b%d%H:%M:%S"))
         elif str(date.time()) < companyTimes.checkinmin or str(date.time()) > companyTimes.checkoutmax:
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
-            self.set_checkout(date, request.email)
+            self.set_checkout(date, request.email, request.ip)
             message = " has done a check-in before limit hour."
             check = False
             self.set_incidences(message, date, request.email, check)
