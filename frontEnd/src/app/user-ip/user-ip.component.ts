@@ -137,6 +137,11 @@ export class UserIpComponent implements OnInit {
     this.sub = this.route.params.subscribe((params) => {
       this.email = params['email'];
     });
+    this.services.getEmployee(this.email).subscribe((data) => {
+      this.nameUser = data.employee.name;
+      this.emailUser = data.employee.email;
+      this.imageUser = data.employee.image;
+    });
   }
 
   ngOnInit() {
