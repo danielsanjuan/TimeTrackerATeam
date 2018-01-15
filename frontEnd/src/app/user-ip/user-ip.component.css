@@ -1,0 +1,143 @@
+.container{
+    margin: 30px 0 0 0;
+}
+
+table{
+    text-align: center;
+    margin-top: 2em;
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+thead tr th {
+    text-align: center;
+}
+
+.input-group{
+    margin-top: 1em;
+}
+
+.dates{
+    background-color: #c1c1c1;
+    color: #000;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 1em;
+}
+
+.info-user{
+    float: left;
+    display: -webkit-inline-box;
+    margin-top: 1em;
+}
+
+.name-email{
+    text-align: center;
+    margin-left: 2em;
+}
+
+.name{
+    font-size: 2em;
+    font-weight: bold;
+}
+.nameResponsive{
+    display: none;
+}
+
+.button-back{
+    margin: 0em 1em 1em 0em;
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+}
+
+.back-button{
+    background-color: #333;
+    color:#fff;
+}
+
+img{
+    max-width: 100%;
+    border-radius: 50%;
+}
+
+h2{
+    text-align: center;
+}
+
+.no-data{
+    margin-top: 5em;
+    text-align: center;
+}
+
+/***** Media queries *****/
+
+
+@media (min-width: 991px) and (max-width: 1200px) {
+    .name-email{
+        font-size: 1.2em;
+        width: 25em;
+        margin-left: -0.5em;
+    }
+
+    .name{
+        font-size: 1.8em;
+    }
+
+    img{
+        max-width: 80%;
+        border-radius: 50%;
+        margin-left: 1em;
+    }
+
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .info-user{
+        display: none;
+    }
+
+    .nameResponsive{
+        display: -webkit-inline-box;
+        float: right;
+        margin-top: 0.5em;
+        font-weight: bold;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .info-user{
+        float: left;
+        display: -webkit-inline-box;
+        margin-top: 1em;
+    }
+
+    .name-email{
+        font-size: 1.2em;
+        margin-left: -1em;
+    }
+
+    .name{
+        font-size: 1.5em;
+    }
+
+    img{
+        max-width: 65%;
+        border-radius: 50%;
+    }
+}
+
+@media (max-width: 415px) {
+
+	thead tr th {
+        font-size: 16px;
+    }
+    tbody tr td{
+        text-align: center;
+        font-size: 16px;
+
+    }
+
+}
