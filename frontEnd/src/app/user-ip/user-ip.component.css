@@ -66,6 +66,11 @@ h2{
     text-align: center;
 }
 
+.no-data{
+    margin-top: 5em;
+    text-align: center;
+}
+
 /***** Media queries *****/
 
 
@@ -125,14 +130,14 @@ h2{
 }
 
 @media (max-width: 415px) {
-	
+
 	thead tr th {
         font-size: 16px;
     }
     tbody tr td{
         text-align: center;
         font-size: 16px;
-        
+
     }
 
 }

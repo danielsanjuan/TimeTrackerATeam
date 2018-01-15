@@ -52,7 +52,7 @@ export class AccessComponent implements OnInit {
 
   setResponsiveName(employees){
     for (var i = 0; i < employees.length; i++) {
-      let separate = employees[i].name.split(" ");
+      let separate = employees[i].response_list_employee.name.split(" ");
       if(separate.length>3){
         this.responsiveName[i] = separate[0]+" "+separate[2];
       }else{

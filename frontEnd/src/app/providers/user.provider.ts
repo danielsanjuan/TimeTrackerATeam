@@ -30,4 +30,9 @@ export class UserService {
   getPersonalIP(email):Observable<any>{
     return this.http.get(this.localRoute + 'getPersonalIPList?email=' + email)
   }
+
+  getIpFilteredByDate(email, dateIn, dateOut):Observable<any>{
+    return this.http.get(this.localRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
+  }
+
 }

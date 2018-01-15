@@ -19,7 +19,7 @@ from messages.userListMessages import UserListMessage, UserListResponseMessage, 
 from messages.changeRoleMessages import ChangeRoleMessages, ChangeRoleResponse, JsonChangedRoleEmployee
 from messages.CompanyTimesMessages import CompanyTimesMessage, CompanyTimesResponseMessage, CompanyTimesSetResponseMessage
 from messages.changeCheckHoursMessages import ChangeCheckHoursMessage, JsonChangeCheckHoursMessage, FixCheckHoursMessage, ChangeCheckHoursResponseMessage, FixHoursResponseMessage
-from messages.userListIpMessages import JsonUserIPListMessage, JsonUserIPMessage, JsonUserMessage, IpMessage, UserIPResponse, PersonalIP, PersonalIPByWorkday, PersonalIPListResponse
+from messages.userListIpMessages import JsonUserIPListMessage, JsonUserIPMessage, JsonUserMessage, IpMessage, UserIPResponse, PersonalIP, PersonalIPByWorkday, PersonalIPListResponse, FilterIpByDateMessage
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -253,6 +253,50 @@ class MainPage(remote.Service):
         user.image = employee.image
         return user
 
+    def filterIPByEmail(self, query):
+        personalIPByWorkday = PersonalIPByWorkday(
+            date="-",
+            ip1="-",
+            ip2="-",
+            ip3="-",
+            ip4="-",
+            ip5="-",
+            ip6="-"
+        )
+        array = []
+        x = 0
+        pos = 0
+        for workday in query:
+            if x != workday.checkin.date():
+                if pos >= 1:
+                    array.append(personalIPByWorkday)
+                    personalIPByWorkday = PersonalIPByWorkday(
+                        date="-",
+                        ip1="-",
+                        ip2="-",
+                        ip3="-",
+                        ip4="-",
+                        ip5="-",
+                        ip6="-"
+                    )
+                    pos = 0
+                x = workday.checkin.date()
+                personalIPByWorkday.date = str(workday.checkin.date())
+                personalIPByWorkday.ip1 = str(workday.ipAddressIn)
+                pos = pos + 1
+                personalIPByWorkday.ip2 = str(workday.ipAddressOut)
+            else:
+                if pos == 1:
+                    personalIPByWorkday.ip3 = str(workday.ipAddressIn)
+                    pos = pos + 1
+                    personalIPByWorkday.ip4 = str(workday.ipAddressOut)
+                elif pos == 2:
+                    personalIPByWorkday.ip5 = str(workday.ipAddressIn)
+                    pos = pos + 1
+                    personalIPByWorkday.ip6 = str(workday.ipAddressOut)
+        array.append(personalIPByWorkday)
+        return array
+
     @endpoints.method(IpMessage, UserIPResponse, path = 'getDailyIpReport', http_method = 'GET', name = 'getDailyIpReport')
     def getDailyIpReport(self, request):
         jsonUserIPMessage = JsonUserIPMessage()
@@ -302,50 +346,43 @@ class MainPage(remote.Service):
     def getPersonalIPList(self, request):
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email)
-        query = query.order(Workday.checkin)
-        personalIPByWorkday = PersonalIPByWorkday(
-            date="-",
-            ip1="-",
-            ip2="-",
-            ip3="-",
-            ip4="-",
-            ip5="-",
-            ip6="-"
-        )
-        array = []
+        query = query.order(Workday.checkin).fetch()
+        return PersonalIPListResponse(response_list = self.filterIPByEmail(query))
+
+    @endpoints.method(FilterIpByDateMessage, PersonalIPListResponse, path = 'getPersonalIPWithRange', http_method = 'GET', name = 'getPersonalIPWithRange')
+    def getPersonalIPWithRange(self, request):
+        query = Employee.query()
+        query = query.filter(Employee.email == request.email).get()
+        query2 = Workday.query()
+        query2 = query2.filter(Workday.employee.email == query.email)
+        query2 = query2.order(Workday.checkin)
         x = 0
         pos = 0
-        for workday in query:
-            if x != workday.checkin.date():
-                if pos >= 1:
-                    array.append(personalIPByWorkday)
-                    personalIPByWorkday = PersonalIPByWorkday(
-                        date="-",
-                        ip1="-",
-                        ip2="-",
-                        ip3="-",
-                        ip4="-",
-                        ip5="-",
-                        ip6="-"
-                    )
-                    pos = 0
-                x = workday.checkin.date()
-                personalIPByWorkday.date = str(workday.checkin.date())
-                personalIPByWorkday.ip1 = str(workday.ipAddressIn)
-                pos = pos + 1
-                personalIPByWorkday.ip2 = str(workday.ipAddressOut)
-            else:
-                if pos == 1:
-                    personalIPByWorkday.ip3 = str(workday.ipAddressIn)
+        array = []
+        personalIPByWorkday = PersonalIPByWorkday(date="-",ip1="-",ip2="-",ip3="-",ip4="-",ip5="-",ip6="-")
+        for workday in query2:
+            if workday.checkin.date() >= datetime.strptime(request.dateStart, "%Y-%m-%d").date() and workday.checkin.date() <= datetime.strptime(request.dateEnd, "%Y-%m-%d").date():
+                if x != workday.checkin.date():
+                    if pos >= 1:
+                        array.append(personalIPByWorkday)
+                        personalIPByWorkday = PersonalIPByWorkday(date="-",ip1="-",ip2="-",ip3="-",ip4="-",ip5="-",ip6="-")
+                        pos = 0
+                    x = workday.checkin.date()
+                    personalIPByWorkday.date = str(workday.checkin.date())
+                    personalIPByWorkday.ip1 = str(workday.ipAddressIn)
                     pos = pos + 1
-                    personalIPByWorkday.ip4 = str(workday.ipAddressOut)
-                elif pos == 2:
-                    personalIPByWorkday.ip5 = str(workday.ipAddressIn)
-                    pos = pos + 1
-                    personalIPByWorkday.ip6 = str(workday.ipAddressOut)
+                    personalIPByWorkday.ip2 = str(workday.ipAddressOut)
+                else:
+                    if pos == 1:
+                        personalIPByWorkday.ip3 = str(workday.ipAddressIn)
+                        pos = pos + 1
+                        personalIPByWorkday.ip4 = str(workday.ipAddressOut)
+                    elif pos == 2:
+                        personalIPByWorkday.ip5 = str(workday.ipAddressIn)
+                        pos = pos + 1
+                        personalIPByWorkday.ip6 = str(workday.ipAddressOut)
         array.append(personalIPByWorkday)
         return PersonalIPListResponse(response_list = array)
-
 
     @endpoints.method(message_types.VoidMessage,CompanyTimesResponseMessage,
     path = 'getCompanyTimes', http_method = 'GET', name = 'getCompanyTimes')

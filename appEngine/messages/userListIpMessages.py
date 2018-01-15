@@ -38,3 +38,8 @@ class PersonalIPByWorkday(messages.Message):
 
 class PersonalIPListResponse(messages.Message):
     response_list = messages.MessageField(PersonalIPByWorkday, 1,  repeated=True)
+
+class FilterIpByDateMessage(messages.Message):
+    email = messages.StringField(1)
+    dateStart = messages.StringField(2)
+    dateEnd = messages.StringField(3)
