@@ -4,6 +4,7 @@ import { SessionStorageService } from 'ngx-webstorage';
 import { UserService } from '../providers/user.provider';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-ip',
@@ -16,6 +17,8 @@ export class UserIpComponent implements OnInit {
   nameUser:string;
   emailUser:string;
   imageUser:any;
+  private sub: any;
+  email:string;
 
   private ip_address = [
     {
@@ -120,9 +123,9 @@ export class UserIpComponent implements OnInit {
   constructor(private router: Router,
               private sessionSt: SessionStorageService,
               private services: UserService,
-              private fb: FormBuilder, 
+              private fb: FormBuilder,
               public toastr: ToastsManager,
-              vcr: ViewContainerRef) {
+              vcr: ViewContainerRef, private route: ActivatedRoute) {
                 this.toastr.setRootViewContainerRef(vcr);
                 this.rForm = this.fb.group({
                   check_in: ["", Validators.required],
@@ -131,9 +134,15 @@ export class UserIpComponent implements OnInit {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
+    this.sub = this.route.params.subscribe((params) => {
+      this.email = params['email'];
+    });
   }
 
   ngOnInit() {
+    this.services.getPersonalIP(this.email).subscribe((data) => {
+      this.ip_address = data.response_list;
+    });
     this.nameUser = this.sessionSt.retrieve('name');
     this.emailUser = this.sessionSt.retrieve('email');
     this.imageUser = this.sessionSt.retrieve('image');

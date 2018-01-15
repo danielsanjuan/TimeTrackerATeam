@@ -26,4 +26,8 @@ export class UserService {
     let body = { "email": email, "role": role};
     return this.http.post(this.localRoute + 'setRole', body);
   }
+
+  getPersonalIP(email):Observable<any>{
+    return this.http.get(this.localRoute + 'getPersonalIPList?email=' + email)
+  }
 }

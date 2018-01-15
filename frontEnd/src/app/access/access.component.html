@@ -35,7 +35,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let employee of employees; let i = index">
-            <th scope="row"><button type="button" (click)="goToPersonalIps(employee.email)" class="btn btn-primary">
+            <th scope="row"><button type="button" (click)="goToPersonalIps(employee.response_list_employee.email)" class="btn btn-primary">
               <span class="glyphicon glyphicon-list-alt"></span>
             </button></th>
             <td class="hidden-xs">{{employee.response_list_employee.name}}</td>

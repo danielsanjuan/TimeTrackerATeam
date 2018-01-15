@@ -23,3 +23,18 @@ class UserIPResponse(messages.Message):
 
 class IpMessage(messages.Message):
     date = messages.StringField(1)
+
+class PersonalIP(messages.Message):
+    email = messages.StringField(1)
+
+class PersonalIPByWorkday(messages.Message):
+    date = messages.StringField(1)
+    ip1 = messages.StringField(2)
+    ip2 = messages.StringField(3)
+    ip3 = messages.StringField(4)
+    ip4 = messages.StringField(5)
+    ip5 = messages.StringField(6)
+    ip6 = messages.StringField(7)
+
+class PersonalIPListResponse(messages.Message):
+    response_list = messages.MessageField(PersonalIPByWorkday, 1,  repeated=True)

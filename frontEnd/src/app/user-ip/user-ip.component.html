@@ -45,29 +45,24 @@
             <th>IP Check-out 2</th>
             <th>IP Check-in 3</th>
             <th>IP Check-out 3</th>
-          </tr>  
+          </tr>
           <tr class="visible-xs">
             <th>#</th>
             <th>Fecha</th>
             <th>IP Check-in</th>
             <th>IP Check-out</th>
           </tr>
-        </thead>          
+        </thead>
         <tbody>
           <tr *ngFor="let ip of ip_address; let i = index">
             <th scope="row">{{i+1}}</th>
             <td>{{ip.date}}</td>
-            <td>{{ip.ip_address1}}</td>
-            <td *ngIf="ip.ip_address2 != '-'">{{ip.ip_address2}}</td>
-            <td *ngIf="ip.ip_address2 == '-'"> - </td>
-            <td *ngIf="ip.ip_address3 != '-'">{{ip.ip_address3}}</td>
-            <td *ngIf="ip.ip_address3 == '-'"> - </td>
-            <td *ngIf="ip.ip_address4 != '-'">{{ip.ip_address4}}</td>
-            <td *ngIf="ip.ip_address4 == '-'"> - </td>
-            <td *ngIf="ip.ip_address5 != '-'">{{ip.ip_address5}}</td>
-            <td *ngIf="ip.ip_address5 == '-'"> - </td>
-            <td *ngIf="ip.ip_address6 != '-'">{{ip.ip_address6}}</td>
-            <td *ngIf="ip.ip_address6 == '-'"> - </td>
+            <td>{{ip.ip1}}</td>
+            <td>{{ip.ip2}}</td>
+            <td>{{ip.ip3}}</td>
+            <td>{{ip.ip4}}</td>
+            <td>{{ip.ip5}}</td>
+            <td>{{ip.ip6}}</td>
           </tr>
         </tbody>
       </table>
