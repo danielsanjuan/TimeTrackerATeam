@@ -35,41 +35,40 @@ export class SetTimeCompanyComponent implements OnInit  {
 
   onFormSubmit(companyTimeTrackerForm: NgForm) {
     if(companyTimeTrackerForm.valid){
-      this.provider.setCompanyTimes(companyTimeTrackerForm.value).then((data) => {
-        if (data.response_code == 500){
-            this.toastr.error('Checkin Minimun Time invalid', 'Error!');
-          }
-          if (data.response_code == 501){
-            this.toastr.error('Checkin Maximum Time invalid', 'Error!');
-          }
-          if (data.response_code == 502){
-            this.toastr.error('Checkout Minimun Time invalid', 'Error!');
-          }
-          if (data.response_code == 503){
-            this.toastr.error('Checkout Minimun Friday Time invalid', 'Error!');
-          }
-          if(data.response_code == 200){
-            this.toastr.success('The input data is correct','Success!');
-          }
-      })
-      //Realizar llamada a la API para setear las variables.
-      // this.services.postCompanyTimes(companyTimeTrackerForm.value).subscribe((data) => {
+      // this.provider.setCompanyTimes(companyTimeTrackerForm.value).then((data) => {
       //   if (data.response_code == 500){
-      //     this.toastr.error('Checkin Minimun Time invalid', 'Error!');
-      //   }
-      //   if (data.response_code == 501){
-      //     this.toastr.error('Checkin Maximum Time invalid', 'Error!');
-      //   }
-      //   if (data.response_code == 502){
-      //     this.toastr.error('Checkout Minimun Time invalid', 'Error!');
-      //   }
-      //   if (data.response_code == 503){
-      //     this.toastr.error('Checkout Minimun Friday Time invalid', 'Error!');
-      //   }
-      //   if(data.response_code == 200){
-      //     this.toastr.success('The input data is correct','Success!');
-      //   }
-      // });
+      //       this.toastr.error('Checkin Minimun Time invalid', 'Error!');
+      //     }
+      //     if (data.response_code == 501){
+      //       this.toastr.error('Checkin Maximum Time invalid', 'Error!');
+      //     }
+      //     if (data.response_code == 502){
+      //       this.toastr.error('Checkout Minimun Time invalid', 'Error!');
+      //     }
+      //     if (data.response_code == 503){
+      //       this.toastr.error('Checkout Minimun Friday Time invalid', 'Error!');
+      //     }
+      //     if(data.response_code == 200){
+      //       this.toastr.success('The input data is correct','Success!');
+      //     }
+      //Realizar llamada a la API para setear las variables.
+      this.services.postCompanyTimes(companyTimeTrackerForm.value).subscribe((data) => {
+        if (data.response_code == 500){
+          this.toastr.error('Checkin Minimun Time invalid', 'Error!');
+        }
+        if (data.response_code == 501){
+          this.toastr.error('Checkin Maximum Time invalid', 'Error!');
+        }
+        if (data.response_code == 502){
+          this.toastr.error('Checkout Minimun Time invalid', 'Error!');
+        }
+        if (data.response_code == 503){
+          this.toastr.error('Checkout Minimun Friday Time invalid', 'Error!');
+        }
+        if(data.response_code == 200){
+          this.toastr.success('The input data is correct','Success!');
+        }
+      });
     }else{
       this.toastr.error('Complete all required fields!');
     }

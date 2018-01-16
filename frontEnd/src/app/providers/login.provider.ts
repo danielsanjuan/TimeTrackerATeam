@@ -81,13 +81,13 @@ export class LoginProvider {
       );
     }
 
-    setCompanyTimes(companyTimesJson){
-      return new Promise<any>((resolve) => {
-        gapi.client.timetracker.setCompanyTimes(companyTimesJson).execute((response: any) => {
-          resolve(response.result);
-        })
-      })
-    }
+    // setCompanyTimes(companyTimesJson){
+    //   return new Promise<any>((resolve) => {
+    //     gapi.client.timetracker.setCompanyTimes(companyTimesJson).execute((response: any) => {
+    //       resolve(response.result);
+    //     })
+    //   })
+    // }
 
     setSubjests(){
       this.subject.next(this.sessionSt.retrieve('name'));
