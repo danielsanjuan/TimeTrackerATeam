@@ -27,7 +27,7 @@ ng2-toastr@4.1.2
 ISC
 ISC
 
-ngx-mydatepicker@2.3.4
+ngx-mydatepicker@2.4.0
 MIT
 The MIT License (MIT)
 

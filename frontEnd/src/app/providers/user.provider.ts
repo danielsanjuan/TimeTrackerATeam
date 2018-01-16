@@ -26,4 +26,13 @@ export class UserService {
     let body = { "email": email, "role": role};
     return this.http.post(this.serverRoute + 'setRole', body);
   }
+
+  getPersonalIP(email):Observable<any>{
+    return this.http.get(this.serverRoute + 'getPersonalIPList?email=' + email)
+  }
+
+  getIpFilteredByDate(email, dateIn, dateOut):Observable<any>{
+    return this.http.get(this.serverRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
+  }
+
 }

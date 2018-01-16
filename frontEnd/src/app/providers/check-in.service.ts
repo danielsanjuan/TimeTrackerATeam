@@ -73,6 +73,10 @@ export class CheckInService {
     let body = times;
     return this.http.post(this.serverRoute + "setCompanyTimes", body);
   }
-  
+
+  getDailyIpReport(day):Observable<any>{
+    return this.http.get(this.serverRoute + "getDailyIpReport?date=" + day);
+  }
+
 
 }

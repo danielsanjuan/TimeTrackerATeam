@@ -26,7 +26,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { CheckComponent } from './check/check.component';
 import { HomeComponent } from './home/home.component';
-import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 import { UserlistComponent } from './userlist/userlist.component';
@@ -34,6 +33,8 @@ import { ModalUserComponent } from './modal-user/modal-user.component';
 import { WeeklyReportComponent } from './weekly-report/weekly-report.component';
 import { MonthlyReportComponent } from './monthly-report/monthly-report.component';
 import { SetTimeCompanyComponent } from './set-time-company/set-time-company.component';
+import { UserIpComponent } from './user-ip/user-ip.component';
+import { AccessComponent } from './access/access.component';
 
 const appRoutes: Routes = [
   { path: 'personalIncidence/:email', component: PersonalIncidenceComponent },
@@ -42,9 +43,11 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'weeklyReport', component: WeeklyReportComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'monthlyReport', component: MonthlyReportComponent, canActivate: [ProtectingRoutesGuard] },
+  { path: 'access', component: AccessComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'settings', component: SetTimeCompanyComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'modaluser/:email', component: ModalUserComponent },
+  { path: 'userIP/:email', component: UserIpComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
 
@@ -55,13 +58,14 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     WeeklyReportComponent,
-    LogoutComponent,
     UserlistComponent,
     IncidenceComponent,
     PersonalIncidenceComponent,
     ModalUserComponent,
     MonthlyReportComponent,
     SetTimeCompanyComponent,
+    UserIpComponent,
+    AccessComponent,
   ],
   imports: [
     BrowserModule,
