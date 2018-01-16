@@ -80,11 +80,11 @@ export class CheckComponent implements OnInit {
               }
             }
           }
-          this.hours_week = this.hourFormat(new Date(this.hoursWorked+this.week));
-          if(this.doCheckOut){
-            this.seeTime();
-          }
         });
+        this.hours_week = this.hourFormat(new Date(this.week));
+        if(this.doCheckOut){
+          this.seeTime();
+        }
       });
     });
   }
