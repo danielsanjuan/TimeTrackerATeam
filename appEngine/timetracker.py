@@ -15,7 +15,7 @@ from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
 from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
-from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserMessage
+from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserRoleMessage
 from messages.changeRoleMessages import ChangeRoleMessages, ChangeRoleResponse, JsonChangedRoleEmployee
 from messages.CompanyTimesMessages import CompanyTimesMessage, CompanyTimesResponseMessage, CompanyTimesSetResponseMessage
 from messages.changeCheckHoursMessages import ChangeCheckHoursMessage, JsonChangeCheckHoursMessage, FixCheckHoursMessage, ChangeCheckHoursResponseMessage, FixHoursResponseMessage
@@ -246,7 +246,7 @@ class MainPage(remote.Service):
         return incidence
 
     def getSingleUser(self, employee):
-        user = JsonUserMessage()
+        user = JsonUserRoleMessage()
         user.name = employee.name
         user.email = employee.email
         user.role = employee.role
