@@ -5,5 +5,5 @@ export class CustomToastOption extends ToastOptions {
     positionClass = 'toast-top-right';
     showCloseButton = true;
     toastLife = 20000;
-    maxShown = 1;
+    maxShown = 5;
 }     

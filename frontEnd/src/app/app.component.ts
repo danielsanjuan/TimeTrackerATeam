@@ -29,7 +29,7 @@ export class AppComponent implements OnInit{
   constructor(private services:LoginProvider,
               public router: Router,
               private serviceIncidence: IncidenceService,
-              private sesionService: SessionStorageService){    
+              private sesionService: SessionStorageService){
     document.addEventListener('click', () => { this.isCollapsed = true; });
   }
 
@@ -41,22 +41,23 @@ export class AppComponent implements OnInit{
       this.imagen = data;
 
       this.email = this.sesionService.retrieve('email');
-      this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
-        this.roleUser = data.employee.role;
-        this.sesionService.store('role', this.roleUser);
-        console.log("Estes es el rol: " + this.roleUser);
-        if(this.roleUser == "1"){
-          this.hrm = true;
-          this.admin = false;
-        }else if(this.roleUser == "2"){
-          this.admin = true;
-          this.hrm = true;
-        }
-        else{
-          this.admin = false;
-          this.hrm = false;
-        }
-      });
+      if (this.email != null){
+        this.serviceIncidence.getEmployee(this.email).subscribe((data) => {
+          this.roleUser = data.employee.role;
+          this.sesionService.store('role', this.roleUser);
+          if(this.roleUser == "1"){
+            this.hrm = true;
+            this.admin = false;
+          }else if(this.roleUser == "2"){
+            this.admin = true;
+            this.hrm = true;
+          }
+          else{
+            this.admin = false;
+            this.hrm = false;
+          }
+        });
+      }
     });
   }
 
@@ -67,6 +68,11 @@ export class AppComponent implements OnInit{
   buttonNavbar(){
     this.isCollapsed = !this.isCollapsed;
     event.stopPropagation();
+  }
+
+  logout(){
+    this.sesionService.clear();
+    this.router.navigate(['/login']);
   }
 
 }

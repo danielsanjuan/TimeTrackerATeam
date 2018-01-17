@@ -41,7 +41,7 @@ export class LoginProvider {
     }
 
     public attachSignin(element) {
-      gapi.client.load('timetracker', "v1",this.callback, this.localRoute)
+      gapi.client.load('timetracker', "v1",this.callback, this.serverRoute)
       this.auth2.attachClickHandler(element, {},
         (googleUser) => {
           let profile = googleUser.getBasicProfile();
@@ -79,6 +79,14 @@ export class LoginProvider {
           }
         }
       );
+    }
+
+    setCompanyTimes(companyTimesJson){
+      return new Promise<any>((resolve) => {
+        gapi.client.timetracker.setCompanyTimes(companyTimesJson).execute((response: any) => {
+          resolve(response.result);
+        })
+      })
     }
 
     setSubjests(){
