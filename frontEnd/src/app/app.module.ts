@@ -26,7 +26,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { CheckComponent } from './check/check.component';
 import { HomeComponent } from './home/home.component';
-import { LogoutComponent } from './logout/logout.component';
 import { IncidenceComponent } from './incidence/incidence.component';
 import { PersonalIncidenceComponent } from './personal-incidence/personal-incidence.component';
 import { UserlistComponent } from './userlist/userlist.component';
@@ -55,7 +54,6 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     WeeklyReportComponent,
-    LogoutComponent,
     UserlistComponent,
     IncidenceComponent,
     PersonalIncidenceComponent,

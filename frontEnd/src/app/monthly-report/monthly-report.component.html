@@ -40,15 +40,15 @@
         </thead>
         <tbody>
           <tr class="hidden-xs" *ngFor="let worker of employeesMonthly; let i = index">
-            <td>{{worker.name}} </td>
-            <td>{{worker.total}} </td>
+            <td>{{responsiveName[i]}}</td>
+            <td>{{worker.total}}</td>
             <ng-container *ngFor="let horasM of employeesMonthly[i].hours_day; let j = index"><ng-container *ngIf="totalDays>=j+1"><td  [ngClass]="{'weekends': isWeekend(j+1)}" > {{horasM}}</td></ng-container></ng-container>
           </tr>
         </tbody>
         <tbody>
-          <tr class="visible-xs" *ngFor="let worker of employeesMonthly">
-            <td>{{worker.name}} </td>
-            <td>{{worker.total}} </td>
+          <tr class="visible-xs" *ngFor="let worker of employeesMonthly; let i = index">
+            <td>{{responsiveName[i]}}</td>
+            <td>{{worker.total}}</td>
             <td>{{worker.jornadas}}</td>
           </tr>
         </tbody>
