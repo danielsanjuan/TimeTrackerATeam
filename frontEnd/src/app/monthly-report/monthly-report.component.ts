@@ -38,6 +38,7 @@ export class MonthlyReportComponent implements OnInit {
   ngOnInit() {
     //Cuando arranquemos tendremos el reporte semanal del mes anterior
     this.services.getMontlyReport().subscribe((data) => {
+      console.log(data)
       this.checkMonth(data);
       this.setResponsiveName(data.response_report);
     });

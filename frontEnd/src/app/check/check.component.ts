@@ -80,11 +80,11 @@ export class CheckComponent implements OnInit {
               }
             }
           }
-          this.hours_week = this.hourFormat(new Date(this.hoursWorked+this.week));
-          if(this.doCheckOut){
-            this.seeTime();
-          }
         });
+        this.hours_week = this.hourFormat(new Date(this.week));
+        if(this.doCheckOut){
+          this.seeTime();
+        }
       });
     });
   }
@@ -103,7 +103,7 @@ export class CheckComponent implements OnInit {
               let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
               this.timeCheckout = false;
-              setTimeout(() => {
+                (() => {
                 this.seeTime();
               }, 100);
               break;
@@ -131,11 +131,11 @@ export class CheckComponent implements OnInit {
               break;
         }
       });
-    }, 300);
+    }, 500);
   }
 
   getIp(){
-    this._http.get("http://ipinfo.io/").subscribe((data) => {
+    this._http.get("https://ipinfo.io/").subscribe((data) => {
       let ip : any = data;
       if (ip.ip != null){
         this.IP = ip.ip;
@@ -155,6 +155,7 @@ export class CheckComponent implements OnInit {
             if (waitTime > 300000){
               this.doCheckIn = true;
               this.doCheckOut = false;
+              setTimeout(() => {
               this.services.postCheckOut(this.IP).subscribe( (data)=>{
                 switch(data.response_code){
                   case "200":
@@ -180,6 +181,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
+            }, 500);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
@@ -261,7 +263,7 @@ export class CheckComponent implements OnInit {
   }
 
   workDayTimeWeek(data){
-    let dataWeek = parseInt(data) + this.week;
+    let dataWeek = this.week;
     let fechaW = new Date(dataWeek);
     if(this.timeCheckout){
       clearInterval(this.timer2);
