@@ -260,10 +260,10 @@ export class CheckComponent implements OnInit {
       return 1;
     }
     return 0;
-    }
+  }
 
   workDayTimeWeek(data){
-    let dataWeek = parseInt(data) + this.week;
+    let dataWeek = this.week;
     let fechaW = new Date(dataWeek);
     if(this.timeCheckout){
       clearInterval(this.timer2);
