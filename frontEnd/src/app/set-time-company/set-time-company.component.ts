@@ -30,7 +30,7 @@ export class SetTimeCompanyComponent implements OnInit  {
       this.checkout_max = data.response.checkoutmax;
       this.checkout_minfriday = data.response.checkoutminfriday;
       this.checkout_maxfriday = data.response.checkoutmaxfriday;
-    })
+    });
   }
 
   onFormSubmit(companyTimeTrackerForm: NgForm) {

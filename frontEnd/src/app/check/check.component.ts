@@ -21,7 +21,6 @@ export class CheckComponent implements OnInit {
   E500:boolean=false;
   timer:any;
   checkInTime:string;
-  employees = [];
   hoursWorked:number = 0;
   week:number = 0;
   hours_today:string = "00:00";
@@ -32,13 +31,9 @@ export class CheckComponent implements OnInit {
   fechaCheckout:any;
   interval:any;
   timeCheckout:boolean;
-  mileSeconds:number = 0;
   readyCheckOut:boolean = false;
   IP:string = "";
-  counter:boolean = false;
   hoursMock:string = '09:00';
-  hoursMockWeek:string = '23:00';
-  timeMileSecond:number = 0;
 
   constructor( private services:CheckInService,
                private sessionSt: SessionStorageService,
@@ -143,7 +138,7 @@ export class CheckComponent implements OnInit {
               break;
             }
           });
-        }, 500);
+        }, 300000);
       }
       
       getIp(){
@@ -193,7 +188,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
-            }, 500);
+            }, 300000);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');

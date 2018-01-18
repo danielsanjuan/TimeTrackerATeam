@@ -2,10 +2,11 @@ import { Component, OnInit, ViewContainerRef, Input, NgZone, TemplateRef } from 
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { UserService } from '../providers/user.provider';
+import { CheckInService } from '../providers/check-in.service';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ActivatedRoute } from '@angular/router';
 import {INgxMyDpOptions, IMyDateModel} from 'ngx-mydatepicker';
-import { NgForm, RequiredValidator } from '@angular/forms';
+import { NgForm, RequiredValidator, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -18,17 +19,28 @@ export class UserIpComponent implements OnInit {
   nameUser:string;
   emailUser:string;
   imageUser:any;
+  responsiveName: string[] = [];
+  employees: any = [];
   private sub: any;
   email:string;
   dateIn:string;
   dateOut:string;
+  rForm: FormGroup;
+  check_in: string = "2018-01-17";
+  check_out: string = "2018-01-18";;
+  myOptions: INgxMyDpOptions = {
+    // other options...
+    dateFormat: 'dd.mm.yyyy',
+  };
 
-  ip_address = [];
+  ip_address = [{'date': "-"}];
 
   constructor(private router: Router,
               private sessionSt: SessionStorageService,
               private services: UserService,
+              private fb: FormBuilder,
               public toastr: ToastsManager,
+              private servicesCheck: CheckInService,
               vcr: ViewContainerRef, private route: ActivatedRoute) {
                 this.toastr.setRootViewContainerRef(vcr);
     if (this.sessionSt.retrieve('email') == null){
@@ -38,16 +50,27 @@ export class UserIpComponent implements OnInit {
       this.email = params['email'];
     });
     this.services.getEmployee(this.email).subscribe((data) => {
-      this.nameUser = data.employee.name;
+      // this.nameUser = data.employee.name;
+      this.setResponsiveName(data.employee.name);
       this.emailUser = data.employee.email;
       this.imageUser = data.employee.image;
+      this.services.getIpFilteredByDate(this.emailUser, this.check_in,  this.check_out).subscribe((data) => {
+        this.ip_address = data.response_list;
+        console.log(this.ip_address);
+      });
     });
+    this.rForm = this.fb.group({
+      check_in: ["", Validators.required],
+      check_out: [""]
+    });
+    // this.services.getPersonalIP(this.email).subscribe((data) => {
+    //   this.ip_address = data.response_list;
+    //   alert("Entreeeeee");
+    //   console.log(this.ip_address+ " AAAAAAAAAAAAA");
+    // });
   }
 
   ngOnInit() {
-    this.services.getPersonalIP(this.email).subscribe((data) => {
-      this.ip_address = data.response_list;
-    });
   }
 
   backToAccess() {
@@ -56,13 +79,22 @@ export class UserIpComponent implements OnInit {
 
   setSolved(companyTimeTrackerForm: NgForm){
     if (new Date(companyTimeTrackerForm.value.dateIn) > new Date(companyTimeTrackerForm.value.dateOut)){
-      this.toastr.error('Invalid range of date', 'StartDate should be minor than EndDate');
+      this.toastr.error('StartDate should be minor than EndDate', 'Invalid range of date');
       this.ip_address = [{'date': "-"}];
     }else{
       this.services.getIpFilteredByDate(this.emailUser, companyTimeTrackerForm.value.dateIn,  companyTimeTrackerForm.value.dateOut).subscribe((data) => {
         this.ip_address = data.response_list;
       });
     }
+  }
+
+  setResponsiveName(employee){
+    let separate = employee.split(" ");
+      if(separate.length>3){
+        this.nameUser = separate[0]+" "+separate[2];
+      }else{
+        this.nameUser = separate[0]+" "+separate[1];
+      }
   }
 
 }

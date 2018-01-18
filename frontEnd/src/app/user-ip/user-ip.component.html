@@ -5,7 +5,7 @@
         <button (click)="backToAccess()" type='button' class='btn btn-default back-button'><i class="glyphicon glyphicon-arrow-left"></i> Back</button>
         <span class="nameResponsive">{{nameUser}}</span>
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4 col-xl-4 dates">
+    <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-xl-4 dates">
       <form #companyTimeTrackerForm="ngForm" (ngSubmit)="setSolved(companyTimeTrackerForm)">
         <div class="row">
           <div class="form-group col-xs-12 col-sm-6 col-md-6 col-md-offset-0">
@@ -24,7 +24,7 @@
         </div>
       </form>
     </div>
-    <div class="col-sm-7 col-md-5 col-md-offset-1 info-user">
+    <div class="col-sm-5 col-sm-offset-1 col-md-6 col-md-offset-1 info-user">
       <img src="{{imageUser}}">
       <div class="name-email">
         <p class="name">{{nameUser}}</p>

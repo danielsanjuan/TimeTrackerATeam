@@ -4,6 +4,9 @@
 .datePicker{
     margin-bottom: 30px;
 }
+p{
+    text-align: center;
+}
 .no-data{
     margin-top: 5em;
 }

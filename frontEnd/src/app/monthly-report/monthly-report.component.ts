@@ -22,6 +22,7 @@ export class MonthlyReportComponent implements OnInit {
   mes = [];
   currentMonth;
   currentyear;
+  responsiveName: string[] = [];
   myOptions: INgxMyDpOptions = {
     // other options...
     dateFormat: 'dd.mm.yyyy',
@@ -39,6 +40,7 @@ export class MonthlyReportComponent implements OnInit {
     this.services.getMontlyReport().subscribe((data) => {
       console.log(data)
       this.checkMonth(data);
+      this.setResponsiveName(data.response_report);
     });
   }
 
@@ -158,5 +160,17 @@ export class MonthlyReportComponent implements OnInit {
   isWeekend(day){
     if (day == 1 && this.firstSat == 7) return true;
     return ((day-this.firstSat)%7 == 0|| (day-this.firstSat)%7 == 1);
+  }
+
+  setResponsiveName(employees){
+    for (var i = 0; i < employees.length; i++) {
+      let separate = employees[i].name.split(" ");
+      let firstWord = separate[0].split("");
+      if(separate.length>3){
+        this.responsiveName[i] = firstWord[0]+". "+separate[2];
+      }else{
+        this.responsiveName[i] = firstWord[0]+". "+separate[1];
+      }
+    }
   }
 }
