@@ -103,7 +103,7 @@ export class CheckComponent implements OnInit {
               let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
               this.timeCheckout = false;
-                (() => {
+              setTimeout(() => {
                 this.seeTime();
               }, 100);
               break;

@@ -17,6 +17,8 @@ export class AccessComponent implements OnInit {
   };
   responsiveName: string[] = [];
   employees: any = [];
+  today: string;
+  dateToday: Date;
 
 
   constructor(private router: Router,
@@ -24,6 +26,20 @@ export class AccessComponent implements OnInit {
     private services: CheckInService) { }
 
   ngOnInit() {
+    this.services.getDateNow().subscribe((data) => {
+      let separate = data.response_date.split(" ");
+      let date = separate[0].split("-");
+      this.today = date[2]+"-"+date[1]+"-"+date[0];
+      this.services.getDailyIpReport(this.today).subscribe((data) => {
+        if (data.response_list != undefined){
+          this.employees = data.response_list;
+          this.setResponsiveName(this.employees);
+        }else{
+          this.employees = [];
+        }
+      });
+      this.dateToday = new Date(data.response_date);
+    });
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
