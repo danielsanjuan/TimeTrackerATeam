@@ -16,67 +16,69 @@ export class CheckInService {
   postCheckIn(ip):Observable<any>{
     console.log("Esta es la ip tras el console: " + ip);
     let body = {"email": this.sessionSt.retrieve('email'), "ip": ip}
-    return this.http.post(this.serverRoute + "check_in", body);
+    return this.http.post(this.localRoute + "check_in", body);
   }
 
   postCheckOut(ip):Observable<any>{
     console.log("Esta es la ip del checkout: " + ip);
     let body = {"email": this.sessionSt.retrieve('email'), "ip": ip}
-    return this.http.post(this.serverRoute + "check_out", body);
+    return this.http.post(this.localRoute + "check_out", body);
   }
 
   getCheckIn():Observable<any>{
-    return this.http.get(this.serverRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.localRoute + "getCheckin?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCheckout():Observable<any>{
-    return this.http.get(this.serverRoute + "getCheckout?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.localRoute + "getCheckout?email=" + this.sessionSt.retrieve('email'));
   }
 
   getLastCheckIn():Observable<any>{
-    return this.http.get(this.serverRoute + "getLastCheckIn?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get(this.localRoute + "getLastCheckIn?email=" + this.sessionSt.retrieve('email'));
   }
 
   getWeeklyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "weeklyReport");
+    return this.http.get<any>(this.localRoute + "weeklyReport");
   }
 
   getWeeklyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.serverRoute + "weeklyReportWithDate?week=" + date);
+    return this.http.get<any>(this.localRoute + "weeklyReportWithDate?week=" + date);
   }
 
   getWorkedHoursToday(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get<any>(this.localRoute + "getWorkedHoursToday?email=" + this.sessionSt.retrieve('email'));
   }
-
+  getWorkedHoursByWeek(): Observable<any>{
+    return this.http.get<any>(this.localRoute + "getWorkedHoursByWeek?email=" + this.sessionSt.retrieve('email'));
+  }
   getDateNow(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "getDateNow");
+    return this.http.get<any>(this.localRoute + "getDateNow");
   }
 
   getMontlyReport(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "monthlyReport");
+    return this.http.get<any>(this.localRoute + "monthlyReport");
   }
 
   getMonthlyReportWithDate(date):Observable<any>{
-    return this.http.get<any>(this.serverRoute + "monthlyReportDate?monthDate=" + date);
+    return this.http.get<any>(this.localRoute + "monthlyReportDate?monthDate=" + date);
   }
 
   checkWorkedDay(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
+    return this.http.get<any>(this.localRoute + "checkWorkedDay?email=" + this.sessionSt.retrieve('email'));
   }
 
   getCompanyTimes(): Observable<any>{
-    return this.http.get(this.serverRoute + "getCompanyTimes");
+    return this.http.get(this.localRoute + "getCompanyTimes");
   }
 
   postCompanyTimes(times):Observable<any>{
     let body = times;
-    return this.http.post(this.serverRoute + "setCompanyTimes", body);
+    return this.http.post(this.localRoute + "setCompanyTimes", body);
   }
 
   getDailyIpReport(day):Observable<any>{
-    return this.http.get(this.serverRoute + "getDailyIpReport?date=" + day);
+    return this.http.get(this.localRoute + "getDailyIpReport?date=" + day);
   }
-
+  
 
 }

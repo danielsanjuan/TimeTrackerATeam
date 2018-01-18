@@ -20,23 +20,22 @@ export class CheckComponent implements OnInit {
   E406:boolean=false;
   E500:boolean=false;
   timer:any;
-  timer2:any;
-  hoursWorked:number = 0;
   checkInTime:string;
   employees = [];
+  hoursWorked:number = 0;
+  week:number = 0;
   hours_today:string = "00:00";
   hours_week:string = "00:00";
   emailUser:string = "";
   fechaNow:any;
   fechaCheckIn:any;
   fechaCheckout:any;
-  week:number = 0;
   interval:any;
   timeCheckout:boolean;
   mileSeconds:number = 0;
   readyCheckOut:boolean = false;
   IP:string = "";
-
+  counter:boolean = false;
   hoursMock:string = '09:00';
   hoursMockWeek:string = '23:00';
   timeMileSecond:number = 0;
@@ -47,12 +46,11 @@ export class CheckComponent implements OnInit {
                public toastr: ToastsManager, vcr: ViewContainerRef,
                private localSt: LocalStorageService,
                private _http: HttpClient) {
-       this.toastr.setRootViewContainerRef(vcr);
+                 this.toastr.setRootViewContainerRef(vcr);
   }
-
+  
   ngOnInit() {
     var ip = window.location.origin;
-    console.log(ip);
     this.emailUser = this.sessionSt.retrieve('email');
     this.services.checkWorkedDay().subscribe((data) => {
       if (data.response_date == "No has hecho checkin"){
@@ -65,30 +63,44 @@ export class CheckComponent implements OnInit {
         this.doCheckIn = true;
         this.doCheckOut = false;
       }
+      this.services.getWorkedHoursByWeek().subscribe((data)=>{
+        this.week=parseInt(data.response_date);
+        this.hours_week = this.formatHour(this.week);
+      });
       this.services.getWorkedHoursToday().subscribe((data)=>{
         this.hoursWorked=parseInt(data.response_date);
-        this.hours_today = this.hourFormat(new Date(this.hoursWorked));
-        this.services.getWeeklyReport().subscribe((data) => {
-          this.employees = data.response_list;
-          if(this.employees == undefined){
-            this.week = 0;
-          }else{
-            for(let i=0; i<this.employees.length; i++){
-              if(this.employees[i].email == this.emailUser){
-                this.week = parseInt(this.employees[i].total);
-                this.week = this.week*60000;
-              }
-            }
-          }
-        });
-        this.hours_week = this.hourFormat(new Date(this.week));
-        if(this.doCheckOut){
-          this.seeTime();
-        }
-      });
+
+        this.hours_today = this.formatHour(this.hoursWorked);
+        if (this.doCheckOut)
+        this.startTiming();
+      });   
     });
+    
   }
 
+  startTiming(){
+      this.timer = setInterval(() => {
+        this.playTimer(this.doCheckOut)
+    },59000);
+  }
+
+  playTimer(boleano){
+    if (boleano){
+      this.hoursWorked= this.hoursWorked +60000;
+      this.week= this.week +60000;
+      this.hours_today = this.formatHour(this.hoursWorked);
+      this.hours_week = this.formatHour(this.week);
+    }
+  }
+
+  formatHour(timer){
+    let date = new Date(parseInt(timer));  
+    let day = date.getDate();
+    let hour = date.getHours() + (day-1) * 24;
+    let hourSt = (hour<=9)?"0"+hour:hour;
+    let minute = (date.getMinutes()<=9)?"0"+date.getMinutes():date.getMinutes();
+    return hourSt+":"+minute;
+  }
 
   timeCheckIn(){
     this.alertTimeNear();
@@ -99,42 +111,42 @@ export class CheckComponent implements OnInit {
       this.services.postCheckIn(this.IP).subscribe( (data)=>{
         switch(data.response_code){
           case "200":
-              this.checkInTime = data.response_date;
+          this.checkInTime = data.response_date;
               let timeOk = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
               this.timeCheckout = false;
               setTimeout(() => {
-                this.seeTime();
+                this.startTiming(); 
               }, 100);
               break;
           case "202":
-              this.checkInTime = data.response_date;
+          this.checkInTime = data.response_date;
               let timeLate = this.checkInTime[7]+""+this.checkInTime[8]+":"+this.checkInTime[10]+""+this.checkInTime[11];
               this.toastr.warning('You are too late '+ timeLate, 'Alert!');
               this.timeCheckout = false;
               setTimeout(() => {
-                this.seeTime();
+                this.startTiming();
               }, 100);
               this.E202=true;
               break;
-          case "406":
+              case "406":
               this.E406=true;
               this.toastr.error('You can not work at this time', 'Oops!');
               this.doCheckIn = false;
               this.doCheckOut = false;
               break;
-          case "500":
+              case "500":
               this.E500=true;
               this.toastr.error('You can not do more than 3 check-in the same day', 'Oops!');
               this.doCheckIn = false;
               this.doCheckOut = false;
               break;
-        }
-      });
-    }, 500);
-  }
-
-  getIp(){
+            }
+          });
+        }, 500);
+      }
+      
+      getIp(){
     this._http.get("https://ipinfo.io/").subscribe((data) => {
       let ip : any = data;
       if (ip.ip != null){
@@ -152,7 +164,7 @@ export class CheckComponent implements OnInit {
       this.services.getDateNow().subscribe((data)=>{
         this.fechaNow = new Date(data.response_date);
         let waitTime = this.fechaNow - this.fechaCheckIn;
-            if (waitTime > 300000){
+            if (waitTime > 10){
               this.doCheckIn = true;
               this.doCheckOut = false;
               setTimeout(() => {
@@ -162,18 +174,18 @@ export class CheckComponent implements OnInit {
                       this.checkOutTime = data.response_date;
                       this.toastr.success('Good Job!', 'Success!');
                       this.timeCheckout = true;
-                      setTimeout(() => {
-                        this.seeTime();
-                      }, 100);
+                      // setTimeout(() => {
+                      //   this.startTiming();
+                      // }, 100);
                       break;
                   case "202":
                       this.checkOutTime = data.response_date;
                       this.toastr.warning("You're leaving very soon, aren't you?", 'Alert!');
                       this.E202=true;
                       this.timeCheckout = true;
-                      setTimeout(() => {
-                        this.seeTime();
-                      }, 100);
+                      // setTimeout(() => {
+                      //   this.startTiming();
+                      // }, 100);
                       break;
                   case "406":
                       this.E406=true;
@@ -189,27 +201,6 @@ export class CheckComponent implements OnInit {
       });
     });
   }
-
-  seeTime(){
-    this.workDayTimeToday(this.hoursWorked);
-    this.workDayTimeWeek(this.hoursWorked);
-  }
-
-  workDayTimeToday(data){
-    let fecha = new Date(parseInt(data));
-    if(this.timeCheckout){
-      clearInterval(this.timer);
-    }else{
-      this.timer = setInterval(() => {
-        this.hours_today = this.hourFormat(fecha);
-      }, 1000);
-      let waitTime = this.fechaNow - this.fechaCheckIn;
-      if (waitTime > 300000){
-        this.readyCheckOut = true;
-      }
-    }
-  }
-
   alertTimeFar(){
     let today = new Date();
     let dd = today.getDate();
@@ -220,15 +211,14 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-
+    
     if(day > 0 && day < 4){
-      console.log("horas posibles trabjadas:" + (totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours));
       if((totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours) < 40){
         this.toastr.warning('You are far from reaching your weekly hours', 'Be careful!');
       }
     }
   }
-
+  
   alertTimeNear(){
     let today = new Date();
     let dd = today.getDate();
@@ -239,14 +229,14 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-
+    
     if(day > 0 && day < 3){
       if((totalWeekHours + ((day)*maxTotalHours)+maxFridayTotalHours) > 40){
         this.toastr.warning('You are close to reaching your weekly hours', 'Schedule your work time!');
       }
     }
   }
-
+  
   whatDayIsIt(year, month, day){
     let d= new Date(year+"-"+month+"-"+day);
     let actualDay = d.getDay();
@@ -260,30 +250,6 @@ export class CheckComponent implements OnInit {
       return 1;
     }
     return 0;
-    }
-
-  workDayTimeWeek(data){
-    let dataWeek = parseInt(data) + this.week;
-    let fechaW = new Date(dataWeek);
-    if(this.timeCheckout){
-      clearInterval(this.timer2);
-      this.hoursWorked = this.timeMileSecond - this.week;
-    }else{
-      this.timer2 = setInterval(() => {
-        this.hours_week = this.hourFormat(fechaW);
-      }, 1000);
-    }
-  }
-
-  hourFormat(fecha){
-    let dia = fecha.getDate();
-    let horas = fecha.getHours() + (dia-1) * 24;
-    let horaT = (horas<=9)?"0"+horas:horas;
-    let minuto = (fecha.getMinutes()<=9)?"0"+fecha.getMinutes():fecha.getMinutes();
-    let secondsIncrease = fecha.getSeconds();
-    fecha.setSeconds(secondsIncrease+1);
-    let milesegundos = parseInt(fecha.getMilliseconds())
-    this.timeMileSecond = parseInt(fecha.setMilliseconds(milesegundos));
-    return horaT+":"+minuto;
   }
 }
+
