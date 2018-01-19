@@ -346,7 +346,7 @@ class MainPage(remote.Service):
     def getPersonalIPList(self, request):
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email)
-        query = query.order(Workday.checkin).fetch()
+        query = query.order(-Workday.checkin).fetch()
         return PersonalIPListResponse(response_list = self.filterIPByEmail(query))
 
     @endpoints.method(FilterIpByDateMessage, PersonalIPListResponse, path = 'getPersonalIPWithRange', http_method = 'GET', name = 'getPersonalIPWithRange')
