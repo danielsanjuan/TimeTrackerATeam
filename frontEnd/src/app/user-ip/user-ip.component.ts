@@ -7,6 +7,8 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ActivatedRoute } from '@angular/router';
 import {INgxMyDpOptions, IMyDateModel} from 'ngx-mydatepicker';
 import { NgForm, RequiredValidator, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -16,6 +18,7 @@ import { NgForm, RequiredValidator, FormGroup, FormBuilder, Validators } from '@
 })
 export class UserIpComponent implements OnInit {
 
+  modalRef: BsModalRef;
   nameUser:string;
   emailUser:string;
   imageUser:any;
@@ -40,6 +43,7 @@ export class UserIpComponent implements OnInit {
               private services: UserService,
               private fb: FormBuilder,
               public toastr: ToastsManager,
+              private modalService: BsModalService,
               private servicesCheck: CheckInService,
               vcr: ViewContainerRef, private route: ActivatedRoute) {
                 this.toastr.setRootViewContainerRef(vcr);
@@ -63,11 +67,9 @@ export class UserIpComponent implements OnInit {
       check_in: ["", Validators.required],
       check_out: [""]
     });
-    // this.services.getPersonalIP(this.email).subscribe((data) => {
-    //   this.ip_address = data.response_list;
-    //   alert("Entreeeeee");
-    //   console.log(this.ip_address+ " AAAAAAAAAAAAA");
-    // });
+    this.services.getPersonalIP(this.email).subscribe((data) => {
+      this.ip_address = data.response_list;
+    });
   }
 
   ngOnInit() {
@@ -95,6 +97,10 @@ export class UserIpComponent implements OnInit {
       }else{
         this.nameUser = separate[0]+" "+separate[1];
       }
+  }
+
+  openModal(template: TemplateRef<any>){
+    this.modalRef = this.modalService.show(template);
   }
 
 }

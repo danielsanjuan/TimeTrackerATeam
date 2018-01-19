@@ -17,13 +17,27 @@ img{
 h2{
     text-align: center;
 }
+
+table{
+    text-align: center;
+}
+
+tbody tr th{
+    text-align: center;
+}
+
+thead tr th {
+    text-align: center;
+}
+
+.margin{
+    padding-top:1em;
+}
+
+.dateTitle{
+    margin-bottom: 2em;
+}
 /***** Media queries *****/
-
-@media (min-width: 992px) and (max-width: 1199px) {}
-
-@media (min-width: 768px) and (max-width: 991px) {}
-
-@media (max-width: 767px) {}
 
 @media (max-width: 415px) {
 

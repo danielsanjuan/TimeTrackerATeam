@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
 import {INgxMyDpOptions, IMyDateModel} from 'ngx-mydatepicker';
 import { NgModel } from '@angular/forms';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-access',
@@ -19,10 +21,11 @@ export class AccessComponent implements OnInit {
   employees: any = [];
   today: string;
   dateToday: Date;
-
+  modalRef: BsModalRef;
 
   constructor(private router: Router,
     private sessionSt: SessionStorageService,
+    private modalService: BsModalService,
     private services: CheckInService) { }
 
   ngOnInit() {
@@ -48,11 +51,9 @@ export class AccessComponent implements OnInit {
 
   onDateChanged(event: IMyDateModel): void {
     let re = /\./gi;
-    console.log(event.formatted);
-    console.log(event.formatted.replace(re, '-'))
+    this.dateToday = event.jsdate;
     //realizar llamada al metodo del servicio
     this.services.getDailyIpReport(event.formatted.replace(re, '-')).subscribe((data) => {
-      console.log(data);
       if (data.response_list != undefined){
         this.employees = data.response_list;
         this.setResponsiveName(this.employees);
@@ -76,4 +77,9 @@ export class AccessComponent implements OnInit {
       }
     }
   }
+
+  openModal(template: TemplateRef<any>){
+    this.modalRef = this.modalService.show(template);
+  }
+
 }
