@@ -38,5 +38,6 @@ export class UserlistComponent implements OnInit {
     this.modalRef.content.employees = employee;
     this.modalRef.content.mySelf = this.sessionSt.retrieve('email');
     this.modalRef.content.selectedRole = employee.role;
+    this.modalRef.content.modalRef = this.modalRef;
   }
 }

@@ -17,6 +17,9 @@
         </div>
       </form>
     </div>
+    <div class="col-sm-6 col-md-8">
+      <p><b><h1>{{dateToday | date}}</h1></b></p>
+    </div>
   </div>
   <ng-container *ngIf="employees.length > 0; else noIpReport">
     <div class="table-responsive">

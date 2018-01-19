@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../providers/user.provider';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Router } from '@angular/router';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 
 
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class ModalUserComponent implements OnInit {
 
+  modalRef: BsModalRef;
   selectedRole: any;
   mySelf: any;
   email: any;
@@ -44,6 +46,7 @@ export class ModalUserComponent implements OnInit {
         this.toastr.success('The role have been changed to Administrator')
         this.employees.role = 2;
       }
+      this.modalRef.hide()
     });
   }
   backToUserList() {

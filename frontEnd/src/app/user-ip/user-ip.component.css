@@ -73,26 +73,6 @@ h2{
 
 /***** Media queries *****/
 
-
-@media (min-width: 991px) and (max-width: 1200px) {
-    .name-email{
-        font-size: 1.2em;
-        width: 25em;
-        margin-left: -0.5em;
-    }
-
-    .name{
-        font-size: 1.8em;
-    }
-
-    img{
-        max-width: 80%;
-        border-radius: 50%;
-        margin-left: 1em;
-    }
-
-}
-
 @media (min-width: 320px) and (max-width: 767px) {
     .info-user{
         display: none;
