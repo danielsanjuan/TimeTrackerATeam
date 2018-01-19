@@ -138,7 +138,7 @@ export class CheckComponent implements OnInit {
               break;
             }
           });
-        }, 700);
+        }, 1000);
       }
 
       getIp(){
@@ -188,7 +188,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
-            }, 700);
+            }, 1000);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
