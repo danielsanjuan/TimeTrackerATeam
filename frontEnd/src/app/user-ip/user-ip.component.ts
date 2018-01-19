@@ -60,7 +60,6 @@ export class UserIpComponent implements OnInit {
       this.imageUser = data.employee.image;
       this.services.getIpFilteredByDate(this.emailUser, this.check_in,  this.check_out).subscribe((data) => {
         this.ip_address = data.response_list;
-        console.log(this.ip_address);
       });
     });
     this.rForm = this.fb.group({

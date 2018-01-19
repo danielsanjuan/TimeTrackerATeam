@@ -13,7 +13,7 @@ class FixCheckHoursMessage(messages.Message):
     email = messages.StringField(2)
     dateUpdatedCheckIn = messages.StringField(3)
     dateUpdatedCheckOut = messages.StringField(4)
-
+    hrm = messages.StringField(5)
 
 class ChangeCheckHoursResponseMessage(messages.Message):
     response_change_check = messages.MessageField(JsonChangeCheckHoursMessage, 1)

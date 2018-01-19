@@ -11,7 +11,7 @@ export class IncidenceService {
   public localRoute = "http://localhost:8080/_ah/api/timetracker/v1/";
   public serverRoute = "https://timetrackerateam.appspot.com/_ah/api/timetracker/v1/";
 
-  constructor(private http: HttpClient){
+  constructor(private http: HttpClient, private sessionSt:SessionStorageService){
 
   }
 
@@ -42,7 +42,7 @@ export class IncidenceService {
   }
 
   setCheckHoursIncidence(key, email, checkin, checkout):Observable<any>{
-    let body = { "key": key, "email": email, "dateUpdatedCheckIn": checkin, "dateUpdatedCheckOut": checkout};
+    let body = { "key": key, "email": email, "dateUpdatedCheckIn": checkin, "dateUpdatedCheckOut": checkout, hrm: this.sessionSt.retrieve('email')};
     return this.http.post(this.localRoute + 'changeCheckHours', body);
   }
 }

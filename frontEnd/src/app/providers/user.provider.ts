@@ -35,4 +35,8 @@ export class UserService {
     return this.http.get(this.localRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
   }
 
+  downloadLogs(): Observable<any>{
+    return this.http.get(this.localRoute + 'downloadLogs');
+  }
+
 }

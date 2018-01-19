@@ -13,7 +13,7 @@ from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportDateMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
-from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse, LogsResponse, Log
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
 from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserRoleMessage
 from messages.changeRoleMessages import ChangeRoleMessages, ChangeRoleResponse, JsonChangedRoleEmployee
@@ -66,12 +66,39 @@ class CompanyTimes(ndb.Model):
     checkoutminfriday = ndb.StringProperty(indexed=True)
     checkoutmaxfriday = ndb.StringProperty(indexed=True)
 
+class Logs(ndb.Model):
+    hrm = ndb.StringProperty(indexed=True)
+    employee = ndb.StringProperty(indexed=True)
+    changesIn = ndb.StringProperty(indexed=True)
+    changesOut = ndb.StringProperty(indexed=True)
+    dateLog = ndb.DateTimeProperty(indexed=True)
+
+
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],
         scopes=[endpoints.EMAIL_SCOPE])
 
 class MainPage(remote.Service):
+
+    def createLogs(self, workday, request, check_in, check_out, newCheckin=0, newCheckout=0):
+        if check_in and check_out:
+            logs = Logs (hrm=request.hrm, employee=workday.employee.email,
+            changesIn=str(request.hrm) + " ha realizado el cambio en el campo checkin en esta fecha: " + str(workday.checkin) + ", a esta nueva fecha: " + str(newCheckin),
+            changesOut=str(request.hrm) + " ha realizado el cambio en el campo checkout en esta fecha: " + str(workday.checkout) + ", a esta nueva fecha: " + str(newCheckout),
+            dateLog=datetime.now()).put()
+        elif check_in:
+            logs = Logs (hrm=request.hrm, employee=workday.employee.email,
+            changesIn=str(request.hrm) + " ha realizado el cambio en el campo checkin en esta fecha: " + str(workday.checkin) + ", a esta nueva fecha: " + str(newCheckin),
+            dateLog=datetime.now()).put()
+        elif check_out:
+            logs = Logs (hrm=request.hrm, employee=workday.employee.email,
+            changesOut=str(request.hrm) + " ha realizado el cambio en el campo checkout en esta fecha: " + str(workday.checkout) + ", a esta nueva fecha: " + str(newCheckout),
+            dateLog=datetime.now()).put()
+        else:
+            logs = Logs (hrm=request.hrm, employee=workday.employee.email,
+            changesOut=str(request.hrm) + " ha visto la incidencia de: " + str(workday.employee.email) + " el dia de: " + str(workday.checkin) + " y se ha resuelto sin cambios",
+            dateLog=datetime.now()).put()
 
     def set_companyTimes(self, checkinminMT, checkinmaxMT, checkoutminMT, checkoutmaxMT, checkoutminF, checkoutmaxF):
         query = CompanyTimes.query().get()
@@ -456,7 +483,7 @@ class MainPage(remote.Service):
             return CheckOutResponseMessage(response_code = 406, response_status = "Check out fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             self.set_checkout(date, request.email, request.ip)
-            message = " has done a check-in before limit hour."
+            message = " has done a check-out before limit hour."
             check = False
             self.set_incidences(message, date, request.email, check)
             return CheckOutResponseMessage(response_code = 202, response_status = "Check out correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
@@ -690,7 +717,7 @@ class MainPage(remote.Service):
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):
         query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email)
+        query = query.filter(Workday.employee.email == request.email).fetch()
         newDate = datetime.strptime(request.date, "%Y-%m-%d %H:%M:%S.%f")
         for day in query:
             if day.checkin ==  newDate or day.checkout == newDate:
@@ -705,7 +732,6 @@ class MainPage(remote.Service):
     def changeCheckHours(self, request):
         query = CompanyTimes.query().get()
         if request.dateUpdatedCheckOut is not None:
-
             if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut and
             query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckIn.split(' ')[1] and
             query.checkinmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
@@ -714,9 +740,17 @@ class MainPage(remote.Service):
                 for day in query:
                     if day.key.id() == request.key:
                         newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
-                        newChekout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
+                        newCheckout = datetime.strptime(request.dateUpdatedCheckOut, "%Y-%m-%d %H:%M:%S.%f")
+                        if day.checkin != newCheckin and day.checkout != newCheckout:
+                            self.createLogs(day, request, True, True, newCheckin, newCheckout)
+                        elif day.checkin != newCheckin:
+                            self.createLogs(day, request, True, False, newCheckin)
+                        elif day.checkout != newCheckout:
+                            self.createLogs(day, request, False, True, 0, newCheckout)
+                        else:
+                            self.createLogs(day, request, False, False)
                         day.checkin = newCheckin
-                        day.checkout = newChekout
+                        day.checkout = newCheckout
                         day.put()
                         return FixHoursResponseMessage(response_code = 200)
             else:
@@ -728,20 +762,28 @@ class MainPage(remote.Service):
                 for day in query:
                     if day.key.id() == request.key:
                         newCheckin = datetime.strptime(request.dateUpdatedCheckIn, "%Y-%m-%d %H:%M:%S.%f")
-                        day.checkin = newCheckin
-                        day.put()
+                        if day.checkin != newCheckin:
+                            self.createLogs(day, request, True, False, newCheckin)
+                            day.checkin = newCheckin
+                            day.put()
                         return FixHoursResponseMessage(response_code = 200)
             else:
                 return FixHoursResponseMessage(response_code = 404)
 
-    ''' Endpoint to Mock Database '''
+    @endpoints.method(message_types.VoidMessage, LogsResponse, path='downloadLogs', http_method='GET', name='downloadLogs')
+    def downloadLogs(self, request):
+        array = []
+        query = Logs.query()
+        for x in query:
+            log = Log(hrm=x.hrm, employee=x.employee, changesIn=x.changesIn, changesOut=x.changesOut, dateLog=str(x.dateLog))
+            array.append(log)
+        return LogsResponse(response=array, response_date=str(datetime.now().date()))
 
-    @endpoints.method(DateNowMessage, DateNowMessage, path='mockDatabase', http_method='POST', name='mockDatabase')
-    def mockDatabase(self, request):
-
-        workday = Workday(checkin=datetime.strptime("2018-01-16 07:01:10.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2018-01-16 15:10:10.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Sergio Santana Vega", email="sergio.santana@edosoft.es",role=1,status=False)).put()
-        workday = Workday(checkin=datetime.strptime("2018-01-16 16:00:10.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2018-01-16 19:00:10.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Sergio Santana Vega", email="sergio.santana@edosoft.es",role=1,status=False)).put()
-        return DateNowMessage()
+    # hrm = ndb.StringProperty(indexed=True)
+    # employee = ndb.StringProperty(indexed=True)
+    # changesIn = ndb.StringProperty(indexed=True)
+    # changesOut = ndb.StringProperty(indexed=True)
+    # dateLog = ndb.DateTimeProperty(indexed=True)
 # [END guestbook]
 
 

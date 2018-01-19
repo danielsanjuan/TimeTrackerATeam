@@ -98,7 +98,6 @@ export class CheckComponent implements OnInit {
   }
 
   timeCheckIn(){
-    console.log("Te estoy llamando");
     this.alertTimeNear();
     this.getIp();
     this.doCheckIn = false;
