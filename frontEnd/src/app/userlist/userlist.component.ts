@@ -40,4 +40,34 @@ export class UserlistComponent implements OnInit {
     this.modalRef.content.selectedRole = employee.role;
     this.modalRef.content.modalRef = this.modalRef;
   }
+
+  downloadLogs(){
+    this.services.downloadLogs().subscribe((data) => {
+      let fileContents = "";
+      for (let i = 0; i< data.response.length; i++){
+        if (data.response[i].changesIn != null){
+          fileContents += data.response[i].changesIn+"\n";
+        }
+        if (data.response[i].changesOut != null){
+          fileContents += data.response[i].changesOut+"\n";
+        }
+      }
+      let date = data.response_date;
+      let filename = date + "-Logs.txt";
+      let filetype = "text/plain";
+
+      let a = document.createElement("a");
+      let dataURI = "data:" + filetype +
+      ";base64," + btoa(fileContents);
+      a.href = dataURI;
+      a['download'] = filename;
+      let e = document.createEvent("MouseEvents");
+      // Use of deprecated function to satisfy TypeScript.
+      e.initMouseEvent("click", true, false,
+      document.defaultView, 0, 0, 0, 0, 0,
+      false, false, false, false, 0, null);
+      a.dispatchEvent(e);
+      a.remove();
+    });
+  }
 }

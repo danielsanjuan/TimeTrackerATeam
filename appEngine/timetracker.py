@@ -13,7 +13,7 @@ from messages.timetrackerlogin import LoginMessage, LoginMessageResponse
 from messages.reportMessages import ReportMessage, ReportDateMessage, ReportResponseMessage, JsonMessage
 from messages.DateNowMessages import DateNowMessage, DateNowGetMessage
 from messages.reportMonthlyMessages import ReportMonthlyMessage, ReportMonthlyMessageWithDate, ReportMonthlyResponseMessage, JsonMonthlyMessage, JsonSingleDayMessage
-from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse
+from messages.incidencesMessages import CheckIncidenceMessage, CheckIncidenceResponse, IncidencesReportMessage, IncidencesMessage, IncidencesReportResponseMessage, SolveIncidence, SolveIncidenceResponse, LogsResponse, Log
 from messages.incidencesUsersListMessages import IncidencesUsersMessage, incidencesUsersListMessage, IncidencesUserListResponseMessage, JsonEmployee, EmployeeMessage, EmployeeMessageResponse
 from messages.userListMessages import UserListMessage, UserListResponseMessage, JsonUserRoleMessage
 from messages.changeRoleMessages import ChangeRoleMessages, ChangeRoleResponse, JsonChangedRoleEmployee
@@ -722,6 +722,7 @@ class MainPage(remote.Service):
         newDate = datetime.strptime(request.date, "%Y-%m-%d %H:%M:%S.%f")
         for day in query:
             print "Comparando new: ", newDate, " con: ", day.checkin, " y ", day.checkout
+            print "Tipos: ", type(newDate), type(day.checkin)
             if day.checkin ==  newDate or day.checkout == newDate:
                 response_change_check = JsonChangeCheckHoursMessage(
                 key = day.key.id(),
@@ -771,6 +772,21 @@ class MainPage(remote.Service):
                         return FixHoursResponseMessage(response_code = 200)
             else:
                 return FixHoursResponseMessage(response_code = 404)
+
+    @endpoints.method(message_types.VoidMessage, LogsResponse, path='downloadLogs', http_method='GET', name='downloadLogs')
+    def downloadLogs(self, request):
+        array = []
+        query = Logs.query()
+        for x in query:
+            log = Log(hrm=x.hrm, employee=x.employee, changesIn=x.changesIn, changesOut=x.changesOut, dateLog=str(x.dateLog))
+            array.append(log)
+        return LogsResponse(response=array, response_date=str(datetime.now().date()))
+
+    # hrm = ndb.StringProperty(indexed=True)
+    # employee = ndb.StringProperty(indexed=True)
+    # changesIn = ndb.StringProperty(indexed=True)
+    # changesOut = ndb.StringProperty(indexed=True)
+    # dateLog = ndb.DateTimeProperty(indexed=True)
 # [END guestbook]
 
 
