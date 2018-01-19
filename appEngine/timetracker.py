@@ -529,7 +529,7 @@ class MainPage(remote.Service):
             if worked.checkin.date() == day.date() and worked.checkout == None:
                 hoursWorkedToday = hoursWorkedToday + int((datetime.now() - worked.checkin).total_seconds())*1000
         return GetTimeWorkedTodayReponse(response_date=int(hoursWorkedToday))
-    
+
     @endpoints.method(CheckOutMessage, GetTimeWorkedTodayReponse, path='getWorkedHoursByWeek', http_method='GET', name='getWorkedHoursByWeek')
     def getWorkedHoursByWeek(self, request):
         query = Workday.query()
@@ -594,7 +594,7 @@ class MainPage(remote.Service):
             query = Employee.query()
             for currentEmployee in query:
                 workedDays.append(self.singleMonthlyReportWithDate(currentEmployee, date))
-            return ReportMonthlyResponseMessage(response_report=workedDays)     
+            return ReportMonthlyResponseMessage(response_report=workedDays)
         return ReportMonthlyResponseMessage(response_report=[])
 
 
@@ -705,9 +705,10 @@ class MainPage(remote.Service):
     def changeCheckHours(self, request):
         query = CompanyTimes.query().get()
         if request.dateUpdatedCheckOut is not None:
+
             if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut and
-            query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkinmax >= request.dateUpdatedCheckIn.split(' ')[1] and
-            query.checkoutmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
+            query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckIn.split(' ')[1] and
+            query.checkinmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
                 query = Workday.query()
                 query = query.filter(Workday.employee.email == request.email)
                 for day in query:
@@ -737,7 +738,7 @@ class MainPage(remote.Service):
 
     @endpoints.method(DateNowMessage, DateNowMessage, path='mockDatabase', http_method='POST', name='mockDatabase')
     def mockDatabase(self, request):
-   
+
         workday = Workday(checkin=datetime.strptime("2018-01-16 07:01:10.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2018-01-16 15:10:10.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Sergio Santana Vega", email="sergio.santana@edosoft.es",role=1,status=False)).put()
         workday = Workday(checkin=datetime.strptime("2018-01-16 16:00:10.100", "%Y-%m-%d %H:%M:%S.%f"), checkout=datetime.strptime("2018-01-16 19:00:10.100", "%Y-%m-%d %H:%M:%S.%f"), employee=Employee(name="Sergio Santana Vega", email="sergio.santana@edosoft.es",role=1,status=False)).put()
         return DateNowMessage()

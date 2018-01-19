@@ -43,7 +43,7 @@ export class CheckComponent implements OnInit {
                private _http: HttpClient) {
                  this.toastr.setRootViewContainerRef(vcr);
   }
-  
+
   ngOnInit() {
     var ip = window.location.origin;
     this.emailUser = this.sessionSt.retrieve('email');
@@ -68,9 +68,9 @@ export class CheckComponent implements OnInit {
         this.hours_today = this.formatHour(this.hoursWorked);
         if (this.doCheckOut)
         this.startTiming();
-      });   
+      });
     });
-    
+
   }
 
   startTiming(){
@@ -89,7 +89,7 @@ export class CheckComponent implements OnInit {
   }
 
   formatHour(timer){
-    let date = new Date(parseInt(timer));  
+    let date = new Date(parseInt(timer));
     let day = date.getDate();
     let hour = date.getHours() + (day-1) * 24;
     let hourSt = (hour<=9)?"0"+hour:hour;
@@ -98,6 +98,7 @@ export class CheckComponent implements OnInit {
   }
 
   timeCheckIn(){
+    console.log("Te estoy llamando");
     this.alertTimeNear();
     this.getIp();
     this.doCheckIn = false;
@@ -111,7 +112,7 @@ export class CheckComponent implements OnInit {
               this.toastr.success('You have made check-in at  '+timeOk, 'Success!');
               this.timeCheckout = false;
               setTimeout(() => {
-                this.startTiming(); 
+                this.startTiming();
               }, 100);
               break;
           case "202":
@@ -138,9 +139,9 @@ export class CheckComponent implements OnInit {
               break;
             }
           });
-        }, 300000);
+        }, 700);
       }
-      
+
       getIp(){
     this._http.get("https://ipinfo.io/").subscribe((data) => {
       let ip : any = data;
@@ -188,7 +189,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
-            }, 300000);
+            }, 700);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
@@ -206,14 +207,14 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-    
+
     if(day > 0 && day < 4){
       if((totalWeekHours + ((day-1)*maxTotalHours)+maxFridayTotalHours) < 40){
         this.toastr.warning('You are far from reaching your weekly hours', 'Be careful!');
       }
     }
   }
-  
+
   alertTimeNear(){
     let today = new Date();
     let dd = today.getDate();
@@ -224,14 +225,14 @@ export class CheckComponent implements OnInit {
     let maxFridayTotalHours = 7.5;
     let totalHours = this.hoursMock.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
-    
+
     if(day > 0 && day < 3){
       if((totalWeekHours + ((day)*maxTotalHours)+maxFridayTotalHours) > 40){
         this.toastr.warning('You are close to reaching your weekly hours', 'Schedule your work time!');
       }
     }
   }
-  
+
   whatDayIsIt(year, month, day){
     let d= new Date(year+"-"+month+"-"+day);
     let actualDay = d.getDay();
@@ -247,4 +248,3 @@ export class CheckComponent implements OnInit {
     return 0;
   }
 }
-
