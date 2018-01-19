@@ -48,11 +48,8 @@ export class AccessComponent implements OnInit {
 
   onDateChanged(event: IMyDateModel): void {
     let re = /\./gi;
-    console.log(event.formatted);
-    console.log(event.formatted.replace(re, '-'))
     //realizar llamada al metodo del servicio
     this.services.getDailyIpReport(event.formatted.replace(re, '-')).subscribe((data) => {
-      console.log(data);
       if (data.response_list != undefined){
         this.employees = data.response_list;
         this.setResponsiveName(this.employees);

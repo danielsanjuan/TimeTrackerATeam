@@ -716,13 +716,10 @@ class MainPage(remote.Service):
 
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):
-        print "Estoy llamando a esta funcion"
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email).fetch()
         newDate = datetime.strptime(request.date, "%Y-%m-%d %H:%M:%S.%f")
         for day in query:
-            print "Comparando new: ", newDate, " con: ", day.checkin, " y ", day.checkout
-            print "Tipos: ", type(newDate), type(day.checkin)
             if day.checkin ==  newDate or day.checkout == newDate:
                 response_change_check = JsonChangeCheckHoursMessage(
                 key = day.key.id(),

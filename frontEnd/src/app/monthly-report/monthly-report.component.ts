@@ -38,7 +38,6 @@ export class MonthlyReportComponent implements OnInit {
   ngOnInit() {
     //Cuando arranquemos tendremos el reporte semanal del mes anterior
     this.services.getMontlyReport().subscribe((data) => {
-      console.log(data)
       this.checkMonth(data);
       this.setResponsiveName(data.response_report);
     });
@@ -58,18 +57,18 @@ export class MonthlyReportComponent implements OnInit {
     var d= new Date(year+"-"+month+"-"+dia);
     var day = d.getDay();
     while(day != 6) {
-      
-      dia++;      
+
+      dia++;
       d.setDate(dia);
       day = d.getDay();
 
     }
     return dia;
   }
-  
+
   setTextCurrentMonth(month){
     //Devuelve el texto del mes en el que nos encontramos
-    
+
     if (month == 1) this.currentMonth = "January";
     else
     if (month == 2) this.currentMonth = "February";
@@ -78,7 +77,7 @@ export class MonthlyReportComponent implements OnInit {
     else
     if (month == 4) this.currentMonth = "April";
     else
-    if (month == 5) this.currentMonth = "May";    
+    if (month == 5) this.currentMonth = "May";
     else
     if (month == 6) this.currentMonth = "June";
     else
@@ -98,7 +97,7 @@ export class MonthlyReportComponent implements OnInit {
   }
 
   checkMonth(data){
-    
+
     this.currentMonth = "";
     this.currentyear = "";
     this.totalDays = 0;
