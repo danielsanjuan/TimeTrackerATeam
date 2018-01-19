@@ -15,6 +15,8 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 })
 export class PersonalIncidenceComponent implements OnInit {
 
+  checkinmilli: any;
+  checkoutmilli: any;
   rForm: FormGroup;
   key: any;
   email: any;
@@ -57,10 +59,12 @@ export class PersonalIncidenceComponent implements OnInit {
       if (data.response_change_check.checkin != "None") {
         let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].split('.')[0];
         this.check_in = dateStringIn;
+        this.checkinmilli = data.response_change_check.checkin.split('.')[1];
       }
       if (data.response_change_check.checkout != "None") {
         let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
         this.check_out = dateStringOut;
+        this.checkoutmilli = data.response_change_check.checkout.split('.')[1];
       }
       this.rForm.patchValue({check_in: this.check_in, check_out: this.check_out});
     });
@@ -71,7 +75,7 @@ export class PersonalIncidenceComponent implements OnInit {
   setSolved(formValues) {
     if(formValues.check_in){
       if (formValues.check_out){
-        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", formValues.check_out.replace('T', ' ') + ".100").subscribe((data) => {
+        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + "." + this.checkinmilli, formValues.check_out.replace('T', ' ') + "." + this.checkoutmilli).subscribe((data) => {
           if (data.response_code == 200){
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {
