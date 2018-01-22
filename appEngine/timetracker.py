@@ -126,7 +126,8 @@ class MainPage(remote.Service):
         workday = Workday (
             checkin=date,
             employee=Employee (name=query.name,email=query.email,role=query.role),
-            ipAddressIn=ip
+            ipAddressIn=ip,
+            ipAddressOut="-"
         )
         workday.put()
 
@@ -365,14 +366,13 @@ class MainPage(remote.Service):
                     pos = pos + 1
                     jsonUserIPMessage.response_list_ip.ip6 = str(workday.ipAddressOut)
 
-            if pos >= 1:
+            if pos >= 0:
                 array.append(jsonUserIPMessage)
         return UserIPResponse(response_list = array)
 
     @endpoints.method(PersonalIP, PersonalIPListResponse, path = 'getPersonalIPList', http_method = 'GET', name = 'getPersonalIPList')
     def getPersonalIPList(self, request):
-        query = Workday.query()
-        query = query.filter(Workday.employee.email == request.email)
+        query = Workday.query(Workday.employee.email == request.email)
         query = query.order(Workday.checkin).fetch()
         return PersonalIPListResponse(response_list = self.filterIPByEmail(query))
 
@@ -380,8 +380,7 @@ class MainPage(remote.Service):
     def getPersonalIPWithRange(self, request):
         query = Employee.query()
         query = query.filter(Employee.email == request.email).get()
-        query2 = Workday.query()
-        query2 = query2.filter(Workday.employee.email == query.email)
+        query2 = Workday.query(Workday.employee.email == query.email)
         query2 = query2.order(Workday.checkin)
         x = 0
         pos = 0
@@ -509,7 +508,7 @@ class MainPage(remote.Service):
         date = datetime.now()
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email)
-        day = query.order(-Workday.checkin).get()
+        day = query.order(Workday.checkin).get()
         if day.checkin != None:
             if day.checkout != None:
                 if (day.checkin.date() == date.date() and day.checkout.date() == date.date()):

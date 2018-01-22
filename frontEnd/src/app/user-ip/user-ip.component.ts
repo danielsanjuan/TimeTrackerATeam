@@ -29,14 +29,12 @@ export class UserIpComponent implements OnInit {
   dateIn:string;
   dateOut:string;
   rForm: FormGroup;
-  check_in: string = "2018-01-17";
-  check_out: string = "2018-01-18";;
   myOptions: INgxMyDpOptions = {
     // other options...
     dateFormat: 'dd.mm.yyyy',
   };
 
-  ip_address = [{'date': "-"}];
+  ip_address = [];
 
   constructor(private router: Router,
               private sessionSt: SessionStorageService,
@@ -58,9 +56,6 @@ export class UserIpComponent implements OnInit {
       this.setResponsiveName(data.employee.name);
       this.emailUser = data.employee.email;
       this.imageUser = data.employee.image;
-      this.services.getIpFilteredByDate(this.emailUser, this.check_in,  this.check_out).subscribe((data) => {
-        this.ip_address = data.response_list;
-      });
     });
     this.rForm = this.fb.group({
       check_in: ["", Validators.required],
@@ -72,6 +67,7 @@ export class UserIpComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   backToAccess() {
@@ -81,7 +77,7 @@ export class UserIpComponent implements OnInit {
   setSolved(companyTimeTrackerForm: NgForm){
     if (new Date(companyTimeTrackerForm.value.dateIn) > new Date(companyTimeTrackerForm.value.dateOut)){
       this.toastr.error('StartDate should be minor than EndDate', 'Invalid range of date');
-      this.ip_address = [{'date': "-"}];
+      this.ip_address = [];
     }else{
       this.services.getIpFilteredByDate(this.emailUser, companyTimeTrackerForm.value.dateIn,  companyTimeTrackerForm.value.dateOut).subscribe((data) => {
         this.ip_address = data.response_list;

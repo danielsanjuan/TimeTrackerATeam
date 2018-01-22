@@ -204,7 +204,7 @@ export class CheckComponent implements OnInit {
     let day = this.whatDayIsIt(yyyy, mm, dd);
     let maxTotalHours = 10.5;
     let maxFridayTotalHours = 7.5;
-    let totalHours = this.hoursMock.split(":");
+    let totalHours = this.hours_week.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
 
     if(day > 0 && day < 4){
@@ -222,7 +222,7 @@ export class CheckComponent implements OnInit {
     let day = this.whatDayIsIt(yyyy, mm, dd);
     let maxTotalHours = 10.5;
     let maxFridayTotalHours = 7.5;
-    let totalHours = this.hoursMock.split(":");
+    let totalHours = this.hours_week.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
 
     if(day > 0 && day < 3){
