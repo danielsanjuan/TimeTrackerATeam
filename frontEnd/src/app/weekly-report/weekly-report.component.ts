@@ -19,6 +19,7 @@ export class WeeklyReportComponent implements OnInit {
   };
   responsiveName: string[] = [];
   weekNumber: number = 0;
+  yearNumber: number = 0;
   
   // Initialized to specific date (09.10.2018)
 
@@ -31,6 +32,8 @@ export class WeeklyReportComponent implements OnInit {
   onDateChanged(event: IMyDateModel): void {
       //realizar llamada al metodo del servicio
       this.weekNumber = this.getWeekNumber(event.formatted);
+      console.log(event);
+      this.yearNumber = event.date.year;
       this.services.getWeeklyReportWithDate(event.formatted).subscribe((data) => {
         if (data.response_list != undefined){   
           this.employees = data.response_list;
@@ -67,4 +70,5 @@ export class WeeklyReportComponent implements OnInit {
     d.setDate(d.getDate()+4-(d.getDay()||7));
     return Math.ceil((((d.getTime()-(new Date(d.getFullYear(),0,1)).getTime())/8.64e7)+1)/7);
   }
+
 }
