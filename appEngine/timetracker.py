@@ -755,7 +755,7 @@ class MainPage(remote.Service):
             else:
                 return FixHoursResponseMessage(response_code = 404)
         else:
-            if (query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkinmax >= request.dateUpdatedCheckIn.split(' ')[1]):
+            if (query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckIn.split(' ')[1]):
                 query = Workday.query()
                 query = query.filter(Workday.employee.email == request.email)
                 for day in query:

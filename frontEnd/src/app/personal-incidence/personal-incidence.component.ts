@@ -34,7 +34,7 @@ export class PersonalIncidenceComponent implements OnInit {
     vcr: ViewContainerRef,) {
       this.toastr.setRootViewContainerRef(vcr);
       this.rForm = this.fb.group({
-        check_in: ["", Validators.required],
+        check_in: ["22/01/2018T10:00:00", Validators.required],
         check_out: [""]
       });
   }
@@ -74,9 +74,10 @@ export class PersonalIncidenceComponent implements OnInit {
 
   setSolved(formValues) {
     if(formValues.check_in){
-      if (formValues.check_out){
+      if (formValues.check_out != undefined){
         this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + "." + this.checkinmilli, formValues.check_out.replace('T', ' ') + "." + this.checkoutmilli).subscribe((data) => {
           if (data.response_code == 200){
+            this.error = 200;
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {
               setTimeout(() => {
@@ -96,6 +97,7 @@ export class PersonalIncidenceComponent implements OnInit {
       }else{
         this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", null).subscribe((data) => {
           if (data.response_code == 200){
+            this.error = 200;
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {
               setTimeout(() => {
