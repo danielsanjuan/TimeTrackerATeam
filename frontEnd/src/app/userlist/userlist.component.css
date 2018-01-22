@@ -1,5 +1,9 @@
+.download{
+  margin-top: 17%;
+}
+
 .container{
-    margin: 20px 0 5px 0;
+    margin: 20px 0 0 -15px;
 }
 
 thead tr th{
@@ -13,6 +17,9 @@ tbody tr th{
 }
 span{
     font-size: 25px;
+}
+.spanlogbutton{
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 td{
     text-align: center;

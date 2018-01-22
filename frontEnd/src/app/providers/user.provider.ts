@@ -15,28 +15,28 @@ export class UserService {
 
 }
   getUserList(): Observable<any>{
-    return this.http.get<any>(this.serverRoute + "getUserList")
+    return this.http.get<any>(this.localRoute + "getUserList")
   }
 
   getEmployee(email):Observable<any>{
-    return this.http.get(this.serverRoute + 'getEmployee?email=' + email);
+    return this.http.get(this.localRoute + 'getEmployee?email=' + email);
   }
 
   setRole(email, role):Observable<any>{
     let body = { "email": email, "role": role};
-    return this.http.post(this.serverRoute + 'setRole', body);
+    return this.http.post(this.localRoute + 'setRole', body);
   }
 
   getPersonalIP(email):Observable<any>{
-    return this.http.get(this.serverRoute + 'getPersonalIPList?email=' + email)
+    return this.http.get(this.localRoute + 'getPersonalIPList?email=' + email)
   }
 
   getIpFilteredByDate(email, dateIn, dateOut):Observable<any>{
-    return this.http.get(this.serverRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
+    return this.http.get(this.localRoute + 'getPersonalIPWithRange?email=' + email + "&dateStart=" + dateIn + "&dateEnd=" + dateOut);
   }
 
   downloadLogs(): Observable<any>{
-    return this.http.get(this.serverRoute + 'downloadLogs');
+    return this.http.get(this.localRoute + 'downloadLogs');
   }
 
 }

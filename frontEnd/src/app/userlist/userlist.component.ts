@@ -14,11 +14,20 @@ import { ModalUserComponent } from '../modal-user/modal-user.component';
 export class UserlistComponent implements OnInit {
   employees = [];
   modalRef: BsModalRef;
+  show: boolean;
+
   constructor(private router: Router, private sessionSt: SessionStorageService,
     private services: UserService, private modalService: BsModalService) {
     if (this.sessionSt.retrieve('email') == null){
       this.router.navigate([''])
     }
+    this.services.downloadLogs().subscribe((data) => {
+      if (data.response != undefined){
+        this.show = true;
+      }else{
+        this.show = false;
+      }
+    })
   }
 
   ngOnInit() {
