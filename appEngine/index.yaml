@@ -11,3 +11,4 @@ indexes:
   properties:
   - name: employee.email
   - name: checkin
+    direction: desc

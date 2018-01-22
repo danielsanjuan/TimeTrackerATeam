@@ -34,7 +34,7 @@ export class UserIpComponent implements OnInit {
     dateFormat: 'dd.mm.yyyy',
   };
 
-  ip_address = [];
+  ip_address = [{"date": "-"}];
 
   constructor(private router: Router,
               private sessionSt: SessionStorageService,

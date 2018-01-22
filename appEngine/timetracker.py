@@ -508,7 +508,7 @@ class MainPage(remote.Service):
         date = datetime.now()
         query = Workday.query()
         query = query.filter(Workday.employee.email == request.email)
-        day = query.order(Workday.checkin).get()
+        day = query.order(-Workday.checkin).get()
         if day.checkin != None:
             if day.checkout != None:
                 if (day.checkin.date() == date.date() and day.checkout.date() == date.date()):
