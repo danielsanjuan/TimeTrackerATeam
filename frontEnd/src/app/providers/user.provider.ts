@@ -36,7 +36,7 @@ export class UserService {
   }
 
   downloadLogs(): Observable<any>{
-    return this.http.get(this.localRoute + 'downloadLogs');
+    return this.http.get(this.serverRoute + 'downloadLogs');
   }
 
 }
