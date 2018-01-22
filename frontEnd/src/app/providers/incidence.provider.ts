@@ -16,33 +16,33 @@ export class IncidenceService {
   }
 
   getIncidenceReport():Observable<any>{
-    return this.http.get(this.localRoute + 'incidencesUsersList');
+    return this.http.get(this.serverRoute + 'incidencesUsersList');
   }
 
   getEmployee(email):Observable<any>{
-    return this.http.get(this.localRoute + 'getEmployee?email=' + email);
+    return this.http.get(this.serverRoute + 'getEmployee?email=' + email);
   }
 
   getPersonalIncidences(email):Observable<any>{
-    return this.http.get(this.localRoute + 'incidencesReport?email=' + email);
+    return this.http.get(this.serverRoute + 'incidencesReport?email=' + email);
   }
 
   setIncidencesChecked(email):Observable<any>{
     let body = { "email": email};
-    return this.http.post(this.localRoute + 'setCheckIncidence', body);
+    return this.http.post(this.serverRoute + 'setCheckIncidence', body);
   }
 
   solveIncidence(date):Observable<any>{
     let body = { "incidenceDate": date};
-    return this.http.post(this.localRoute + 'solveIncidence', body);
+    return this.http.post(this.serverRoute + 'solveIncidence', body);
   }
 
   getCheckHoursIncidence(email, dateOriginal):Observable<any>{
-    return this.http.get(this.localRoute + 'getCheckHours?email=' + email + '&date=' + dateOriginal);
+    return this.http.get(this.serverRoute + 'getCheckHours?email=' + email + '&date=' + dateOriginal);
   }
 
   setCheckHoursIncidence(key, email, checkin, checkout):Observable<any>{
     let body = { "key": key, "email": email, "dateUpdatedCheckIn": checkin, "dateUpdatedCheckOut": checkout, hrm: this.sessionSt.retrieve('email')};
-    return this.http.post(this.localRoute + 'changeCheckHours', body);
+    return this.http.post(this.serverRoute + 'changeCheckHours', body);
   }
 }
