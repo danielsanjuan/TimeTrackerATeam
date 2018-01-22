@@ -21,3 +21,14 @@ class SolveIncidence(messages.Message):
 
 class SolveIncidenceResponse(messages.Message):
     pass
+
+class Log(messages.Message):
+    hrm = messages.StringField(1)
+    employee = messages.StringField(2)
+    changesIn = messages.StringField(3)
+    changesOut = messages.StringField(4)
+    dateLog = messages.StringField(5)
+
+class LogsResponse(messages.Message):
+    response = messages.MessageField(Log, 1, repeated=True)
+    response_date = messages.StringField(2)

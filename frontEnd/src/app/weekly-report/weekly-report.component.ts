@@ -19,7 +19,8 @@ export class WeeklyReportComponent implements OnInit {
   };
   responsiveName: string[] = [];
   weekNumber: number = 0;
-  
+  yearNumber: number = 0;
+
   // Initialized to specific date (09.10.2018)
 
   constructor(private router: Router, private sessionSt: SessionStorageService, private services: CheckInService) {
@@ -31,13 +32,14 @@ export class WeeklyReportComponent implements OnInit {
   onDateChanged(event: IMyDateModel): void {
       //realizar llamada al metodo del servicio
       this.weekNumber = this.getWeekNumber(event.formatted);
+      this.yearNumber = event.date.year;
       this.services.getWeeklyReportWithDate(event.formatted).subscribe((data) => {
-        if (data.response_list != undefined){   
+        if (data.response_list != undefined){
           this.employees = data.response_list;
           this.setResponsiveName(this.employees);
         }else{
           this.employees = [];
-        }     
+        }
       });
   }
 
@@ -45,11 +47,11 @@ export class WeeklyReportComponent implements OnInit {
     this.services.getWeeklyReport().subscribe((data) => {
       if (data.response_list != undefined){
         this.employees = data.response_list;
-        this.setResponsiveName(this.employees);        
+        this.setResponsiveName(this.employees);
       }
     });
   }
-  
+
   setResponsiveName(employees){
     for (var i = 0; i < employees.length; i++) {
       let separate = employees[i].name.split(" ");
@@ -60,11 +62,12 @@ export class WeeklyReportComponent implements OnInit {
       }
     }
   }
-  
+
   getWeekNumber(date: string){
     let d = new Date(date.split('.').reverse().join('-'));
     d.setHours(0,0,0);
     d.setDate(d.getDate()+4-(d.getDay()||7));
     return Math.ceil((((d.getTime()-(new Date(d.getFullYear(),0,1)).getTime())/8.64e7)+1)/7);
   }
+
 }

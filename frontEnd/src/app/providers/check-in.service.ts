@@ -14,13 +14,11 @@ export class CheckInService {
   constructor( private http: HttpClient, private sessionSt:SessionStorageService) { }
 
   postCheckIn(ip):Observable<any>{
-    console.log("Esta es la ip tras el console: " + ip);
     let body = {"email": this.sessionSt.retrieve('email'), "ip": ip}
     return this.http.post(this.serverRoute + "check_in", body);
   }
 
   postCheckOut(ip):Observable<any>{
-    console.log("Esta es la ip del checkout: " + ip);
     let body = {"email": this.sessionSt.retrieve('email'), "ip": ip}
     return this.http.post(this.serverRoute + "check_out", body);
   }

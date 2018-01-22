@@ -98,7 +98,6 @@ export class CheckComponent implements OnInit {
   }
 
   timeCheckIn(){
-    console.log("Te estoy llamando");
     this.alertTimeNear();
     this.getIp();
     this.doCheckIn = false;
@@ -139,7 +138,7 @@ export class CheckComponent implements OnInit {
               break;
             }
           });
-        }, 700);
+        }, 1000);
       }
 
       getIp(){
@@ -189,7 +188,7 @@ export class CheckComponent implements OnInit {
                       break;
                 }
               });
-            }, 700);
+            }, 1000);
               this.readyCheckOut = false;
             }else{
               this.toastr.error('You should wait 5 minute to do checkout', 'Oops!');
@@ -205,7 +204,7 @@ export class CheckComponent implements OnInit {
     let day = this.whatDayIsIt(yyyy, mm, dd);
     let maxTotalHours = 10.5;
     let maxFridayTotalHours = 7.5;
-    let totalHours = this.hoursMock.split(":");
+    let totalHours = this.hours_week.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
 
     if(day > 0 && day < 4){
@@ -223,7 +222,7 @@ export class CheckComponent implements OnInit {
     let day = this.whatDayIsIt(yyyy, mm, dd);
     let maxTotalHours = 10.5;
     let maxFridayTotalHours = 7.5;
-    let totalHours = this.hoursMock.split(":");
+    let totalHours = this.hours_week.split(":");
     let totalWeekHours = parseInt(totalHours[0]) + (parseInt(totalHours[1])/60);
 
     if(day > 0 && day < 3){

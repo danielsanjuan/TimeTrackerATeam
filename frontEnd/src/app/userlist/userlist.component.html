@@ -1,4 +1,9 @@
-<div class="container prueba">
+<div class="row">
+  <div class="col-md-2 col-md-offset-10">
+    <Button><span (click)=(downloadLogs()) class='glyphicon glyphicon-file' tooltip="Download Logs as txt" placement="left"></span></Button>
+  </div>
+</div>
+<div class="container">
   <ng-container *ngIf="employees.length>0; else elseTemplate">
     <div class="table-responsive">
       <table class="table table-striped table-bordered">

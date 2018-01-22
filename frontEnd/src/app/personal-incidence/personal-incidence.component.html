@@ -23,7 +23,7 @@
     <tr *ngFor="let incidence of incidences">
       <td>{{incidence.date | date:'dd/MM/yyyy HH:mm'}}</td>
       <td>{{incidence.message}}</td>
-      <td><span (click)="openModal(incidence, template)" class='glyphicon glyphicon-eye-open' tooltip="Marcar incidencia como resuelta" placement="top"></span></td>
+      <td><span (click)="openModal(incidence, template)" class='glyphicon glyphicon-eye-open' tooltip="Manage incidence" placement="top"></span></td>
     </tr>
   </tbody>
 </table>

@@ -1,5 +1,8 @@
 <div class="container">
   <div class="row datePicker">
+    <div class="col-sm-6 col-md-8 visible-xs">
+        <p class="dateTitle"><b><h1>{{dateToday | date}}</h1></b></p>
+    </div>
     <div class="col-sm-6 col-md-4">
       <form>
         <label>Select a day to generate a IP report</label>
@@ -17,7 +20,7 @@
         </div>
       </form>
     </div>
-    <div class="col-sm-6 col-md-8">
+    <div class="col-sm-6 col-md-8 hidden-xs">
       <p><b><h1>{{dateToday | date}}</h1></b></p>
     </div>
   </div>
@@ -28,27 +31,29 @@
           <tr>
             <th center>#</th>
             <th>Employee</th>
-            <th>IP Check-in</th>
-            <th>IP Check-out</th>
-            <th>IP2 Check-in</th>
-            <th>IP2 Check-out</th>
-            <th>IP3 Check-in</th>
-            <th>IP3 Check-out</th>
+            <th class="hidden-xs">IP Check-in</th>
+            <th class="hidden-xs">IP Check-out</th>
+            <th class="hidden-sm hidden-xs">IP Check-in 2</th>
+            <th class="hidden-sm hidden-xs">IP Check-out 2</th>
+            <th class="hidden-sm hidden-xs">IP Check-in 3</th>
+            <th class="hidden-sm hidden-xs">IP Check-out 3</th>
+            <th class="visible-sm visible-xs">All IPs</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let employee of employees; let i = index">
-            <th scope="row"><button type="button" (click)="goToPersonalIps(employee.response_list_employee.email)" class="btn btn-primary">
+            <th scope="row"><button type="button" (click)="goToPersonalIps(employee.response_list_employee.email)" class="btn btn-primary" title="See all IP from an user">
               <span class="glyphicon glyphicon-list-alt"></span>
             </button></th>
-            <td class="hidden-xs">{{employee.response_list_employee.name}}</td>
-            <td class="visible-xs">{{responsiveName[i]}}</td>
-            <td>{{employee.response_list_ip.ip1}}</td>
-            <td>{{employee.response_list_ip.ip2}}</td>
-            <td>{{employee.response_list_ip.ip3}}</td>
-            <td>{{employee.response_list_ip.ip4}}</td>
-            <td>{{employee.response_list_ip.ip5}}</td>
-            <td>{{employee.response_list_ip.ip6}}</td>
+            <td class="hidden-sm hidden-xs margin">{{employee.response_list_employee.name}}</td>
+            <td class="visible-sm visible-xs margin">{{responsiveName[i]}}</td>
+            <td class="hidden-xs margin">{{employee.response_list_ip.ip1}}</td>
+            <td class="hidden-xs margin">{{employee.response_list_ip.ip2}}</td>
+            <td class="hidden-sm hidden-xs margin">{{employee.response_list_ip.ip3}}</td>
+            <td class="hidden-sm hidden-xs margin">{{employee.response_list_ip.ip4}}</td>
+            <td class="hidden-sm hidden-xs margin">{{employee.response_list_ip.ip5}}</td>
+            <td class="hidden-sm hidden-xs margin">{{employee.response_list_ip.ip6}}</td>
+            <td class="visible-sm visible-xs margin"><span (click)="openModal(template)" class='glyphicon glyphicon-eye-open' tooltip="View all" placement="top"></span></td>
           </tr>
         </tbody>
       </table>
@@ -66,4 +71,42 @@
       </div>
     </div>
   </ng-template>
+  <ng-template #template>
+      <div class="modal-body">
+        <div *ngFor="let employee of employees; let i = index">
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h1 class="modal-title pull-left">{{responsiveName[i]}}</h1>
+            </div>
+            <div class="col-md-1 col-md-offset-2">
+              <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <table class="table table-striped table-bordered">
+            <tr>
+              <th>#</th>
+              <th>IP Check-in</th>
+              <th>IP Check-out</th>
+            </tr>
+            <tr>
+              <td>IP-1</td>
+              <td>{{employee.response_list_ip.ip1}}</td>
+              <td>{{employee.response_list_ip.ip2}}</td>
+            </tr>
+            <tr>
+              <td>IP-2</td>
+              <td>{{employee.response_list_ip.ip3}}</td>
+              <td>{{employee.response_list_ip.ip4}}</td>
+            </tr>
+            <tr>
+              <td>IP-3</td>
+              <td>{{employee.response_list_ip.ip5}}</td>
+              <td>{{employee.response_list_ip.ip6}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </ng-template>
 </div>
