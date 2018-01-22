@@ -77,7 +77,7 @@ export class UserIpComponent implements OnInit {
   setSolved(companyTimeTrackerForm: NgForm){
     if (new Date(companyTimeTrackerForm.value.dateIn) > new Date(companyTimeTrackerForm.value.dateOut)){
       this.toastr.error('StartDate should be minor than EndDate', 'Invalid range of date');
-      this.ip_address = [];
+      this.ip_address = [{"date": "-"}];
     }else{
       this.services.getIpFilteredByDate(this.emailUser, companyTimeTrackerForm.value.dateIn,  companyTimeTrackerForm.value.dateOut).subscribe((data) => {
         this.ip_address = data.response_list;
