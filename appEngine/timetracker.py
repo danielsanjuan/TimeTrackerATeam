@@ -73,6 +73,17 @@ class Logs(ndb.Model):
     changesOut = ndb.StringProperty(indexed=True)
     dateLog = ndb.DateTimeProperty(indexed=True)
 
+def autoCheckOut(self, request):
+    mainPage = MainPage()
+    date = datetime.now()
+    query = Workday.query()
+    query = query.filter(Workday.checkout == None).fetch()
+    for userWithoutCheckOut in query:
+        userWithoutCheckOut.checkout = date
+        userWithoutCheckOut.put()
+        mainPage.set_incidences("The user didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
+
+    return message_types.VoidMessage()
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -700,18 +711,6 @@ class MainPage(remote.Service):
         query.solved = True
         query.put()
         return SolveIncidenceResponse()
-
-    @endpoints.method(message_types.VoidMessage, message_types.VoidMessage, path='autoCheckOut', http_method='GET', name='autoCheckOut')
-    def autoCheckOut(self, request):
-        date = datetime.now()
-        query = Workday.query()
-        query = query.filter(Workday.checkout == None).fetch()
-        for userWithoutCheckOut in query:
-            userWithoutCheckOut.checkout = date
-            userWithoutCheckOut.put()
-            self.set_incidences("The user didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
-
-        return message_types.VoidMessage()
 
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):
