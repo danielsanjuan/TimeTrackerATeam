@@ -73,6 +73,11 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   setSolved(formValues) {
+    if (formValues.check_out.split('T')[1].split(':').length < 3){
+      formValues.check_out += ":00";
+    }else if (formValues.check_in.split('T')[1].split(':').length < 3){
+      formValues.check_in += ":00";
+    }
     if(formValues.check_in){
       if (formValues.check_out != undefined){
         this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + "." + this.checkinmilli, formValues.check_out.replace('T', ' ') + "." + this.checkoutmilli).subscribe((data) => {
