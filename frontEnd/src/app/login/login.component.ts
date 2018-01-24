@@ -11,10 +11,6 @@ export class LoginComponent implements OnInit {
   constructor(private loginServer: LoginProvider) { }
 
   ngOnInit() {
-
-  }
-
-  ngAfterViewInit(){
     this.loginServer.googleInit();
   }
 }
