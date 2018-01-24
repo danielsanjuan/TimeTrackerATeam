@@ -76,6 +76,9 @@ class Logs(ndb.Model):
 def autoCheckOut(self, request):
     mainPage = MainPage()
     date = datetime.now()
+    date = str(date).split(' ')[0]
+    date = date + " 19:00:00.000"
+    date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
     query = Workday.query()
     query = query.filter(Workday.checkout == None).fetch()
     for userWithoutCheckOut in query:
