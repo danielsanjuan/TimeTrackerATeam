@@ -82,8 +82,8 @@ def autoCheckOut(self, request):
         userWithoutCheckOut.checkout = date
         userWithoutCheckOut.put()
         mainPage.set_incidences("The user didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
-
-    return message_types.VoidMessage()
+    response = {"status": "200"}
+    return response
 
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
@@ -154,15 +154,15 @@ class MainPage(remote.Service):
         count = 1
         query = Workday.query()
         if query is None:
-            return False
+            return count
         else:
             query = query.filter(Workday.employee.email == email)
             for workday in query:
                 if workday.checkin.date() == date.date() and count <= 3:
                     count = count + 1
                 if count > 3:
-                    return True
-            return False
+                    return count
+            return count
 
     def singleReport(self, currentEmployee, date):
         report = JsonMessage()
@@ -459,7 +459,9 @@ class MainPage(remote.Service):
         date = datetime.now()
         hm = str(date.time())[0:5]
         companyTimes = CompanyTimes.query().get()
-        if self.filter_checkin(date, request.email):
+        numberOfCheckin = self.filter_checkin(date, request.email)
+
+        if numberOfCheckin > 3:
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite 3 checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
             if str(date.time()) >= companyTimes.checkinmin and str(date.time()) < companyTimes.checkinmax:
@@ -472,9 +474,10 @@ class MainPage(remote.Service):
                 return CheckInResponseMessage(response_code = 406, response_status = "Check in fuera de hora", response_date = date.strftime("%y%b%d%H:%M:%S"))
             else:
                 self.set_checkin(date, request.email, request.ip)
-                message = " has done a check-in after limit hour."
-                check = False
-                self.set_incidences(message, date, request.email, check)
+                if numberOfCheckin == 1:
+                    message = " has done a check-in after limit hour."
+                    check = False
+                    self.set_incidences(message, date, request.email, check)
                 return CheckInResponseMessage(response_code = 202, response_status = "Check in correcto. Se ha generado un reporte", response_date = date.strftime("%y%b%d%H:%M:%S"))
 
     @endpoints.method(CheckOutMessage, CheckOutResponseMessage,
