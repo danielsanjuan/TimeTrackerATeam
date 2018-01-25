@@ -738,7 +738,7 @@ class MainPage(remote.Service):
         if request.dateUpdatedCheckOut is not None:
             if (request.dateUpdatedCheckIn < request.dateUpdatedCheckOut and
             query.checkinmin <= request.dateUpdatedCheckIn.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckIn.split(' ')[1] and
-            query.checkinmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1]):
+            query.checkinmin <= request.dateUpdatedCheckOut.split(' ')[1] and query.checkoutmax >= request.dateUpdatedCheckOut.split(' ')[1][0:4]):
                 query = Workday.query()
                 query = query.filter(Workday.employee.email == request.email)
                 for day in query:
