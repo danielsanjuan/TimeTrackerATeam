@@ -54,6 +54,7 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   openModal(incidence, template: TemplateRef<any>) {
+    incidence.date = (incidence.date.indexOf('.') >= 0 ? incidence.date : (incidence.date + '.000'));
     this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
       this.key = data.response_change_check.key;
       if (data.response_change_check.checkin != "None") {
