@@ -18,7 +18,8 @@ class IncidencesReportResponseMessage(messages.Message):
 
 class SolveIncidence(messages.Message):
     incidenceDate = messages.StringField(1)
-
+    email = messages.StringField(2)
+    
 class SolveIncidenceResponse(messages.Message):
     pass
 
