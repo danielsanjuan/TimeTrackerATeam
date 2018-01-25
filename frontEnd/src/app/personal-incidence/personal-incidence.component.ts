@@ -54,18 +54,18 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   openModal(incidence, template: TemplateRef<any>) {
-    incidence.date = (incidence.date.indexOf('.') >= 0 ? incidence.date : (incidence.date + '.000'));
+    incidence.date = incidence.date.indexOf('.') >= 0 ? incidence.date : (incidence.date + '.000');
     this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
       this.key = data.response_change_check.key;
       if (data.response_change_check.checkin != "None") {
         let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].split('.')[0];
         this.check_in = dateStringIn;
-        this.checkinmilli = data.response_change_check.checkin.split('.')[1];
+        this.checkinmilli = data.response_change_check.checkin.indexOf('.') >= 0 ?  data.response_change_check.checkin.split('.')[1] : '000';
       }
       if (data.response_change_check.checkout != "None") {
         let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
         this.check_out = dateStringOut;
-        this.checkoutmilli = data.response_change_check.checkout.split('.')[1];
+        this.checkoutmilli = data.response_change_check.checkout.indexOf('.') >= 0 ?  data.response_change_check.checkout.split('.')[1] : '000';
       }
       this.rForm.patchValue({check_in: this.check_in, check_out: this.check_out});
     });
