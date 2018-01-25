@@ -34,7 +34,7 @@ export class PersonalIncidenceComponent implements OnInit {
     vcr: ViewContainerRef,) {
       this.toastr.setRootViewContainerRef(vcr);
       this.rForm = this.fb.group({
-        check_in: ["22/01/2018T10:00:00", Validators.required],
+        check_in: ["22-01-2018T10:00:00", Validators.required],
         check_out: [""]
       });
   }
@@ -54,18 +54,18 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   openModal(incidence, template: TemplateRef<any>) {
-    incidence.date = incidence.date.indexOf('.') >= 0 ? incidence.date : (incidence.date + '.000');
+    incidence.date = incidence.date.indexOf('.') >= 0 ? incidence.date : (incidence.date + '.000000');
     this.services.getCheckHoursIncidence(this.email, incidence.date).subscribe((data) => {
       this.key = data.response_change_check.key;
       if (data.response_change_check.checkin != "None") {
         let dateStringIn = data.response_change_check.checkin.split(' ')[0] + 'T' + data.response_change_check.checkin.split(' ')[1].split('.')[0];
         this.check_in = dateStringIn;
-        this.checkinmilli = data.response_change_check.checkin.indexOf('.') >= 0 ?  data.response_change_check.checkin.split('.')[1] : '000';
+        this.checkinmilli = data.response_change_check.checkin.indexOf('.') >= 0 ?  data.response_change_check.checkin.split('.')[1] : '000000';
       }
       if (data.response_change_check.checkout != "None") {
         let dateStringOut = data.response_change_check.checkout.split(' ')[0] + 'T' + data.response_change_check.checkout.split(' ')[1].split('.')[0];
         this.check_out = dateStringOut;
-        this.checkoutmilli = data.response_change_check.checkout.indexOf('.') >= 0 ?  data.response_change_check.checkout.split('.')[1] : '000';
+        this.checkoutmilli = data.response_change_check.checkout.indexOf('.') >= 0 ?  data.response_change_check.checkout.split('.')[1] : '000000';
       }
       this.rForm.patchValue({check_in: this.check_in, check_out: this.check_out});
     });
@@ -86,6 +86,7 @@ export class PersonalIncidenceComponent implements OnInit {
             this.error = 200;
             this.toastr.success('Success!');
             this.services.solveIncidence(this.incidence.date).subscribe((data) => {
+              console.log("Query del solve " + data.response);
               setTimeout(() => {
                 this.zone.run(() => {
                   this.modalRef.hide();
@@ -101,7 +102,7 @@ export class PersonalIncidenceComponent implements OnInit {
           }
         });
       }else{
-        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".100", null).subscribe((data) => {
+        this.services.setCheckHoursIncidence(this.key, this.email, formValues.check_in.replace('T', ' ') + ".000000", null).subscribe((data) => {
           if (data.response_code == 200){
             this.error = 200;
             this.toastr.success('Success!');

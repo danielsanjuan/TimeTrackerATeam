@@ -20,7 +20,7 @@ class SolveIncidence(messages.Message):
     incidenceDate = messages.StringField(1)
 
 class SolveIncidenceResponse(messages.Message):
-    pass
+    response = messages.StringField(1)
 
 class Log(messages.Message):
     hrm = messages.StringField(1)

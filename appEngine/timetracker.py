@@ -77,7 +77,7 @@ def autoCheckOut(self, request):
     mainPage = MainPage()
     date = datetime.now()
     date = str(date).split(' ')[0]
-    date = date + " 19:00:00.000"
+    date = date + " 19:00:00.000000"
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
     query = Workday.query()
     query = query.filter(Workday.checkout == None).fetch()
@@ -716,7 +716,7 @@ class MainPage(remote.Service):
         query = query.filter(Incidences.incidenceDate == datetime.strptime(request.incidenceDate, "%Y-%m-%d %H:%M:%S.%f")).get()
         query.solved = True
         query.put()
-        return SolveIncidenceResponse()
+        return SolveIncidenceResponse(response=str(query))
 
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):
