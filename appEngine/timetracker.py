@@ -712,11 +712,11 @@ class MainPage(remote.Service):
 
     @endpoints.method(SolveIncidence, SolveIncidenceResponse, path='solveIncidence', http_method='POST', name='solveIncidence')
     def solveIncidence(self, request):
-        query = Incidences.query()
+        query = Incidences.query(Incidences.employee.email == request.email)
         query = query.filter(Incidences.incidenceDate == datetime.strptime(request.incidenceDate, "%Y-%m-%d %H:%M:%S.%f")).get()
         query.solved = True
         query.put()
-        return SolveIncidenceResponse(response=str(query))
+        return SolveIncidenceResponse()
 
     @endpoints.method(ChangeCheckHoursMessage, ChangeCheckHoursResponseMessage, path='getCheckHours', http_method='GET', name='getCheckHours')
     def getCheckHours(self, request):

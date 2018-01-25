@@ -85,8 +85,7 @@ export class PersonalIncidenceComponent implements OnInit {
           if (data.response_code == 200){
             this.error = 200;
             this.toastr.success('Success!');
-            this.services.solveIncidence(this.incidence.date).subscribe((data) => {
-              console.log("Query del solve " + data.response);
+            this.services.solveIncidence(this.incidence.date, this.email).subscribe((data) => {
               setTimeout(() => {
                 this.zone.run(() => {
                   this.modalRef.hide();
@@ -106,7 +105,7 @@ export class PersonalIncidenceComponent implements OnInit {
           if (data.response_code == 200){
             this.error = 200;
             this.toastr.success('Success!');
-            this.services.solveIncidence(this.incidence.date).subscribe((data) => {
+            this.services.solveIncidence(this.incidence.date, this.email).subscribe((data) => {
               setTimeout(() => {
                 this.zone.run(() => {
                   this.modalRef.hide();
