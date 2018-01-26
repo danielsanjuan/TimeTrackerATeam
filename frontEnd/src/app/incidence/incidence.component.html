@@ -1,13 +1,13 @@
 <ng-container *ngIf="employees.length > 0; else noReportWeek">
   <div class="row margin_thumbnail">
-    <div (click)="showPersonalIncidence(employee.email)" class="col-xs-12 col-sm-4 col-md-3" *ngFor="let employee of employees">
+    <div (click)="showPersonalIncidence(employee.email)" class="col-xs-12 col-sm-4 col-md-3" *ngFor="let employee of employees; let i = index">
       <div class="thumbnail">
         <a>
           <img class="img-size" src="{{employee.image}}" alt="">
           <span class="badge">{{employee.incidencesNumber}}</span>
       </a>
         <div class="text-center">
-          <p>{{employee.name}}</p>
+          <p>{{responsiveName[i]}}</p>
           <p>{{employee.email}}</p>
         </div>
       </div>

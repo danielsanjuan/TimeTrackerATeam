@@ -84,7 +84,7 @@ def autoCheckOut(self, request):
     for userWithoutCheckOut in query:
         userWithoutCheckOut.checkout = date
         userWithoutCheckOut.put()
-        mainPage.set_incidences("The user didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
+        mainPage.set_incidences(" didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
     response = {"status": "200"}
     return response
 
@@ -98,20 +98,20 @@ class MainPage(remote.Service):
     def createLogs(self, workday, request, check_in, check_out, newCheckin=0, newCheckout=0):
         if check_in and check_out:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesIn=str(request.hrm) + " ha realizado el cambio en el campo checkin en esta fecha: " + str(workday.checkin) + ", a esta nueva fecha: " + str(newCheckin),
-            changesOut=str(request.hrm) + " ha realizado el cambio en el campo checkout en esta fecha: " + str(workday.checkout) + ", a esta nueva fecha: " + str(newCheckout),
+            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin),
+            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout),
             dateLog=datetime.now()).put()
         elif check_in:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesIn=str(request.hrm) + " ha realizado el cambio en el campo checkin en esta fecha: " + str(workday.checkin) + ", a esta nueva fecha: " + str(newCheckin),
+            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin),
             dateLog=datetime.now()).put()
         elif check_out:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesOut=str(request.hrm) + " ha realizado el cambio en el campo checkout en esta fecha: " + str(workday.checkout) + ", a esta nueva fecha: " + str(newCheckout),
+            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout),
             dateLog=datetime.now()).put()
         else:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesOut=str(request.hrm) + " ha visto la incidencia de: " + str(workday.employee.email) + " el dia de: " + str(workday.checkin) + " y se ha resuelto sin cambios",
+            changesOut=str(request.hrm) + " has seen the incidence: " + str(workday.employee.email) + " on: " + str(workday.checkin) + " and was solved with no incidences",
             dateLog=datetime.now()).put()
 
     def set_companyTimes(self, checkinminMT, checkinmaxMT, checkoutminMT, checkoutmaxMT, checkoutminF, checkoutmaxF):
