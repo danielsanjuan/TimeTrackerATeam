@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CheckComponent implements OnInit {
   checkOutTime: string = "" ;
-  doCheckIn:boolean = true;
+  doCheckIn:boolean = false;
   doCheckOut:boolean = false;
   E202:boolean=false;
   E406:boolean=false;
@@ -64,7 +64,6 @@ export class CheckComponent implements OnInit {
       });
       this.services.getWorkedHoursToday().subscribe((data)=>{
         this.hoursWorked=parseInt(data.response_date);
-
         this.hours_today = this.formatHour(this.hoursWorked);
         if (this.doCheckOut)
         this.startTiming();
