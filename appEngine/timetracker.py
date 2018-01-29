@@ -77,7 +77,10 @@ def autoCheckOut(self, request):
     mainPage = MainPage()
     date = datetime.now()
     date = str(date).split(' ')[0]
-    date = date + " 19:00:00.000000"
+    if date.weekday() == 4:
+        date = date + " 15:00:00.000000"
+    else:
+        date = date + " 19:00:00.000000"
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
     query = Workday.query()
     query = query.filter(Workday.checkout == None).fetch()
@@ -463,7 +466,6 @@ class MainPage(remote.Service):
         hm = str(date.time())[0:5]
         companyTimes = CompanyTimes.query().get()
         numberOfCheckin = self.filter_checkin(date, request.email)
-
         if numberOfCheckin > 3:
             return CheckInResponseMessage(response_code = 500, response_status = "Solo se permite 3 checkin diario", response_date = date.strftime("%y%b%d%H:%M:%S"))
         else:
