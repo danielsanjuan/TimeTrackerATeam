@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IncidenceService } from '../providers/incidence.provider';
+import { SessionStorageService } from 'ngx-webstorage';
+
+
 @Component({
   selector: 'app-incidence',
   templateUrl: './incidence.component.html',
@@ -11,7 +14,11 @@ export class IncidenceComponent implements OnInit {
   employees: any = [];
   responsiveName: string[] = [];
 
-  constructor(private router: Router, private service: IncidenceService) { }
+  constructor(private router: Router, private service: IncidenceService, private sessionSt: SessionStorageService) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
+  }
 
 
   ngOnInit() {

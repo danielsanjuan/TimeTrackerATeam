@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { SessionStorageService } from 'ngx-webstorage';
+
 
 @Component({
   selector: 'app-personal-incidence',
@@ -30,8 +32,11 @@ export class PersonalIncidenceComponent implements OnInit {
   error: number = 200;
 
   constructor(private zone: NgZone, private route: ActivatedRoute, private services: IncidenceService,
-    private modalService: BsModalService, private router: Router, private fb: FormBuilder, public toastr: ToastsManager,
+    private modalService: BsModalService, private router: Router, private fb: FormBuilder, public toastr: ToastsManager, private sessionSt: SessionStorageService,
     vcr: ViewContainerRef,) {
+      if (this.sessionSt.retrieve('email') == null){
+        this.router.navigate([''])
+      }
       this.toastr.setRootViewContainerRef(vcr);
       this.rForm = this.fb.group({
         check_in: ["22-01-2018T10:00:00", Validators.required],

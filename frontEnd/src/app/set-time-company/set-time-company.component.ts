@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { NgForm, RequiredValidator } from '@angular/forms';
+import { SessionStorageService } from 'ngx-webstorage';
 import { CheckInService } from '../providers/check-in.service';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import {ToastOptions} from 'ng2-toastr';
 import { LoginProvider } from "../providers/login.provider";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-set-time-company',
@@ -18,7 +20,10 @@ export class SetTimeCompanyComponent implements OnInit  {
   checkout_minfriday: string;
   checkout_maxfriday: string;
 
-  constructor(private provider: LoginProvider, private services: CheckInService, public toastr: ToastsManager, vcr: ViewContainerRef) {
+  constructor(private router: Router, private provider: LoginProvider, private services: CheckInService, public toastr: ToastsManager, vcr: ViewContainerRef, private sessionSt: SessionStorageService) {
+    if (this.sessionSt.retrieve('email') == null){
+      this.router.navigate([''])
+    }
     this.toastr.setRootViewContainerRef(vcr);
   }
 

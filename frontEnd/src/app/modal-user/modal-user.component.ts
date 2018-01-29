@@ -4,6 +4,7 @@ import { UserService } from '../providers/user.provider';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { SessionStorageService } from 'ngx-webstorage';
 
 
 
@@ -26,7 +27,10 @@ export class ModalUserComponent implements OnInit {
               private services: UserService,
               public toastr: ToastsManager,
               vcr: ViewContainerRef,
-              private zone: NgZone) {
+              private zone: NgZone, private sessionSt: SessionStorageService) {
+                if (this.sessionSt.retrieve('email') == null){
+                  this.router.navigate([''])
+                }
     this.toastr.setRootViewContainerRef(vcr);
   }
 

@@ -26,7 +26,11 @@ export class AccessComponent implements OnInit {
   constructor(private router: Router,
     private sessionSt: SessionStorageService,
     private modalService: BsModalService,
-    private services: CheckInService) { }
+    private services: CheckInService) {
+      if (this.sessionSt.retrieve('email') == null){
+        this.router.navigate([''])
+      }
+     }
 
   ngOnInit() {
     this.services.getDateNow().subscribe((data) => {

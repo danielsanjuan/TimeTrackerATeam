@@ -86,6 +86,7 @@ def autoCheckOut(self, request):
     query = query.filter(Workday.checkout == None).fetch()
     for userWithoutCheckOut in query:
         userWithoutCheckOut.checkout = date
+        userWithoutCheckOutself.ipAddressOut = "auto"
         userWithoutCheckOut.put()
         mainPage.set_incidences(" didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
     response = {"status": "200"}
@@ -101,16 +102,16 @@ class MainPage(remote.Service):
     def createLogs(self, workday, request, check_in, check_out, newCheckin=0, newCheckout=0):
         if check_in and check_out:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin),
-            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout),
+            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin) + ", from this employee: " + str(workday.employee.email),
+            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout) + ", from this employee: " + str(workday.employee.email),
             dateLog=datetime.now()).put()
         elif check_in:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin),
+            changesIn=str(request.hrm) + " has updated field checkin with date: " + str(workday.checkin) + ", to date: " + str(newCheckin) + ", from this employee: " + str(workday.employee.email),
             dateLog=datetime.now()).put()
         elif check_out:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout),
+            changesOut=str(request.hrm) + " has updated field checkout with date: " + str(workday.checkout) + ", to date: " + str(newCheckout) + ", from this employee: " + str(workday.employee.email),
             dateLog=datetime.now()).put()
         else:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,

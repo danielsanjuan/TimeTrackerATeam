@@ -41,6 +41,9 @@ export class CheckComponent implements OnInit {
                public toastr: ToastsManager, vcr: ViewContainerRef,
                private localSt: LocalStorageService,
                private _http: HttpClient) {
+                 if (this.sessionSt.retrieve('email') == null){
+                   this.router.navigate([''])
+                 }
                  this.toastr.setRootViewContainerRef(vcr);
   }
 
