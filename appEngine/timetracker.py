@@ -87,7 +87,7 @@ def autoCheckOut(self, request):
     query = query.filter(Workday.checkout == None).fetch()
     for userWithoutCheckOut in query:
         userWithoutCheckOut.checkout = date
-        userWithoutCheckOutself.ipAddressOut = "auto"
+        userWithoutCheckOut.ipAddressOut = "auto"
         userWithoutCheckOut.put()
         mainPage.set_incidences(" didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
     response = {"status": "200"}
