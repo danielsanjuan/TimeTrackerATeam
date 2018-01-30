@@ -33,7 +33,7 @@ export class UserIpComponent implements OnInit {
     // other options...
     dateFormat: 'dd.mm.yyyy',
   };
-
+  currentUser: any = [];
   ip_address = [{"date": "-"}];
 
   constructor(private router: Router,
@@ -94,8 +94,10 @@ export class UserIpComponent implements OnInit {
       }
   }
 
-  openModal(template: TemplateRef<any>){
+  openModal(template: TemplateRef<any>, currentUser){
+    this.currentUser = currentUser;
     this.modalRef = this.modalService.show(template);
+
   }
 
 }

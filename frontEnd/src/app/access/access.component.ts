@@ -22,6 +22,7 @@ export class AccessComponent implements OnInit {
   today: string;
   dateToday: Date;
   modalRef: BsModalRef;
+  currentUser: any = [];
 
   constructor(private router: Router,
     private sessionSt: SessionStorageService,
@@ -82,7 +83,9 @@ export class AccessComponent implements OnInit {
     }
   }
 
-  openModal(template: TemplateRef<any>){
+  openModal(template: TemplateRef<any>, currentUser){
+    this.currentUser = currentUser;
+    console.log(currentUser.response_list_employee.name)
     this.modalRef = this.modalService.show(template);
   }
 

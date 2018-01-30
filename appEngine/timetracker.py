@@ -116,7 +116,7 @@ class MainPage(remote.Service):
             dateLog=datetime.now()).put()
         else:
             logs = Logs (hrm=request.hrm, employee=workday.employee.email,
-            changesOut=str(request.hrm) + " has seen the incidence: " + str(workday.employee.email) + " on: " + str(workday.checkin) + " and was solved with no incidences",
+            changesOut=str(request.hrm) + " has seen the incidence: " + str(workday.employee.email) + " on: " + str(workday.checkin) + " and was solved without changes",
             dateLog=datetime.now()).put()
 
     def set_companyTimes(self, checkinminMT, checkinmaxMT, checkoutminMT, checkoutmaxMT, checkoutminF, checkoutmaxF):

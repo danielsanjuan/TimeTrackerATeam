@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CheckComponent implements OnInit {
   checkOutTime: string = "" ;
-  doCheckIn:boolean = false;
+  doCheckIn:boolean = true;
   doCheckOut:boolean = false;
   E202:boolean=false;
   E406:boolean=false;
