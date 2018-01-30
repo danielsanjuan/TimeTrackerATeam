@@ -48,7 +48,7 @@ const appRoutes: Routes = [
   { path: 'userlist', component: UserlistComponent, canActivate: [ProtectingRoutesGuard] },
   { path: 'modaluser/:email', component: ModalUserComponent },
   { path: 'userIP/:email', component: UserIpComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: '**', redirectTo: 'login', pathMatch: 'full' }
 ];
 
 @NgModule({
