@@ -85,7 +85,6 @@ export class AccessComponent implements OnInit {
 
   openModal(template: TemplateRef<any>, currentUser){
     this.currentUser = currentUser;
-    console.log(currentUser.response_list_employee.name)
     this.modalRef = this.modalService.show(template);
   }
 
