@@ -5,3 +5,6 @@ cron:
 - description: friday automatic checkout
   url: /_ah/api/timetracker/v1/autoCheckOut
   schedule: every friday 15:00
+- description: substract time at 15:00
+  url: /timetracker/substractTime
+  schedule: every monday, tuesday, wednesday, thursday 15:00

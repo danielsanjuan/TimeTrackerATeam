@@ -79,9 +79,12 @@ export class PersonalIncidenceComponent implements OnInit {
   }
 
   setSolved(formValues) {
-    if (formValues.check_out.split('T')[1].split(':').length < 3){
-      formValues.check_out += ":00";
-    }else if (formValues.check_in.split('T')[1].split(':').length < 3){
+    if(formValues.check_out != undefined){
+      if (formValues.check_out.split('T')[1].split(':').length < 3){
+        formValues.check_out += ":00";
+      }
+    }
+    if (formValues.check_in.split('T')[1].split(':').length < 3){
       formValues.check_in += ":00";
     }
     if(formValues.check_in){

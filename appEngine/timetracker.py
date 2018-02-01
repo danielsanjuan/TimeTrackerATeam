@@ -93,6 +93,15 @@ def autoCheckOut(self, request):
     response = {"status": "200"}
     return response
 
+def substractTime(self, request):
+    query = Workday.query()
+    query = query.filter(Workday.checkout == None).fetch()
+    for workday in query:
+        if workday.checkin.hour < 14:
+            workday.checkin = workday.checkin + timedelta(0,3600)
+            workday.put()
+    response = {"status": "200"}
+    return response
 # [START main_page]
 @endpoints.api(name='timetracker', version='v1',
         allowed_client_ids=['678273591464-2donjmj0olnnsvmsp1308fd3ufl818dm.apps.googleusercontent.com'],

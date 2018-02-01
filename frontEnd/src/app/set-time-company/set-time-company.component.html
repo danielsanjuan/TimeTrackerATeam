@@ -9,8 +9,8 @@
     <form class="margin" #companyTimeTrackerForm="ngForm" (ngSubmit)="onFormSubmit(companyTimeTrackerForm)">
       <div class="form-group col-sm-6 col-md-4">
 
-        <label for="checkin-min">Checkin Minimun Time</label>
-        <span data-toggle="tooltip" title="Set the checkin minimun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
+        <label for="checkin-min">Checkin Minimum Time</label>
+        <span data-toggle="tooltip" title="Set the checkin minimum time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
         <input class="form-control" type="time" name="checkinmin" [(ngModel)]="checkin_min" #checkinmin="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
@@ -19,8 +19,8 @@
         <input class="form-control" type="time" name="checkinmax" [(ngModel)]="checkin_max" #checkinmax="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
-        <label for="checkout-min">Checkout Minimun Time</label>
-        <span data-toggle="tooltip" title="Set the checkout minimun time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
+        <label for="checkout-min">Checkout Minimum Time</label>
+        <span data-toggle="tooltip" title="Set the checkout minimum time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
         <input class="form-control" type="time" name="checkoutmin" [(ngModel)]="checkout_min" #checkoutmin="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
@@ -29,13 +29,13 @@
         <input class="form-control" type="time" name="checkoutmax" [(ngModel)]="checkout_max" #checkoutmax="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
-        <label for="checkout-min-friday">Checkout Minimun Friday Time</label>
-        <span data-toggle="tooltip" title="Set the checkout minimun friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
+        <label for="checkout-min-friday">Checkout Minimum Friday Time</label>
+        <span data-toggle="tooltip" title="Set the checkout minimum friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
         <input class="form-control" type="time" name="checkoutminfriday" [(ngModel)]="checkout_minfriday" #checkoutminfriday="ngModel" required>
       </div>
       <div class="form-group col-sm-6 col-md-4">
         <label for="checkout-max-friday">Checkout Maximum Friday Time</label>
-        <span data-toggle="tooltip" title="Set the checkout minimun friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
+        <span data-toggle="tooltip" title="Set the checkout minimum friday time to change the structure of the timeTracker" class="glyphicon glyphicon-exclamation-sign"></span>
         <input class="form-control" type="time" name="checkoutmaxfriday" [(ngModel)]="checkout_maxfriday" #checkoutmaxfriday="ngModel" required>
       </div>
       <div class="col-sm-4 col-sm-offset-4 margin">

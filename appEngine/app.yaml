@@ -9,6 +9,9 @@ handlers:
   script: timetracker.autoCheckOut
   secure: always
 
+- url: /timetracker/substractTime  
+  script: timetracker.substractTime
+
 - url: /_ah/spi/.*
   script: timetracker.application
   secure: always

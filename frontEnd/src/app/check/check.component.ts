@@ -78,13 +78,17 @@ export class CheckComponent implements OnInit {
   startTiming(){
       this.timer = setInterval(() => {
         this.playTimer(this.doCheckOut)
-    },59000);
+    },60000);
   }
 
   playTimer(boleano){
     if (boleano){
       this.hoursWorked= this.hoursWorked +60000;
       this.week= this.week +60000;
+      if (new Date().getUTCHours() == 15 && new Date().getUTCMinutes() == 0 && this.hoursWorked > 3600000){
+        this.hoursWorked  = this.hoursWorked -3600000;
+        this.week = this.week -  3600000;
+      }
       this.hours_today = this.formatHour(this.hoursWorked);
       this.hours_week = this.formatHour(this.week);
     }
