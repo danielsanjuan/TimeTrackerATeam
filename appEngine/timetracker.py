@@ -90,9 +90,9 @@ def autoCheckOut(self, request):
         userWithoutCheckOut.checkout = date
         userWithoutCheckOut.ipAddressOut = "auto"
         userWithoutCheckOut.total = int((userWithoutCheckOut.checkout - userWithoutCheckOut.checkin).total_seconds() * 1000)
-        substractTime(self, query)
         userWithoutCheckOut.put()
         mainPage.set_incidences(" didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
+    substractTime(self, query)
     response = {"status": "200"}
     return response
 
@@ -101,20 +101,20 @@ def substractTime(self, request):
     count = 0
     y = None
     request = request.order(Workday.employee.email)
-    x = "sergio@edosoft.es"
+    x = "example@examplen"
     for workday in request:
         if workday.checkin.date() == date.date():
             if x != workday.employee.email:
-                if count >= 25200000:
+                if count >= 25200000 and date.weekday() != 4:
                     y.total = count - 3600000
-                    y.put()
+                y.put()
                 x = workday.employee.email
                 count = 0 + workday.total
                 y = workday
             else:
                 count = count + workday.total
                 y = workday
-    if count >= 25200000:
+    if count >= 25200000 and date.weekday() != 4:
         y.total = count - 3600000
         y.put()
     response = {"status": "200"}
