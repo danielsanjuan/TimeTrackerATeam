@@ -5,12 +5,9 @@ threadsafe: true
 # [START handlers]
 handlers:
 
-- url: /_ah/api/timetracker/v1/autoCheckOut
+- url: /timetracker/autoCheckOut
   script: timetracker.autoCheckOut
   secure: always
-
-- url: /timetracker/substractTime  
-  script: timetracker.substractTime
 
 - url: /_ah/spi/.*
   script: timetracker.application

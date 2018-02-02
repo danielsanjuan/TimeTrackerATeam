@@ -61,15 +61,19 @@ export class CheckComponent implements OnInit {
         this.doCheckIn = true;
         this.doCheckOut = false;
       }
-      this.services.getWorkedHoursByWeek().subscribe((data)=>{
-        this.week=parseInt(data.response_date);
-        this.hours_week = this.formatHour(this.week);
-      });
-      this.services.getWorkedHoursToday().subscribe((data)=>{
-        this.hoursWorked=parseInt(data.response_date);
-        this.hours_today = this.formatHour(this.hoursWorked);
-        if (this.doCheckOut)
-        this.startTiming();
+      this.services.getWorkedHoursByWeek().subscribe((dataWeek)=>{
+        this.services.getWorkedHoursToday().subscribe((data)=>{
+          this.hoursWorked=parseInt(data.response_date);
+          this.week=parseInt(dataWeek.response_date);
+          if (new Date().getUTCHours() > 15 && this.hoursWorked > 25200000){
+            this.hoursWorked  = this.hoursWorked - 3600000;
+            this.week = this.week - 3600000;
+          }
+          this.hours_today = this.formatHour(this.hoursWorked);
+          this.hours_week = this.formatHour(this.week);
+          if (this.doCheckOut)
+          this.startTiming();
+        });
       });
     });
 
@@ -85,7 +89,7 @@ export class CheckComponent implements OnInit {
     if (boleano){
       this.hoursWorked= this.hoursWorked +60000;
       this.week= this.week +60000;
-      if (new Date().getUTCHours() == 15 && new Date().getUTCMinutes() == 0 && this.hoursWorked > 3600000){
+      if (new Date().getUTCHours() == 15 && new Date().getUTCMinutes() == 0 && this.hoursWorked > 25200000){
         this.hoursWorked  = this.hoursWorked -3600000;
         this.week = this.week -  3600000;
       }

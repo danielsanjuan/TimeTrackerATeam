@@ -50,6 +50,7 @@ class Workday(ndb.Model):
     employee = ndb.StructuredProperty(Employee, indexed=True)
     ipAddressIn = ndb.StringProperty(indexed=True)
     ipAddressOut = ndb.StringProperty(indexed=True)
+    total = ndb.IntegerProperty(indexed=True)
 
 class Incidences(ndb.Model):
     message = ndb.StringProperty(indexed=True)
@@ -84,22 +85,38 @@ def autoCheckOut(self, request):
         date = date + " 19:00:00.000000"
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
     query = Workday.query()
-    query = query.filter(Workday.checkout == None).fetch()
+    query = query.filter(Workday.checkout == None)
     for userWithoutCheckOut in query:
         userWithoutCheckOut.checkout = date
         userWithoutCheckOut.ipAddressOut = "auto"
+        userWithoutCheckOut.total = int((userWithoutCheckOut.checkout - userWithoutCheckOut.checkin).total_seconds() * 1000)
+        substractTime(self, query)
         userWithoutCheckOut.put()
         mainPage.set_incidences(" didn't check out, this is the automatic check out", date, userWithoutCheckOut.employee.email, False)
     response = {"status": "200"}
     return response
 
 def substractTime(self, request):
-    query = Workday.query()
-    query = query.filter(Workday.checkout == None).fetch()
-    for workday in query:
-        if workday.checkin.hour < 14:
-            workday.checkin = workday.checkin + timedelta(0,3600)
-            workday.put()
+    date = datetime.now()
+    count = 0
+    y = None
+    request = request.order(Workday.employee.email)
+    x = "sergio@edosoft.es"
+    for workday in request:
+        if workday.checkin.date() == date.date():
+            if x != workday.employee.email:
+                if count >= 25200000:
+                    y.total = count - 3600000
+                    y.put()
+                x = workday.employee.email
+                count = 0 + workday.total
+                y = workday
+            else:
+                count = count + workday.total
+                y = workday
+    if count >= 25200000:
+        y.total = count - 3600000
+        y.put()
     response = {"status": "200"}
     return response
 # [START main_page]
@@ -155,7 +172,8 @@ class MainPage(remote.Service):
             checkin=date,
             employee=Employee (name=query.name,email=query.email,role=query.role),
             ipAddressIn=ip,
-            ipAddressOut="-"
+            ipAddressOut="-",
+            total = 0
         )
         workday.put()
 
@@ -165,6 +183,7 @@ class MainPage(remote.Service):
         query = query.filter(Workday.checkout == None).get()
         query.checkout = date
         query.ipAddressOut = ip
+        query.total = int((query.checkout - query.checkin).total_seconds() * 1000)
         query.put()
 
     def filter_checkin(self, date, email):
@@ -200,25 +219,25 @@ class MainPage(remote.Service):
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.isocalendar()[1] == week and worked.checkout != None:
                 if worked.checkin.isocalendar()[2] == 1:
-                    monday = monday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    monday = monday + int(worked.total)/60000
                     report.monday = monday/60
                 elif worked.checkin.isocalendar()[2] == 2:
-                    tuesday = tuesday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    tuesday = tuesday + int(worked.total)/60000
                     report.tuesday = tuesday/60
                 elif worked.checkin.isocalendar()[2] == 3:
-                    wednesday = wednesday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    wednesday = wednesday + int(worked.total)/60000
                     report.wednesday = wednesday/60
                 elif worked.checkin.isocalendar()[2] == 4:
-                    thursday = thursday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    thursday = thursday + int(worked.total)/60000
                     report.thursday = thursday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    friday = friday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    friday = friday + int(worked.total)/60000
                     report.friday = friday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    saturday = saturday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    saturday = saturday + int(worked.total)/60000
                     report.saturday = saturday/60
                 elif worked.checkin.isocalendar()[2] == 5:
-                    sunday = sunday + int((worked.checkout - worked.checkin).total_seconds())/60
+                    sunday = sunday + int(worked.total)/60000
                     report.sunday = sunday/60
         report.total = monday + tuesday + wednesday + thursday + friday + saturday + sunday
         report.totalhm = '{:02d}:{:02d}'.format(*divmod(report.total, 60))
@@ -244,7 +263,7 @@ class MainPage(remote.Service):
 
         for worked in query:
             if worked.checkin.isocalendar()[0] == currentyear and worked.checkin.month == currentmonth and worked.checkout != None:
-                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
+                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int(worked.total)/3600000
 
         for i in range(0, len(dayOfMoth)-1):
             reportDay = JsonSingleDayMessage()
@@ -270,7 +289,7 @@ class MainPage(remote.Service):
 
         for worked in query:
             if worked.checkin.isocalendar()[0] == date.year and worked.checkin.month == date.month and worked.checkout != None:
-                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int((worked.checkout - worked.checkin).total_seconds())/3600
+                dayOfMoth[worked.checkin.day-1] = dayOfMoth[worked.checkin.day-1] + int(worked.total)/3600000
 
         for i in range(0, len(dayOfMoth)-1):
             reportDay = JsonSingleDayMessage()
@@ -581,9 +600,9 @@ class MainPage(remote.Service):
         hoursWorkedToday = 0
         for worked in query:
             if worked.checkin.date() == day.date() and worked.checkout != None:
-                hoursWorkedToday = hoursWorkedToday + int((worked.checkout - worked.checkin).total_seconds())*1000
+                hoursWorkedToday = hoursWorkedToday + worked.total
             if worked.checkin.date() == day.date() and worked.checkout == None:
-                hoursWorkedToday = hoursWorkedToday + int((datetime.now() - worked.checkin).total_seconds())*1000
+                hoursWorkedToday = hoursWorkedToday + (datetime.now() - worked.checkin).total_seconds()*1000
         return GetTimeWorkedTodayReponse(response_date=int(hoursWorkedToday))
 
     @endpoints.method(CheckOutMessage, GetTimeWorkedTodayReponse, path='getWorkedHoursByWeek', http_method='GET', name='getWorkedHoursByWeek')
@@ -595,9 +614,9 @@ class MainPage(remote.Service):
         for worked in query:
             if worked.checkin.isocalendar()[0] == day.year and worked.checkin.isocalendar()[1] == day.isocalendar()[1]:
                 if worked.checkout == None:
-                    hoursWorkedThisWeek = hoursWorkedThisWeek + int((day - worked.checkin).total_seconds())*1000
+                    hoursWorkedThisWeek = hoursWorkedThisWeek + (day - worked.checkin).total_seconds()*1000
                 else:
-                    hoursWorkedThisWeek = hoursWorkedThisWeek + int((worked.checkout - worked.checkin).total_seconds())*1000
+                    hoursWorkedThisWeek = hoursWorkedThisWeek + worked.total
         return GetTimeWorkedTodayReponse(response_date=int(hoursWorkedThisWeek))
     @endpoints.method(CheckIncidenceMessage, CheckIncidenceResponse, path='setCheckIncidence', http_method='POST', name='setCheckIncidence')
     def setCheckIncidence(self, request):
