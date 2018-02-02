@@ -85,8 +85,8 @@ def autoCheckOut(self, request):
         date = date + " 19:00:00.000000"
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
     query = Workday.query()
-    query = query.filter(Workday.checkout == None)
-    for userWithoutCheckOut in query:
+    query2 = query.filter(Workday.checkout == None)
+    for userWithoutCheckOut in query2:
         userWithoutCheckOut.checkout = date
         userWithoutCheckOut.ipAddressOut = "auto"
         userWithoutCheckOut.total = int((userWithoutCheckOut.checkout - userWithoutCheckOut.checkin).total_seconds() * 1000)
@@ -107,7 +107,7 @@ def substractTime(self, request):
             if x != workday.employee.email:
                 if count >= 25200000 and date.weekday() != 4:
                     y.total = count - 3600000
-                y.put()
+                    y.put()
                 x = workday.employee.email
                 count = 0 + workday.total
                 y = workday

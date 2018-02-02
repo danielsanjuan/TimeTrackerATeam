@@ -4,4 +4,4 @@ cron:
   schedule: every monday, tuesday, wednesday, thursday 19:00
 - description: friday automatic checkout
   url: /timetracker/autoCheckOut
-  schedule: every friday 17:30
+  schedule: every friday 15:00
