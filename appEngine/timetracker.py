@@ -105,7 +105,7 @@ def substractTime(self, request):
     for workday in request:
         if workday.checkin.date() == date.date():
             if x != workday.employee.email:
-                if count >= 25200000 and date.weekday() != 4:
+                if count >= 27000000 and date.weekday() != 4:
                     y.total = count - 3600000
                     y.put()
                 x = workday.employee.email
