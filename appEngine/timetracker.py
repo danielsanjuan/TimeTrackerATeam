@@ -115,7 +115,7 @@ def substractTime(self, request):
                 count = count + workday.total
                 y = workday
     if count >= 27000000 and date.weekday() != 4:
-        y.total = count - 3600000
+        y.total = y.total - 3600000
         y.put()
     response = {"status": "200"}
     return response
@@ -787,6 +787,7 @@ class MainPage(remote.Service):
                             self.createLogs(day, request, False, False)
                         day.checkin = newCheckin
                         day.checkout = newCheckout
+                        day.total = int((day.checkout - day.checkin).total_seconds() * 1000)
                         day.put()
                         return FixHoursResponseMessage(response_code = 200)
             else:
