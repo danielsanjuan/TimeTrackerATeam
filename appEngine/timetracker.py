@@ -106,7 +106,7 @@ def substractTime(self, request):
         if workday.checkin.date() == date.date():
             if x != workday.employee.email:
                 if count >= 27000000 and date.weekday() != 4:
-                    y.total = count - 3600000
+                    y.total = y.total - 3600000
                     y.put()
                 x = workday.employee.email
                 count = 0 + workday.total
@@ -114,7 +114,7 @@ def substractTime(self, request):
             else:
                 count = count + workday.total
                 y = workday
-    if count >= 25200000 and date.weekday() != 4:
+    if count >= 27000000 and date.weekday() != 4:
         y.total = count - 3600000
         y.put()
     response = {"status": "200"}
@@ -380,7 +380,8 @@ class MainPage(remote.Service):
         array = []
         for employee in employees:
             userIPResponse = UserIPResponse()
-            query = Workday.query()
+            query = Workday.query(Workday.employee.email == employee.email)
+            query = query.order(Workday.checkin)
             jsonUserIPMessage = JsonUserIPMessage()
             jsonUserIPMessage.response_list_employee = JsonUserMessage(
                     name=employee.name,
@@ -396,7 +397,6 @@ class MainPage(remote.Service):
                     ip5="-",
                     ip6="-"
                 )
-            query = query.filter(Workday.employee.email == employee.email)
 
             pos = 0
             for workday in query:

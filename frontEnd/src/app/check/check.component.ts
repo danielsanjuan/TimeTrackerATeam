@@ -65,7 +65,7 @@ export class CheckComponent implements OnInit {
         this.services.getWorkedHoursToday().subscribe((data)=>{
           this.hoursWorked=parseInt(data.response_date);
           this.week=parseInt(dataWeek.response_date);
-          if (new Date().getUTCHours() > 15 && this.hoursWorked > 25200000 && new Date().getDay() != 4){
+          if (new Date().getUTCHours() >= 15 && this.hoursWorked >= 27000000 && new Date().getDay() != 4){
             this.hoursWorked  = this.hoursWorked - 3600000;
             this.week = this.week - 3600000;
           }
@@ -87,10 +87,10 @@ export class CheckComponent implements OnInit {
 
   playTimer(boleano){
     if (boleano){
-      this.hoursWorked= this.hoursWorked +60000;
-      this.week= this.week +60000;
+      this.hoursWorked= this.hoursWorked + 60000;
+      this.week= this.week + 60000;
       if (new Date().getUTCHours() == 15 && new Date().getUTCMinutes() == 0 && this.hoursWorked > 25200000){
-        this.hoursWorked  = this.hoursWorked -3600000;
+        this.hoursWorked  = this.hoursWorked - 3600000;
         this.week = this.week -  3600000;
       }
       this.hours_today = this.formatHour(this.hoursWorked);
