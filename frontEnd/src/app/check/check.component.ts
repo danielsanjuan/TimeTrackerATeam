@@ -65,7 +65,7 @@ export class CheckComponent implements OnInit {
         this.services.getWorkedHoursToday().subscribe((data)=>{
           this.hoursWorked=parseInt(data.response_date);
           this.week=parseInt(dataWeek.response_date);
-          if (new Date().getUTCHours() >= 15 && this.hoursWorked >= 27000000 && new Date().getDay() != 4){
+          if (new Date().getUTCHours() >= 15 && this.hoursWorked >= 27000000 && new Date().getDay() != 5){
             this.hoursWorked  = this.hoursWorked - 3600000;
             this.week = this.week - 3600000;
           }
